@@ -147,11 +147,11 @@ export const kpneumoniaeDemo: StorylineStats = {
 			strand: '+'
 		},
 		{
-			gene: 'aph(3'')-Ib',
+			gene: "aph(3'')-Ib",
 			coverage: 99.88,
 			identity: 99.88,
 			accession: 'NG_048025.1',
-			product: 'aminoglycoside O-phosphotransferase APH(3'')-Ib',
+			product: "aminoglycoside O-phosphotransferase APH(3'')-Ib",
 			resistance: 'QUINOLONE',
 			contig: 'contig_1',
 			start: 1300,
