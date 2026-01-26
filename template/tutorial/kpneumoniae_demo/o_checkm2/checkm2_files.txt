@@ -1,0 +1,6 @@
+# list of output files
+
+checkm2.log
+diamond_output/
+protein_files/
+quality_report.tsv

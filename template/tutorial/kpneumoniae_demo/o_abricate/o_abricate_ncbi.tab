@@ -1,0 +1,6 @@
+#FILE	SEQUENCE	START	END	STRAND	GENE	COVERAGE	COVERAGE_MAP	GAPS	%COVERAGE	%IDENTITY	DATABASE	ACCESSION	PRODUCT	RESISTANCE
+o_unicycler/assembly.fasta	30	1300	2102	+	aph(3'')-Ib	2-804/804	===============	0/0	99.88	99.88	ncbi	NG_047413.1	aminoglycoside O-phosphotransferase APH(3'')-Ib	STREPTOMYCIN
+o_unicycler/assembly.fasta	30	3659	4519	-	blaTEM-1	1-861/861	===============	0/0	100.00	100.00	ncbi	NG_050145.1	broad-spectrum class A beta-lactamase TEM-1	BETA-LACTAM
+o_unicycler/assembly.fasta	32	2466	3278	+	blaNDM-7	1-813/813	===============	0/0	100.00	100.00	ncbi	NG_049339.1	subclass B1 metallo-beta-lactamase NDM-7	CARBAPENEM
+o_unicycler/assembly.fasta	46	492	1136	+	qnrB1	1-645/645	===============	0/0	100.00	100.00	ncbi	NG_050469.1	quinolone resistance pentapeptide repeat protein QnrB1	QUINOLONE
+o_unicycler/assembly.fasta	5	354542	354961	-	fosA6	1-420/420	===============	0/0	100.00	99.76	ncbi	NG_051497.1	fosfomycin resistance glutathione transferase FosA6	FOSFOMYCIN

@@ -1,0 +1,55 @@
+AMR Gene Summary Report
+=======================
+Generated: 2024-01-15
+Sample: o_unicycler/assembly.fasta
+Database: NCBI AMRFinderPlus
+
+Total AMR genes found: 16
+
+BETA-LACTAM RESISTANCE:
+1. blaNDM-7 (Carbapenemase)
+   Location: contig_32:2466-3278
+   Coverage: 100.00% | Identity: 100.00%
+   Resistance: CARBAPENEM (meropenem, imipenem, ertapenem)
+   Clinical significance: CRITICAL - Carbapenem-resistant Enterobacteriaceae (CRE)
+
+2. blaCTX-M-15 (ESBL)
+   Location: contig_30:7341-8216
+   Coverage: 100.00% | Identity: 100.00%
+   Resistance: Extended-spectrum cephalosporins (3rd/4th gen)
+   Clinical significance: HIGH
+
+3. blaTEM-1 (Penicillinase)
+   Location: contig_30:3659-4519
+   Coverage: 100.00% | Identity: 100.00%
+   Resistance: Ampicillin, penicillins
+
+4. blaSHV-106 (ESBL)
+   Location: contig_7:245723-246583
+   Coverage: 100.00% | Identity: 99.88%
+   Resistance: Extended-spectrum cephalosporins
+
+5. blaOXA-1 (Oxacillinase)
+   Location: contig_44:777-1607
+   Coverage: 100.00% | Identity: 100.00%
+   Resistance: Cephalosporins
+
+AMINOGLYCOSIDE RESISTANCE:
+6. aac(6')-Ib-D181Y | aac(3)-IIe | aph(3'')-Ib | aph(6)-Id
+   Resistance: Amikacin, kanamycin, tobramycin, gentamicin, streptomycin
+
+QUINOLONE RESISTANCE:
+7. qnrB1 | oqxA5 | oqxB19
+   Resistance: Fluoroquinolones (ciprofloxacin, levofloxacin)
+
+OTHER RESISTANCE:
+8. sul2 - Sulfonamide resistance
+9. dfrA14 - Trimethoprim resistance
+10. fosA6 - Fosfomycin resistance
+11. ble-MBL - Bleomycin resistance
+
+CLINICAL INTERPRETATION:
+This isolate is a MULTI-DRUG RESISTANT (MDR) organism with carbapenem resistance.
+- AVOID: Carbapenems, cephalosporins, penicillins, aminoglycosides, fluoroquinolones, sulfonamides, trimethoprim
+- CONSIDER: Colistin, tigecycline (susceptibility testing required)
+- Report to infection control for CRE surveillance

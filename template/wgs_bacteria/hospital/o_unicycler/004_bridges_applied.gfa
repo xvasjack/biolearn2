@@ -1,0 +1,8 @@
+H	VN:Z:1.0
+# Bridges applied to resolve repeats
+S	1	ACGTACGT...	LN:i:5553813
+S	33	TGCATGCA...	LN:i:5409	RC:i:21089
+S	35	GCTAGCTA...	LN:i:4315	RC:i:76234
+S	41	ATGCATGC...	LN:i:2532	RC:i:50345
+L	1	+	1	-	0M
+...

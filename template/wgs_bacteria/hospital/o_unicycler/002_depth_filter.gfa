@@ -1,0 +1,8 @@
+H	VN:Z:1.0
+# Depth-filtered assembly graph
+S	1	ACGTACGT...	LN:i:5358379	dp:f:1.0
+S	33	TGCATGCA...	LN:i:5409	dp:f:3.9
+S	35	GCTAGCTA...	LN:i:4315	dp:f:17.66
+S	41	ATGCATGC...	LN:i:2532	dp:f:19.88
+L	1	+	1	-	0M
+...
