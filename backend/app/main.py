@@ -20,10 +20,12 @@ manager = ConnectionManager()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifecycle management."""
-    from app.database import init_db
+    from app.database import init_db, seed_admin_account
     logger.info("Starting BioLearn API server...")
     await init_db()
     logger.info("Database tables created.")
+    await seed_admin_account()
+    logger.info("Admin account seeded.")
     yield
     logger.info("Shutting down BioLearn API server...")
 

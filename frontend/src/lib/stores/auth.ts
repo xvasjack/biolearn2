@@ -64,10 +64,10 @@ function createAuthStore() {
 			persist(state);
 		},
 
-		async login(email: string, password: string) {
+		async login(identifier: string, password: string) {
 			const res = await apiFetch('/login', {
 				method: 'POST',
-				body: JSON.stringify({ email, password }),
+				body: JSON.stringify({ identifier, password }),
 			});
 			if (!res.ok) {
 				const err = await res.json();
@@ -132,3 +132,13 @@ function createAuthStore() {
 export const auth = createAuthStore();
 export const isAuthenticated = derived(auth, ($a) => !!$a.accessToken);
 export const currentUser = derived(auth, ($a) => $a.user);
+
+const ADMIN_USERNAMES = ['kreatbio'];
+
+export const isAdmin = derived(auth, ($a) =>
+	!!$a.user && ADMIN_USERNAMES.includes($a.user.username)
+);
+
+export function isTutorialRoute(path: string): boolean {
+	return path === '/tutorial' || path.startsWith('/tutorial/');
+}

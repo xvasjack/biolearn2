@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { isAuthenticated } from '$lib/stores/auth';
+
+	onMount(() => {
+		if (!$isAuthenticated) goto('/');
+	});
 </script>
 
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">

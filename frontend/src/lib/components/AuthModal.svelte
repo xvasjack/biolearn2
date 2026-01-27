@@ -4,6 +4,7 @@
 	let { open = $bindable(false) } = $props();
 
 	let mode: 'login' | 'register' = $state('login');
+	let identifier = $state('');
 	let email = $state('');
 	let username = $state('');
 	let password = $state('');
@@ -11,6 +12,7 @@
 	let loading = $state(false);
 
 	function reset() {
+		identifier = '';
 		email = '';
 		username = '';
 		password = '';
@@ -31,7 +33,7 @@
 			if (mode === 'register') {
 				await auth.register(email, username, password);
 			} else {
-				await auth.login(email, password);
+				await auth.login(identifier, password);
 			}
 			close();
 		} catch (err: any) {
@@ -55,12 +57,16 @@
 			<h2>{mode === 'login' ? 'Log In' : 'Create Account'}</h2>
 
 			<form onsubmit={handleSubmit}>
-				<label>
-					Email
-					<input type="email" bind:value={email} required />
-				</label>
-
-				{#if mode === 'register'}
+				{#if mode === 'login'}
+					<label>
+						Email or Username
+						<input type="text" bind:value={identifier} required />
+					</label>
+				{:else}
+					<label>
+						Email
+						<input type="email" bind:value={email} required />
+					</label>
 					<label>
 						Username
 						<input type="text" bind:value={username} required minlength="2" />

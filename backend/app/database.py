@@ -31,3 +31,20 @@ async def init_db():
     async with engine.begin() as conn:
         from app.models import User, UserProgress  # noqa: F401
         await conn.run_sync(Base.metadata.create_all)
+
+
+async def seed_admin_account():
+    """Ensure the admin account exists."""
+    from sqlalchemy import select
+    from app.models import User
+    from app.auth import hash_password
+
+    async with async_session() as session:
+        result = await session.execute(select(User).where(User.username == "kreatbio"))
+        if result.scalar_one_or_none() is None:
+            session.add(User(
+                email="adriana.kreatbio@gmail.com",
+                username="kreatbio",
+                password_hash=hash_password("@Drigoh9798"),
+            ))
+            await session.commit()

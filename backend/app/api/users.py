@@ -30,7 +30,7 @@ class UserCreate(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    email: EmailStr
+    identifier: str
     password: str
 
 
@@ -97,10 +97,12 @@ async def register(body: UserCreate, db: Annotated[AsyncSession, Depends(get_db)
 
 @router.post("/login", response_model=AuthResponse)
 async def login(body: LoginRequest, db: Annotated[AsyncSession, Depends(get_db)]):
-    result = await db.execute(select(User).where(User.email == body.email))
+    result = await db.execute(
+        select(User).where((User.email == body.identifier) | (User.username == body.identifier))
+    )
     user = result.scalar_one_or_none()
     if not user or not verify_password(body.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
+        raise HTTPException(status_code=401, detail="Invalid email/username or password")
 
     return AuthResponse(
         user=UserResponse(id=user.id, email=user.email, username=user.username),

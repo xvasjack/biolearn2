@@ -2,9 +2,9 @@
 	import '../app.css';
 	import AuthModal from '$lib/components/AuthModal.svelte';
 	import { isAuthenticated, currentUser, auth } from '$lib/stores/auth';
+	import { authModalOpen } from '$lib/stores/authModal';
 
 	let { children } = $props();
-	let authOpen = $state(false);
 </script>
 
 <svelte:head>
@@ -20,12 +20,12 @@
 				<span class="username">{$currentUser.username}</span>
 				<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
 			{:else}
-				<button class="nav-btn" onclick={() => (authOpen = true)}>Log in / Register</button>
+				<button class="nav-btn" onclick={() => ($authModalOpen = true)}>Log in / Register</button>
 			{/if}
 		</div>
 	</nav>
 
-	<AuthModal bind:open={authOpen} />
+	<AuthModal bind:open={$authModalOpen} />
 
 	<div class="app-content">
 		{@render children()}

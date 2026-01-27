@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { isAuthenticated } from '$lib/stores/auth';
+	import { authModalOpen } from '$lib/stores/authModal';
 
 	interface Mode {
 		id: string;
@@ -101,6 +103,18 @@
 
 	function selectMode(mode: Mode) {
 		if (mode.comingSoon) return;
+		if (mode.id === 'tutorial') {
+			if (mode.storylines) {
+				selectedMode = selectedMode?.id === mode.id ? null : mode;
+			} else {
+				goto(`/${mode.id}`);
+			}
+			return;
+		}
+		if (!$isAuthenticated) {
+			$authModalOpen = true;
+			return;
+		}
 		if (mode.storylines) {
 			selectedMode = selectedMode?.id === mode.id ? null : mode;
 		} else {
@@ -109,7 +123,23 @@
 	}
 
 	function startStoryline(modeId: string, storylineId: string) {
+		if (modeId === 'tutorial') {
+			goto(`/${modeId}/${storylineId}`);
+			return;
+		}
+		if (!$isAuthenticated) {
+			$authModalOpen = true;
+			return;
+		}
 		goto(`/${modeId}/${storylineId}`);
+	}
+
+	function handleReportClick(path: string) {
+		if (!$isAuthenticated) {
+			$authModalOpen = true;
+			return;
+		}
+		goto(path);
 	}
 </script>
 
@@ -162,10 +192,21 @@
 									<span class="rounded-full bg-slate-700 px-3 py-1 text-xs font-medium text-slate-400">
 										Coming Soon
 									</span>
-								{:else if mode.storylines}
-									<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-										{mode.storylines.length} Storylines
+								{:else if mode.id === 'tutorial'}
+									<span class="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-300">
+										Free
 									</span>
+								{:else if mode.storylines}
+									<div class="flex items-center gap-2">
+										{#if !$isAuthenticated}
+											<span class="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-300">
+												Login Required
+											</span>
+										{/if}
+										<span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+											{mode.storylines.length} Storylines
+										</span>
+									</div>
 								{/if}
 							</div>
 							<h3 class="mb-2 text-xl font-semibold text-white">{mode.title}</h3>
@@ -225,7 +266,7 @@
 
 			<div class="grid gap-6 md:grid-cols-3">
 				<!-- WGS Bacteria Report -->
-				<a href="/reports/wgs-bacteria" class="group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-emerald-500/50 hover:bg-slate-800/50">
+				<button onclick={() => handleReportClick('/reports/wgs-bacteria')} class="text-left group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-emerald-500/50 hover:bg-slate-800/50">
 					<div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-500/10 text-2xl">
 						🧬
 					</div>
@@ -238,10 +279,10 @@
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">ABRicate</span>
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">ggtree</span>
 					</div>
-				</a>
+				</button>
 
 				<!-- Amplicon Sequencing Report -->
-				<a href="/reports/amplicon" class="group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-purple-500/50 hover:bg-slate-800/50">
+				<button onclick={() => handleReportClick('/reports/amplicon')} class="text-left group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-purple-500/50 hover:bg-slate-800/50">
 					<div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-500/10 text-2xl">
 						🦠
 					</div>
@@ -254,10 +295,10 @@
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">vegan</span>
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">DESeq2</span>
 					</div>
-				</a>
+				</button>
 
 				<!-- RNA-seq Report -->
-				<a href="/reports/rnaseq" class="group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-blue-500/50 hover:bg-slate-800/50">
+				<button onclick={() => handleReportClick('/reports/rnaseq')} class="text-left group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all hover:border-blue-500/50 hover:bg-slate-800/50">
 					<div class="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-500/10 text-2xl">
 						📊
 					</div>
@@ -270,7 +311,7 @@
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">EnhancedVolcano</span>
 						<span class="rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-300">clusterProfiler</span>
 					</div>
-				</a>
+				</button>
 			</div>
 		</div>
 
