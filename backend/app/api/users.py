@@ -1,29 +1,61 @@
-"""User management endpoints."""
+"""User authentication and management endpoints."""
+from datetime import datetime, timezone
+from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-import uuid
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.auth import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    get_current_user,
+)
+from app.database import get_db
+from app.models import User, UserProgress
 
 router = APIRouter()
 
 
+# ---------- Schemas ----------
+
 class UserCreate(BaseModel):
-    """User registration request."""
     email: EmailStr
     username: str
     password: str
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
 class UserResponse(BaseModel):
-    """User response (without password)."""
     id: str
     email: str
     username: str
-    progress: dict
 
 
-class UserProgress(BaseModel):
-    """User's learning progress."""
+class AuthResponse(BaseModel):
+    user: UserResponse
+    tokens: TokenResponse
+
+
+class ProgressResponse(BaseModel):
     narrative_id: str
     current_step: int
     completed_steps: list[int]
@@ -31,79 +63,135 @@ class UserProgress(BaseModel):
     last_activity: str
 
 
-# Placeholder user storage (will use PostgreSQL)
-USERS: dict[str, dict] = {}
+class ProgressUpdate(BaseModel):
+    current_step: int
+    completed_steps: list[int] = []
 
 
-@router.post("/register")
-async def register_user(user: UserCreate) -> UserResponse:
-    """Register a new user."""
-    # Check if email already exists
-    for existing_user in USERS.values():
-        if existing_user["email"] == user.email:
-            raise HTTPException(status_code=400, detail="Email already registered")
-        if existing_user["username"] == user.username:
-            raise HTTPException(status_code=400, detail="Username already taken")
+# ---------- Endpoints ----------
 
-    user_id = str(uuid.uuid4())
-    USERS[user_id] = {
-        "id": user_id,
-        "email": user.email,
-        "username": user.username,
-        "password_hash": user.password,  # TODO: Hash password properly
-        "progress": {},
-    }
+@router.post("/register", response_model=AuthResponse)
+async def register(body: UserCreate, db: Annotated[AsyncSession, Depends(get_db)]):
+    # Check uniqueness
+    existing = await db.execute(select(User).where((User.email == body.email) | (User.username == body.username)))
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Email or username already taken")
 
-    return UserResponse(
-        id=user_id,
-        email=user.email,
-        username=user.username,
-        progress={},
+    user = User(
+        email=body.email,
+        username=body.username,
+        password_hash=hash_password(body.password),
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    return AuthResponse(
+        user=UserResponse(id=user.id, email=user.email, username=user.username),
+        tokens=TokenResponse(
+            access_token=create_access_token(user.id),
+            refresh_token=create_refresh_token(user.id),
+        ),
     )
 
 
-@router.get("/{user_id}")
-async def get_user(user_id: str) -> UserResponse:
-    """Get user information."""
-    if user_id not in USERS:
-        raise HTTPException(status_code=404, detail="User not found")
+@router.post("/login", response_model=AuthResponse)
+async def login(body: LoginRequest, db: Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(select(User).where(User.email == body.email))
+    user = result.scalar_one_or_none()
+    if not user or not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    user = USERS[user_id]
-    return UserResponse(
-        id=user["id"],
-        email=user["email"],
-        username=user["username"],
-        progress=user["progress"],
+    return AuthResponse(
+        user=UserResponse(id=user.id, email=user.email, username=user.username),
+        tokens=TokenResponse(
+            access_token=create_access_token(user.id),
+            refresh_token=create_refresh_token(user.id),
+        ),
     )
 
 
-@router.get("/{user_id}/progress")
-async def get_user_progress(user_id: str) -> dict:
-    """Get user's learning progress."""
-    if user_id not in USERS:
-        raise HTTPException(status_code=404, detail="User not found")
+@router.post("/refresh", response_model=TokenResponse)
+async def refresh_token(body: RefreshRequest, db: Annotated[AsyncSession, Depends(get_db)]):
+    payload = decode_token(body.refresh_token)
+    if payload.get("type") != "refresh":
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-    return USERS[user_id]["progress"]
+    user_id = payload.get("sub")
+    result = await db.execute(select(User).where(User.id == user_id))
+    if not result.scalar_one_or_none():
+        raise HTTPException(status_code=401, detail="User not found")
+
+    return TokenResponse(
+        access_token=create_access_token(user_id),
+        refresh_token=create_refresh_token(user_id),
+    )
 
 
-@router.put("/{user_id}/progress/{narrative_id}")
+@router.get("/me", response_model=UserResponse)
+async def get_me(user: Annotated[User, Depends(get_current_user)]):
+    return UserResponse(id=user.id, email=user.email, username=user.username)
+
+
+@router.get("/me/progress", response_model=list[ProgressResponse])
+async def get_progress(
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    result = await db.execute(
+        select(UserProgress).where(UserProgress.user_id == user.id)
+    )
+    rows = result.scalars().all()
+    return [
+        ProgressResponse(
+            narrative_id=r.narrative_id,
+            current_step=r.current_step,
+            completed_steps=r.completed_steps,
+            started_at=r.started_at.isoformat(),
+            last_activity=r.last_activity.isoformat(),
+        )
+        for r in rows
+    ]
+
+
+@router.put("/me/progress/{narrative_id}", response_model=ProgressResponse)
 async def update_progress(
-    user_id: str,
     narrative_id: str,
-    step: int,
-) -> dict:
-    """Update user's progress on a narrative."""
-    if user_id not in USERS:
-        raise HTTPException(status_code=404, detail="User not found")
+    body: ProgressUpdate,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    result = await db.execute(
+        select(UserProgress).where(
+            UserProgress.user_id == user.id,
+            UserProgress.narrative_id == narrative_id,
+        )
+    )
+    progress = result.scalar_one_or_none()
 
-    if narrative_id not in USERS[user_id]["progress"]:
-        USERS[user_id]["progress"][narrative_id] = {
-            "current_step": step,
-            "completed_steps": list(range(1, step)),
-        }
+    now = datetime.now(timezone.utc)
+    if progress is None:
+        progress = UserProgress(
+            user_id=user.id,
+            narrative_id=narrative_id,
+            current_step=body.current_step,
+            completed_steps=body.completed_steps,
+            started_at=now,
+            last_activity=now,
+        )
+        db.add(progress)
     else:
-        USERS[user_id]["progress"][narrative_id]["current_step"] = step
-        if step - 1 not in USERS[user_id]["progress"][narrative_id]["completed_steps"]:
-            USERS[user_id]["progress"][narrative_id]["completed_steps"].append(step - 1)
+        progress.current_step = body.current_step
+        progress.completed_steps = body.completed_steps
+        progress.last_activity = now
 
-    return USERS[user_id]["progress"][narrative_id]
+    await db.commit()
+    await db.refresh(progress)
+
+    return ProgressResponse(
+        narrative_id=progress.narrative_id,
+        current_step=progress.current_step,
+        completed_steps=progress.completed_steps,
+        started_at=progress.started_at.isoformat(),
+        last_activity=progress.last_activity.isoformat(),
+    )

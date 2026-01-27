@@ -1,6 +1,10 @@
 <script lang="ts">
 	import '../app.css';
+	import AuthModal from '$lib/components/AuthModal.svelte';
+	import { isAuthenticated, currentUser, auth } from '$lib/stores/auth';
+
 	let { children } = $props();
+	let authOpen = $state(false);
 </script>
 
 <svelte:head>
@@ -8,4 +12,56 @@
 	<meta name="description" content="Learn bioinformatics through narrative-driven, hands-on analysis" />
 </svelte:head>
 
+<nav class="top-bar">
+	<span class="brand">BioLearn</span>
+	<div class="auth-area">
+		{#if $isAuthenticated && $currentUser}
+			<span class="username">{$currentUser.username}</span>
+			<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
+		{:else}
+			<button class="nav-btn" onclick={() => (authOpen = true)}>Log in / Register</button>
+		{/if}
+	</div>
+</nav>
+
+<AuthModal bind:open={authOpen} />
+
 {@render children()}
+
+<style>
+	.top-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 1rem;
+		background: #181825;
+		border-bottom: 1px solid #313244;
+	}
+	.brand {
+		font-weight: 700;
+		font-size: 1.1rem;
+		color: #89b4fa;
+	}
+	.auth-area {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.username {
+		color: #a6adc8;
+		font-size: 0.85rem;
+	}
+	.nav-btn {
+		background: none;
+		border: 1px solid #45475a;
+		color: #cdd6f4;
+		padding: 0.3rem 0.75rem;
+		border-radius: 6px;
+		font-size: 0.82rem;
+		cursor: pointer;
+	}
+	.nav-btn:hover {
+		border-color: #89b4fa;
+		color: #89b4fa;
+	}
+</style>
