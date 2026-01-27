@@ -1,0 +1,17 @@
+# List of files
+
+├── Hit_in_genome_seq.fsa
+├── Plasmid_seqs.fsa
+├── data.json
+├── results.txt
+├── results_tab.tsv
+└── tmp
+    ├── out_Inc18.xml
+    ├── out_NT_Rep.xml
+    ├── out_Rep1.xml
+    ├── out_Rep2.xml
+    ├── out_Rep3.xml
+    ├── out_RepA_N.xml
+    ├── out_RepL.xml
+    ├── out_Rep_trans.xml
+    └── out_enterobacteriaceae.xml

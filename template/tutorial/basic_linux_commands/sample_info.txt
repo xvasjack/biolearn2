@@ -1,0 +1,10 @@
+Sample Information File
+=======================
+Project: K. pneumoniae WGS Analysis
+Date: 2024-01-15
+
+Sample ID: SRR36708862
+Organism: Klebsiella pneumoniae
+Platform: Illumina NovaSeq 6000
+Read Length: 150bp paired-end
+Coverage: ~100x

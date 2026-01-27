@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#1e293b"/>
+  <ellipse cx="200" cy="140" rx="100" ry="50" fill="#64748b"/>
+  <ellipse cx="200" cy="140" rx="90" ry="45" fill="#94a3b8"/>
+  <polygon points="300,140 340,110 340,170" fill="#64748b"/>
+  <circle cx="130" cy="130" r="8" fill="#0f172a"/>
+  <circle cx="130" cy="130" r="4" fill="#fff"/>
+  <path d="M170 150 Q200 160 230 150" stroke="#475569" stroke-width="2" fill="none"/>
+  <ellipse cx="200" cy="220" rx="80" ry="20" fill="#0ea5e9" opacity="0.3"/>
+  <text x="200" y="270" font-family="Arial, sans-serif" font-size="14" fill="#ef4444" text-anchor="middle">Fish Mortality Event</text>
+  <text x="200" y="288" font-family="Arial, sans-serif" font-size="10" fill="#64748b" text-anchor="middle">Vibrio outbreak investigation</text>
+</svg>

@@ -1,0 +1,17 @@
+# List of files
+
+├── 001_spades_graph_k027.gfa
+├── 001_spades_graph_k053.gfa
+├── 001_spades_graph_k071.gfa
+├── 001_spades_graph_k087.gfa
+├── 001_spades_graph_k099.gfa
+├── 001_spades_graph_k111.gfa
+├── 001_spades_graph_k119.gfa
+├── 001_spades_graph_k127.gfa
+├── 002_depth_filter.gfa
+├── 003_overlaps_removed.gfa
+├── 004_bridges_applied.gfa
+├── 005_final_clean.gfa
+├── assembly.fasta
+├── assembly.gfa
+└── unicycler.log

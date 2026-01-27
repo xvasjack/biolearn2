@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/* Custom styles */
+:root {
+  --terminal-bg: #1e1e1e;
+  --terminal-text: #d4d4d4;
+  --story-bg: #ffffff;
+  --story-text: #1f2937;
+  --output-bg: #f9fafb;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Terminal styles */
+.terminal-panel {
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Story panel styles */
+.story-panel {
+  background-color: var(--story-bg);
+  color: var(--story-text);
+}
+
+/* Output panel styles */
+.output-panel {
+  background-color: var(--output-bg);
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Terminal scrollbar */
+.terminal-panel ::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.terminal-panel ::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+}

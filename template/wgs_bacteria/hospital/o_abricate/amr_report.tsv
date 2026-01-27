@@ -1,0 +1,17 @@
+#FILE	SEQUENCE	START	END	STRAND	GENE	COVERAGE	COVERAGE_MAP	GAPS	%COVERAGE	%IDENTITY	DATABASE	ACCESSION	PRODUCT	RESISTANCE
+o_unicycler/assembly.fasta	30	423	1238	+	sul2	1-816/816	===============	0/0	100.00	100.00	ncbi	NG_051852.1	sulfonamide-resistant dihydropteroate synthase Sul2	SULFONAMIDE
+o_unicycler/assembly.fasta	30	1300	2102	+	aph(3'')-Ib	2-804/804	===============	0/0	99.88	99.88	ncbi	NG_047413.1	aminoglycoside O-phosphotransferase APH(3'')-Ib	STREPTOMYCIN
+o_unicycler/assembly.fasta	30	2102	2938	+	aph(6)-Id	1-837/837	===============	0/0	100.00	100.00	ncbi	NG_047464.1	aminoglycoside O-phosphotransferase APH(6)-Id	STREPTOMYCIN
+o_unicycler/assembly.fasta	30	3659	4519	-	blaTEM-1	1-861/861	===============	0/0	100.00	100.00	ncbi	NG_050145.1	broad-spectrum class A beta-lactamase TEM-1	BETA-LACTAM
+o_unicycler/assembly.fasta	30	7341	8216	+	blaCTX-M-15	1-876/876	===============	0/0	100.00	100.00	ncbi	NG_048935.1	extended-spectrum class A beta-lactamase CTX-M-15	CEPHALOSPORIN
+o_unicycler/assembly.fasta	31	1713	2186	+	dfrA14	1-474/474	===============	0/0	100.00	100.00	ncbi	NG_056035.1	trimethoprim-resistant dihydrofolate reductase DfrA14	TRIMETHOPRIM
+o_unicycler/assembly.fasta	32	2466	3278	+	blaNDM-7	1-813/813	===============	0/0	100.00	100.00	ncbi	NG_049339.1	subclass B1 metallo-beta-lactamase NDM-7	CARBAPENEM
+o_unicycler/assembly.fasta	32	3282	3647	+	ble-MBL	1-366/366	===============	0/0	100.00	100.00	ncbi	NG_047559.1	bleomycin binding protein Ble-MBL	BLEOMYCIN
+o_unicycler/assembly.fasta	4	37001	38176	+	oqxA5	1-1176/1176	===============	0/0	100.00	99.41	ncbi	NG_050423.1	multidrug efflux RND transporter periplasmic adaptor subunit OqxA5	PHENICOL;QUINOLONE
+o_unicycler/assembly.fasta	4	38200	41352	+	oqxB19	1-3153/3153	===============	0/0	100.00	99.40	ncbi	NG_050437.1	multidrug efflux RND transporter permease subunit OqxB19	PHENICOL;QUINOLONE
+o_unicycler/assembly.fasta	40	105	965	+	aac(3)-IIe	1-861/861	===============	0/0	100.00	99.77	ncbi	NG_047244.1	aminoglycoside N-acetyltransferase AAC(3)-IIe	GENTAMICIN
+o_unicycler/assembly.fasta	44	92	646	+	aac(6')-Ib-D181Y	1-555/555	===============	0/0	100.00	99.82	ncbi	NG_067946.1	AAC(6')-Ib family aminoglycoside 6'-N-acetyltransferase	AMIKACIN;KANAMYCIN;TOBRAMYCIN
+o_unicycler/assembly.fasta	44	777	1607	+	blaOXA-1	1-831/831	===============	0/0	100.00	100.00	ncbi	NG_049392.1	oxacillin-hydrolyzing class D beta-lactamase OXA-1	CEPHALOSPORIN
+o_unicycler/assembly.fasta	46	492	1136	+	qnrB1	1-645/645	===============	0/0	100.00	100.00	ncbi	NG_050469.1	quinolone resistance pentapeptide repeat protein QnrB1	QUINOLONE
+o_unicycler/assembly.fasta	5	354542	354961	-	fosA6	1-420/420	===============	0/0	100.00	99.76	ncbi	NG_051497.1	fosfomycin resistance glutathione transferase FosA6	FOSFOMYCIN
+o_unicycler/assembly.fasta	7	245723	246583	-	blaSHV-106	1-861/861	===============	0/0	100.00	99.88	ncbi	NG_049996.1	extended-spectrum class A beta-lactamase SHV-106	CEPHALOSPORIN

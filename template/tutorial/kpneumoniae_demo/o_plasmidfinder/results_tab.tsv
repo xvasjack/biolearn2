@@ -1,0 +1,5 @@
+Database        Plasmid Identity        Query / Template length Contig  Position in contig      Note    Accession number
+enterobacteriaceae      Col440I 97.37   114 / 114       35 length=4315 depth=17.66x circular=true       3913..4026              CP023920.1
+enterobacteriaceae      IncFIB(K)       98.93   560 / 560       23 length=26349 depth=1.32x     12470..13029    Kpn3    JN233704
+enterobacteriaceae      IncFII(K)       95.95   148 / 148       19 length=49609 depth=1.36x     47871..48018            CP000648
+enterobacteriaceae      IncX3   100.0   374 / 374       22 length=34124 depth=1.41x     4640..5013              JN247852

@@ -1,0 +1,19 @@
+# List of files
+
+├── basic_stats
+│   ├── assembly_GC_content_plot.pdf
+│   ├── cumulative_plot.pdf
+│   ├── GC_content_plot.pdf
+│   └── Nx_plot.pdf
+├── icarus.html
+├── icarus_viewers
+│   └── contig_size_viewer.html
+├── quast.log
+├── report.html
+├── report.pdf
+├── report.tex
+├── report.tsv
+├── report.txt
+├── transposed_report.tex
+├── transposed_report.tsv
+└── transposed_report.txt

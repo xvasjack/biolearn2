@@ -1,0 +1,160 @@
+LOCUS       1                     837178 bp    DNA     linear       12-JAN-2026
+DEFINITION  Genus species strain strain.
+ACCESSION   
+VERSION
+KEYWORDS    .
+SOURCE      Genus species
+  ORGANISM  Genus species
+            Unclassified.
+COMMENT     Annotated using prokka 1.15.6 from
+            https://github.com/tseemann/prokka.
+FEATURES             Location/Qualifiers
+     source          1..837178
+                     /organism="Genus species"
+                     /mol_type="genomic DNA"
+                     /strain="strain"
+     CDS             235..465
+                     /locus_tag="MPDNNGLK_00001"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="hypothetical protein"
+                     /translation="MANRRREKPSNNQLPDGLAQYALSIIRERYTDFGPTLACENLAE
+                     LHDVHLSKEIVRSLMVKAGRWLPRKQRAPKIQ"
+     CDS             592..1242
+                     /locus_tag="MPDNNGLK_00002"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:ISfinder:ISBcen27"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="ISNCY family transposase ISBcen27"
+                     /translation="MQLRFVKSELTFTYFEATRGYLEKHGKPLALYSDKASVFRINNK
+                     NATGGDGYTQFGRAMHELNIQTICANTSSAKGRVERAHLTLLDRLVKELRLKGISSVD
+                     AANDFADEFMADYNRRFAKAPRHDFDVHRPLETDDDLAAFFTWREPRRVSKSLTVQYD
+                     KVLYLIEYNELSRRAIGKYIEVWHYPDGHKELRLNDAVLPYFKMLKKHQRLCICMP"
+     CDS             complement(1305..2747)
+                     /gene="bglH_1"
+                     /locus_tag="MPDNNGLK_00003"
+                     /EC_number="3.2.1.86"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:P40740"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="Aryl-phospho-beta-D-glucosidase BglH"
+                     /db_xref="COG:COG2723"
+                     /translation="MSNETLNFPENFLWGGAIAANQAEGAWNLDGKGISVADINEYVF
+                     NEDMRKMYNIELTRDYAVQAQDDKDGVFPKRTGIDFYHTFREDLALLKAAGLKTFRTS
+                     ISWARIFPDGDNKAPNEAGLKFYDELIDEIIKNGMEPMITLAHYEMPLNLALKYNGWK
+                     NRQLIDFYFNFARTCLDRYHDRVKYWIPFNQINLIRYESFNHLGIFEDEGTYLEQDKY
+                     QGVHHELVASAMVKKYAASLGGDIKIGMMLYTDFAYPETTSPEDNFATWQKNQYEIYF
+                     ADVLLRGEYPGYIKRFFKEKNIVLSITDEDKALLKNTADFMTFSYYTTYVSNAEIAHQ
+                     FRGNNKRNPLLSQTPWGWAIDPVGLRYVLNFFWDRWQKPIMITENGIGCFDELVNETV
+                     EDDYRIAFFRDHIRSVGEAIADGVEVLGYYMWSPLDIISCSSNQMSKRYGLVYVNLDD
+                     LGRGDGRRFCKKSYYWYQKLIATNGKSLEE"
+     CDS             complement(2762..4099)
+                     /gene="bglF_1"
+                     /locus_tag="MPDNNGLK_00004"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:P08722"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="PTS system beta-glucoside-specific EIIBCA
+                     component"
+                     /db_xref="COG:COG1263"
+                     /translation="MSEQQQILSIIDNLGGRENIKDYYHCATRLRFNLFDYDKINKDA
+                     LKANPLVLSVVQASGQCQLIIGNKVGAVYSALHGVLETGGQNSAPSSSGTAANRESFI
+                     SRIFAFISGCFLPLIGILAAAGLLRAFTTLLLSLPSLAGNSTLTLLSFIANVPFYFMP
+                     VLLGFTIARKLKSSELTGAIIGASLLYPEFTSLAGQTLNIIGLPLVVMEYGYSIFPVF
+                     FAVPVAAALERFLKVRLWDSVQLFMVPLLCVVIVVPLTMFLLGPFGKYLGDYLASAIV
+                     YIIGVNSLVAGMIIGAAYSFIVLFGLHWAIIPVVFSNIAHGGDPIYAIGGMSAIAQMG
+                     VALGILIRTRDTGTRQLASSAFFPSLISGVTEPILYGLIIPNRRTIYYIIIAGAVGGG
+                     IVGGYNITINNLVFASLLSIPTASNMLIYSVGLFATLITGAVLPVIFGYKSRF"
+     CDS             complement(4201..4947)
+                     /locus_tag="MPDNNGLK_00005"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="hypothetical protein"
+                     /translation="MQNTPDSVFYSPLYVRVSEYLFYAGKRNVFTAIAMAVIAKIEEF
+                     PYVKIEELASYCNTTPSSITKFVRELGYGSFQELKNDIAPYRLTHQGIKGMTEKEVIE
+                     EIYKYIPYEECRKMAEVINNSRSVIILSNSFLFNIANVMRESISSSNRKVYLVERSNN
+                     ELIKTILRKVDCVFILTLTGQWINSCQYINNVSEKSQLCLISGSVPAILKNKPIHTIE
+                     LNNYPQMLYANYFSHKYLESIVFNIVQSVI"
+     CDS             complement(4928..5893)
+                     /gene="tehA_1"
+                     /locus_tag="MPDNNGLK_00006"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:P25396"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="Tellurite resistance protein TehA"
+                     /db_xref="COG:COG1275"
+                     /translation="MSEKFQTVSFDLYSSVMGITGLGLVWRAAAKTYDVSALPGEVFL
+                     ATGLAVFLVLTGIQLLRLVFCRQIILAEWHSRASKNFFCAATISGFLLAMGLLPYSIL
+                     LAKVLWIAAVAAQIFFLTCTFRRWLIDQLDTHEISPVWLIPMVGNASPAFAGVDLGFP
+                     GLSKMLLFSALLCWALFMPLILWRIVFVRPVTPQKAMPGLAIMVSAPAVIAVGLYCIY
+                     GGMNDVIEFMAWTALFFAIVLISLWRRMIPDTFGRIWWGFTFPSTALASALIRVDAAS
+                     MTTLNHTLALAALTFATFVVCSIIVMTVRQSLLTLCWGRHAKHSG"
+     CDS             5947..7449
+                     /gene="gabR_1"
+                     /locus_tag="MPDNNGLK_00007"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:P94426"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="HTH-type transcriptional regulatory protein
+                     GabR"
+                     /db_xref="COG:COG1167"
+                     /translation="MLNFRYIGPVPLLFKGPIQVNNWTTGVCVIEIHLSRSATALPLY
+                     HQIEQQISWQIIKGRLNYGEYLPPSRELARQLRVSRGSVVRAYEALCVKEYCHSHTGR
+                     GTMVIYREKPDASPPGPVAAAPSPIAYASDKFLPGGLSLLPSHASTAHLPVSEFRQAF
+                     NRVLRYPDRLNQFGESAGNLELRQLICDQILPSRGISATPQEVLIVPGSQYGSLLLAM
+                     TVRQERTCFHFGEPGYLEFARNFSRFGYNLQSHRMDPEGIDLSDFRPTAKDILYLMPE
+                     HHFPQCITLSDSRRSEIIHLASQKKVLLLEDDYDSEFYFDKVPRPALRSTAASEQVVY
+                     MGTFSKVLFNNVRLGYLVADSHLIQQMAALHWSLSRGTSGLVQQWVAELLKSGTYARH
+                     LRRMRTVYRHKRDDMVALVRKYLPDAQFSVPPGGLQLYVKFSEPEKAIWVYDWLSGNN
+                     IQVADTGNYTLDTAATSDFIVLGFANTDVNECETVLERLSHALYSGLDRI"
+     CDS             8314..9351
+                     /gene="yajO_1"
+                     /locus_tag="MPDNNGLK_00008"
+                     /EC_number="1.1.-.-"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:P77735"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="1-deoxyxylulose-5-phosphate synthase YajO"
+                     /db_xref="COG:COG0667"
+                     /translation="MKYVNLGRSGLKVSRLCLGCMSYGEPERLPQPWSLDEKASRPLI
+                     RQALEAGINFFDTANTYSDGSSEEITGKALREMARRDEIVVATKTFFPWRNSPNTGFL
+                     SRKAIFQSIDDSLMRLGMDYVDLFQIHRFDYSTPVEETMEALHDVVKAGKARYIGASS
+                     MEAWRFAKMQHTAERNGWTRFITMQPQYNLLYREEEREMLPLCEDQGVGVIPWSPMAR
+                     GRLTRDWSVTSRRTQNDAFALKMYENAALLDKPVIDVVASIAEKHAVPRAHVAIAWLL
+                     SKSVITAPIIGATKPEHLSTAISALDFSLSDAEITELEVRYLPHPVDGIIPPLPDTPP
+                     SLTPPSAIQNY"
+     CDS             complement(9403..10347)
+                     /locus_tag="MPDNNGLK_00009"
+                     /EC_number="3.1.1.-"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /inference="similar to AA sequence:UniProtKB:Q99QV3"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="Lactonase drp35"
+                     /translation="MNGLNHNALTCSAVPIPPWERPLQTVEAQPYFNVSQASLVLEGI
+                     VFDRNNNLLFVDVATGRVFKLTPERQLSIVLKENSFGASGLAVHKDGRIFIASVGDMQ
+                     RGSVRAIEPNGTREQMIVAPDTGFLVNDLVFDNQGGFYFTDSRGNSADPQGGVFYVSP
+                     NVGSIHAILPGLAVGNGIAIDPAGSQIWATEHAKNRLHRVRLSDATTVAPFGSVVTYQ
+                     FTGPAPDGARVDSEGNVYVAISGQGRVMVFNRNGLPIGQIVLPDRDKGRNLKSTSLAI
+                     RPGHRELFIVANSGTEPGGAMIFRSGAFAPAPFPFSHQ"
+     CDS             complement(10413..11594)
+                     /locus_tag="MPDNNGLK_00010"
+                     /inference="ab initio prediction:Prodigal:v2.6"
+                     /codon_start=1
+                     /transl_table=11
+                     /product="hypothetical protein"
+                     /translation="MSKMMHDQPSAAVPASRDRRNFLIAGAGLALAATTLGRSGAVMA
+                     KPAGQDMPNAPSDAAPVRKETLTTRKLGSLEVSSMGLGCLPMVGYYGGGPRDRKAMVS
+                     LIRAAFEQGITFFDTAEVYGPHLSEEFVGEALAPVRDRVVIATKFGFGVEEGKPTSLN
+                     SHPDHIRRAVEGSLKRLKTDHIDLLYQHRPDPNVPIEDVAETVKALIQEGKVKHWGLS
+                     EASARTIRRAHAVLPVTAVQSEYAMWWREPETRIFPTLEELGIGFVPYCPTARSFLAG
+                     AVNPSQRFDSTDRRHNLPRFQPDALAKNMVLLEFAQSWARRKNTTPVQFALAWVMAQR
+                     PWIVPIPGTTQYPHLIENSGAPQVRLTDSELREIDAALAKIPLQGGRADPFTESQFDK

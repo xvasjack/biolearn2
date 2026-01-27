@@ -1,0 +1,80 @@
+>Feature 1
+235	465	CDS
+			inference	ab initio prediction:Prodigal:v2.6
+			locus_tag	MPDNNGLK_00001
+			product	hypothetical protein
+592	1242	CDS
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:ISfinder:ISBcen27
+			locus_tag	MPDNNGLK_00002
+			product	ISNCY family transposase ISBcen27
+2747	1305	CDS
+			EC_number	3.2.1.86
+			db_xref	COG:COG2723
+			gene	bglH_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P40740
+			locus_tag	MPDNNGLK_00003
+			product	Aryl-phospho-beta-D-glucosidase BglH
+4099	2762	CDS
+			db_xref	COG:COG1263
+			gene	bglF_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P08722
+			locus_tag	MPDNNGLK_00004
+			product	PTS system beta-glucoside-specific EIIBCA component
+4947	4201	CDS
+			inference	ab initio prediction:Prodigal:v2.6
+			locus_tag	MPDNNGLK_00005
+			product	hypothetical protein
+5893	4928	CDS
+			db_xref	COG:COG1275
+			gene	tehA_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P25396
+			locus_tag	MPDNNGLK_00006
+			product	Tellurite resistance protein TehA
+5947	7449	CDS
+			db_xref	COG:COG1167
+			gene	gabR_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P94426
+			locus_tag	MPDNNGLK_00007
+			product	HTH-type transcriptional regulatory protein GabR
+8314	9351	CDS
+			EC_number	1.1.-.-
+			db_xref	COG:COG0667
+			gene	yajO_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P77735
+			locus_tag	MPDNNGLK_00008
+			product	1-deoxyxylulose-5-phosphate synthase YajO
+10347	9403	CDS
+			EC_number	3.1.1.-
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:Q99QV3
+			locus_tag	MPDNNGLK_00009
+			product	Lactonase drp35
+11594	10413	CDS
+			inference	ab initio prediction:Prodigal:v2.6
+			locus_tag	MPDNNGLK_00010
+			product	hypothetical protein
+12627	11641	CDS
+			EC_number	1.1.-.-
+			db_xref	COG:COG0667
+			gene	yajO_2
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P77735
+			locus_tag	MPDNNGLK_00011
+			product	1-deoxyxylulose-5-phosphate synthase YajO
+12844	13752	CDS
+			db_xref	COG:COG0583
+			gene	pgrR_1
+			inference	ab initio prediction:Prodigal:v2.6
+			inference	similar to AA sequence:UniProtKB:P77333
+			locus_tag	MPDNNGLK_00012
+			product	HTH-type transcriptional regulator PgrR
+14452	13934	CDS
+			inference	ab initio prediction:Prodigal:v2.6
+			locus_tag	MPDNNGLK_00013
+			product	hypothetical protein

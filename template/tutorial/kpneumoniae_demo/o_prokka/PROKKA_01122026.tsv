@@ -1,0 +1,47 @@
+locus_tag       ftype   length_bp       gene    EC_number       COG     product
+MPDNNGLK_00001  CDS     231                             hypothetical protein
+MPDNNGLK_00002  CDS     651                             ISNCY family transposase ISBcen27
+MPDNNGLK_00003  CDS     1443    bglH_1  3.2.1.86        COG2723 Aryl-phospho-beta-D-glucosidase BglH
+MPDNNGLK_00004  CDS     1338    bglF_1          COG1263 PTS system beta-glucoside-specific EIIBCA component
+MPDNNGLK_00005  CDS     747                             hypothetical protein
+MPDNNGLK_00006  CDS     966     tehA_1          COG1275 Tellurite resistance protein TehA
+MPDNNGLK_00007  CDS     1503    gabR_1          COG1167 HTH-type transcriptional regulatory protein GabR
+MPDNNGLK_00008  CDS     1038    yajO_1  1.1.-.- COG0667 1-deoxyxylulose-5-phosphate synthase YajO
+MPDNNGLK_00009  CDS     945             3.1.1.-         Lactonase drp35
+MPDNNGLK_00010  CDS     1182                            hypothetical protein
+MPDNNGLK_00011  CDS     987     yajO_2  1.1.-.- COG0667 1-deoxyxylulose-5-phosphate synthase YajO
+MPDNNGLK_00012  CDS     909     pgrR_1          COG0583 HTH-type transcriptional regulator PgrR
+MPDNNGLK_00013  CDS     519                             hypothetical protein
+MPDNNGLK_00014  CDS     1251    dctD            COG2204 C4-dicarboxylate transport transcriptional regulatory protein DctD
+MPDNNGLK_00015  CDS     1995    pgtB    2.7.13.3                Phosphoglycerate transport system sensor protein PgtB
+MPDNNGLK_00016  CDS     1221    pgtC                    Phosphoglycerate transport regulatory protein PgtC
+MPDNNGLK_00017  CDS     1392    pgtP                    Phosphoglycerate transporter protein
+MPDNNGLK_00018  CDS     450     kbp             COG1652 Potassium binding protein Kbp
+MPDNNGLK_00019  CDS     873                             hypothetical protein
+MPDNNGLK_00020  CDS     645     tenA_1  3.5.99.2        COG0819 Aminopyrimidine aminohydrolase
+MPDNNGLK_00021  CDS     846                             hypothetical protein
+MPDNNGLK_00022  CDS     873     rbsK_1  2.7.1.15                Ribokinase
+MPDNNGLK_00023  CDS     954     rbsB_1          COG1879 Ribose import binding protein RbsB
+MPDNNGLK_00024  CDS     1023    rbsR_1          COG1609 Ribose operon repressor
+MPDNNGLK_00025  CDS     783     frcA    7.5.2.-         Fructose import ATP-binding protein FrcA
+MPDNNGLK_00026  CDS     1002    rbsC_1          COG1172 Ribose import permease protein RbsC
+MPDNNGLK_00027  CDS     1080    opd     3.1.8.1         Parathion hydrolase
+MPDNNGLK_00028  CDS     756                             hypothetical protein
+MPDNNGLK_00029  CDS     1113    argE_1  3.5.1.16        COG0624 Acetylornithine deacetylase
+MPDNNGLK_00030  CDS     429                             hypothetical protein
+MPDNNGLK_00031  CDS     792     attM    3.1.1.81                N-acyl homoserine lactonase AttM
+MPDNNGLK_00032  CDS     888                             hypothetical protein
+MPDNNGLK_00033  CDS     903                             HTH-type transcriptional regulator
+MPDNNGLK_00034  CDS     1209                            hypothetical protein
+MPDNNGLK_00035  CDS     621     rhtB_1          COG1280 Homoserine/homoserine lactone efflux protein
+MPDNNGLK_00036  CDS     1107    fruA_1          COG1299 PTS system fructose-specific EIIB'BC component
+MPDNNGLK_00037  CDS     312     manP            COG1299 PTS system mannose-specific EIIBCA component
+MPDNNGLK_00038  CDS     471     mngA            COG1299 PTS system 2-O-alpha-mannosyl-D-glycerate-specific EIIABC component
+MPDNNGLK_00039  CDS     681     alsE_1  5.1.3.- COG0036 D-allulose-6-phosphate 3-epimerase
+MPDNNGLK_00040  CDS     1263    ulaA_1          COG3037 Ascorbate-specific PTS system EIIC component
+MPDNNGLK_00041  CDS     267     ulaB_1  2.7.1.194               Ascorbate-specific PTS system EIIB component
+MPDNNGLK_00042  CDS     438     ulaC_1          COG1762 Ascorbate-specific PTS system EIIA component
+MPDNNGLK_00043  CDS     1059    gntR_1          COG1609 HTH-type transcriptional regulator GntR
+MPDNNGLK_00044  CDS     1299    oxlT                    Oxalate:formate antiporter
+MPDNNGLK_00045  CDS     537                             hypothetical protein
+MPDNNGLK_00046  CDS     579                             hypothetical protein

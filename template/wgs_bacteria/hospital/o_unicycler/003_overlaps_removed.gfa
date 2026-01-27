@@ -1,0 +1,8 @@
+H	VN:Z:1.0
+# Overlaps removed from graph
+S	1	ACGTACGT...	LN:i:5358379
+S	33	TGCATGCA...	LN:i:5409
+S	35	GCTAGCTA...	LN:i:4315
+S	41	ATGCATGC...	LN:i:2532
+L	1	+	1	-	0M	RC:i:89234
+...
