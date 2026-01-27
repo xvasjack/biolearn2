@@ -70,8 +70,7 @@ ${file2.padEnd(30)} FASTQ   DNA    ${totalReads.toLocaleString()}  ${totalBases.
   Q20 bases:       ${isLongRead ? '99.8' : stats.q20Percent}%
   Q30 bases:       ${isLongRead ? '98.2' : stats.q30Percent}%
 `,
-			summary: undefined,
-			files: []
+			summary: undefined
 		},
 		'fastqc': {
 			output: `Picked up _JAVA_OPTIONS: -Xmx1g
@@ -131,8 +130,7 @@ Analysis complete for ${file2}
 				'GC Content': `${gcContent}%`,
 				'Adapter Content': stats.fastqc?.adapterContent ?? 'Negligible'
 			},
-			chartData: undefined,
-			files: []
+			chartData: undefined
 		},
 		'multiqc': {
 			output: `\x1b[34m/// \x1b[0m\x1b[1mMultiQC\x1b[0m 🔍 | v1.14
@@ -161,28 +159,24 @@ Analysis complete for ${file2}
 				type: 'bar',
 				xLabel: 'Sample',
 				yLabel: 'Mean Quality Score'
-			},
-			files: [
-				{ name: 'multiqc_report.html', type: 'html', size: '1.4 MB' },
-				{ name: 'multiqc_data/', type: 'dir', size: '156 KB' }
-			]
+			}
 		},
 		'trimmomatic': {
 			output: `Picked up _JAVA_OPTIONS: -Xmx8g
 TrimmomaticPE: Started with arguments:
  -threads 2 -phred33 ${file1} ${file2} o_trimmomatic/${sampleName}_R1_paired.fq.gz o_trimmomatic/${sampleName}_R1_unpaired.fq.gz o_trimmomatic/${sampleName}_R2_paired.fq.gz o_trimmomatic/${sampleName}_R2_unpaired.fq.gz ILLUMINACLIP:/home/pop/miniconda3/envs/env_seqkit/share/trimmomatic/adapters/TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:15 MINLEN:36
-ILLUMINACLIP: Using adapter file from user-specified absolute path: /home/pop/miniconda3/envs/env_seqkit/share/trimmomatic/adapters/TruSeq3-PE.fa
+ILLUMINACLIP: Using adapter file from user-specified absolute path: .../miniconda3/envs/env_seqkit/share/trimmomatic/adapters/TruSeq3-PE.fa
 Using PrefixPair: 'TACACTCTTTCCCTACACGACGCTCTTCCGATCT' and 'GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT'
 ILLUMINACLIP: Using 1 prefix pairs, 0 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
-Input Read Pairs: ${totalReads.toLocaleString()} Both Surviving: ${trimBothSurviving.toLocaleString()} (99.23%) Forward Only Surviving: ${trimForwardOnly.toLocaleString()} (0.47%) Reverse Only Surviving: ${trimReverseOnly.toLocaleString()} (0.03%) Dropped: ${trimDropped.toLocaleString()} (0.27%)
+Input Read Pairs: ${totalReads.toLocaleString()} Both Surviving: ${trimBothSurviving.toLocaleString()} (${(trimBothSurviving / totalReads * 100).toFixed(2)}%) Forward Only Surviving: ${trimForwardOnly.toLocaleString()} (${(trimForwardOnly / totalReads * 100).toFixed(2)}%) Reverse Only Surviving: ${trimReverseOnly.toLocaleString()} (${(trimReverseOnly / totalReads * 100).toFixed(2)}%) Dropped: ${trimDropped.toLocaleString()} (${(trimDropped / totalReads * 100).toFixed(2)}%)
 TrimmomaticPE: Completed successfully
 `,
 			summary: {
 				'Input Reads': `${totalReads.toLocaleString()} pairs`,
-				'Both Surviving': `${trimBothSurviving.toLocaleString()} (99.23%)`,
-				'Forward Only': `${trimForwardOnly.toLocaleString()} (0.47%)`,
-				'Reverse Only': `${trimReverseOnly.toLocaleString()} (0.03%)`,
-				'Dropped': `${trimDropped.toLocaleString()} (0.27%)`
+				'Both Surviving': `${trimBothSurviving.toLocaleString()} (${(trimBothSurviving / totalReads * 100).toFixed(2)}%)`,
+				'Forward Only': `${trimForwardOnly.toLocaleString()} (${(trimForwardOnly / totalReads * 100).toFixed(2)}%)`,
+				'Reverse Only': `${trimReverseOnly.toLocaleString()} (${(trimReverseOnly / totalReads * 100).toFixed(2)}%)`,
+				'Dropped': `${trimDropped.toLocaleString()} (${(trimDropped / totalReads * 100).toFixed(2)}%)`
 			},
 			chartData: {
 				title: 'Trimmomatic Read Retention',
@@ -191,33 +185,70 @@ TrimmomaticPE: Completed successfully
 				type: 'bar',
 				xLabel: 'Read Category',
 				yLabel: 'Number of Reads'
-			},
-			files: [
-				{ name: `${sampleName}_R1_paired.fq.gz`, type: 'fastq', size: '342 MB' },
-				{ name: `${sampleName}_R2_paired.fq.gz`, type: 'fastq', size: '341 MB' },
-				{ name: `${sampleName}_R1_unpaired.fq.gz`, type: 'fastq', size: '4.8 MB' },
-				{ name: `${sampleName}_R2_unpaired.fq.gz`, type: 'fastq', size: '2.7 MB' }
-			]
+			}
 		},
 		'unicycler': {
 			output: `
-\x1b[1;32m _    _       _                  _
-| |  | |     (_)                | |
-| |  | |_ __  _  ___ _   _  ____| | ___ _ __
-| |  | | '_ \\| |/ __| | | |/ __| |/ _ \\ '__|
-| |__| | | | | | (__| |_| | (__| |  __/ |
- \\____/|_| |_|_|\\___|\\__, |\\___|_|\\___|_|
-                      __/ |
-                     |___/\x1b[0m
-
 Starting Unicycler v0.5.0
+    Welcome to Unicycler, an assembly pipeline for bacterial genomes. Since you provided only short reads,
+Unicycler will essentially function as a SPAdes-optimiser. It will try many k-mer sizes, choose the best
+based on contig length and graph connectivity, and scaffold the graph using SPAdes repeat resolution.
+    For more information, please see https://github.com/rrwick/Unicycler
+
+Unicycler version: v0.5.1
+Using 4 threads
+
+Dependencies:
+  Program       Version   Status  
+  spades.py     4.2.0     good    
+  racon                   not used
+  makeblastdb   2.5.0+    good    
+  tblastn       2.5.0+    good    
 
 \x1b[36mLoading reads...\x1b[0m
   Forward reads: ${trimBothSurviving.toLocaleString()}
   Reverse reads: ${trimBothSurviving.toLocaleString()}
 
-\x1b[36mPerforming SPAdes assembly...\x1b[0m
-  k=27, k=47, k=63, k=77, k=89, k=99, k=127
+SPAdes maximum k-mer: 127
+Median read length: 300
+K-mer range: 27, 53, 71, 87, 99, 111, 119, 127
+
+K-mer   Contigs   Dead ends   Score      
+   27                         too complex
+   53       937           1      3.56e-04
+   71       698           0      7.16e-04
+   87       501           1      6.65e-04
+   99       412           1      8.09e-04
+  111       379           1      8.80e-04
+  119       337           1      9.89e-04
+  127       306           0      1.63e-03 <-best
+
+Cleaning graph (2026-01-12 04:20:21)
+    Unicycler now performs various cleaning procedures on the
+graph to remove overlaps and simplify the graph structure. The
+end result is a graph ready for bridging.
+
+Graph overlaps removed
+
+Removed zero-length segments:
+    186, 187, 188, 190, 191, 192, 200, 201, 202, 203, 207, 208,
+220, 224, 230, 246, 247, 248, 265, 267, 290
+
+Removed zero-length segments:
+    189, 239, 285, 296, 298
+
+Merged small segments:
+    282, 283, 284, 287, 288, 289, 291, 292, 293, 294, 297, 300,
+301, 304
+
+Creating SPAdes contig bridges (2026-01-12 04:20:21)
+    SPAdes uses paired-end information to perform repeat
+resolution (RR) and produce contigs from the assembly graph.
+SPAdes saves the graph paths corresponding to these contigs in
+the contigs.paths file. When one of these paths contains two or
+more anchor contigs, Unicycler can create a bridge from the
+path.
+
 
 \x1b[1mCreating loop unrolling bridges\x1b[0m
 -----------------------------------------------------
@@ -289,8 +320,8 @@ ${stats.plasmidContigs.map((p, i) => `     ${30 + i * 2}    ${p.size.toLocaleStr
 				'N50': `${stats.n50.toLocaleString()} bp`,
 				'Longest Segment': `${stats.largestContig.toLocaleString()} bp`,
 				'Complete (circular)': `${stats.numCircular} components`,
-				'Incomplete': `1 component (${stats.bandage.largestComponentSegments} segments)`,
-				'Status': 'incomplete'
+				'Incomplete': `${stats.bandage.components - stats.bandage.circularContigs} component${stats.bandage.components - stats.bandage.circularContigs !== 1 ? 's' : ''} (${stats.bandage.largestComponentSegments} segments)`,
+				'Status': stats.bandage.deadEnds > 0 ? 'incomplete' : 'complete'
 			},
 			chartData: {
 				title: 'Component Length Distribution',
