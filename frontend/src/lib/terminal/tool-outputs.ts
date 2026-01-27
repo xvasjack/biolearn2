@@ -330,24 +330,7 @@ ${stats.plasmidContigs.map((p, i) => `     ${30 + i * 2}    ${p.size.toLocaleStr
 				type: 'bar',
 				xLabel: 'Component',
 				yLabel: 'Length (bp)'
-			},
-			files: [
-				{ name: '001_spades_graph_k027.gfa', type: 'gfa', size: '1.2 MB' },
-				{ name: '001_spades_graph_k053.gfa', type: 'gfa', size: '2.1 MB' },
-				{ name: '001_spades_graph_k071.gfa', type: 'gfa', size: '2.8 MB' },
-				{ name: '001_spades_graph_k087.gfa', type: 'gfa', size: '3.2 MB' },
-				{ name: '001_spades_graph_k099.gfa', type: 'gfa', size: '3.5 MB' },
-				{ name: '001_spades_graph_k111.gfa', type: 'gfa', size: '3.8 MB' },
-				{ name: '001_spades_graph_k119.gfa', type: 'gfa', size: '4.0 MB' },
-				{ name: '001_spades_graph_k127.gfa', type: 'gfa', size: '4.2 MB' },
-				{ name: '002_depth_filter.gfa', type: 'gfa', size: '8.5 MB' },
-				{ name: '003_overlaps_removed.gfa', type: 'gfa', size: '7.8 MB' },
-				{ name: '004_bridges_applied.gfa', type: 'gfa', size: '6.2 MB' },
-				{ name: '005_final_clean.gfa', type: 'gfa', size: '5.8 MB' },
-				{ name: 'assembly.fasta', type: 'fasta', size: '5.3 MB' },
-				{ name: 'assembly.gfa', type: 'gfa', size: '5.8 MB' },
-				{ name: 'unicycler.log', type: 'log', size: '48 KB' }
-			]
+			}
 		},
 		'bandage': {
 			output: `\x1b[36mBandage v0.8.1\x1b[0m
@@ -389,14 +372,11 @@ ${stats.plasmidContigs.map((p, i) => `  ${i + 2}. Component ${i + 2}: ${p.size.t
 				title: 'Assembly Graph Visualization',
 				type: 'image',
 				imagePath: '/images/o_bandage.png'
-			},
-			files: [
-				{ name: 'o_bandage.png', type: 'png', size: '245 KB' }
-			]
+			}
 		},
 		'quast': {
 			output: `WARNING: Python locale settings can't be changed
-/home/pop/miniconda3/envs/env_quast/bin/quast o_unicycler/assembly.fasta -o o_quast
+.../miniconda3/envs/env_quast/bin/quast o_unicycler/assembly.fasta -o o_quast
 
 Version: 5.0.2
 
@@ -404,8 +384,6 @@ System information:
   OS: Linux-6.1.0-42-cloud-amd64-x86_64-with-debian-12.13 (linux_64)
   Python version: 3.6.13
   CPUs number: 4
-
-Started: 2026-01-12 05:48:06
 
 Logging to ${ctx.getCurrentDir()}/o_quast/quast.log
 NOTICE: Maximum number of threads is set to 1 (use --threads option to set it manually)
@@ -437,14 +415,12 @@ Done.
 
 NOTICE: Genes are not predicted by default. Use --gene-finding or --glimmer option to enable it.
 
-2026-01-12 05:48:09
 Creating large visual summaries...
 This may take a while: press Ctrl-C to skip this step..
   1 of 2: Creating Icarus viewers...
   2 of 2: Creating PDF with all tables and plots...
 Done
 
-2026-01-12 05:48:10
 RESULTS:
   All statistics are based on contigs of size >= 500 bp, unless otherwise noted (e.g., "# contigs (>= 0 bp)" and "Total length (>= 0 bp)" include all contigs).
 
@@ -474,8 +450,6 @@ L75                        ${stats.l75}
   Icarus (contig browser) is saved to ${ctx.getCurrentDir()}/o_quast/icarus.html
   Log is saved to ${ctx.getCurrentDir()}/o_quast/quast.log
 
-Finished: 2026-01-12 05:48:10
-Elapsed time: 0:00:03.963635
 NOTICEs: 2; WARNINGs: 1; non-fatal ERRORs: 0
 
 Thank you for using QUAST!
@@ -497,28 +471,13 @@ Thank you for using QUAST!
 				type: 'bar',
 				xLabel: 'Metric',
 				yLabel: 'Length (bp)'
-			},
-			files: [
-				{ name: 'report.html', type: 'html', size: '156 KB' },
-				{ name: 'report.tsv', type: 'tsv', size: '2.3 KB' },
-				{ name: 'report.txt', type: 'txt', size: '1.8 KB' },
-				{ name: 'report.tex', type: 'tex', size: '2.1 KB' },
-				{ name: 'report.pdf', type: 'pdf', size: '245 KB' },
-				{ name: 'transposed_report.tsv', type: 'tsv', size: '1.9 KB' },
-				{ name: 'transposed_report.txt', type: 'txt', size: '1.5 KB' },
-				{ name: 'transposed_report.tex', type: 'tex', size: '1.7 KB' },
-				{ name: 'icarus.html', type: 'html', size: '89 KB' },
-				{ name: 'quast.log', type: 'log', size: '12 KB' },
-				{ name: 'basic_stats/', type: 'dir', size: '420 KB' },
-				{ name: 'icarus_viewers/', type: 'dir', size: '156 KB' }
-			]
+			}
 		},
 		'prokka': {
 			output: `[07:38:44] This is prokka 1.14.6
 [07:38:44] Written by Torsten Seemann <torsten.seemann@gmail.com>
 [07:38:44] Homepage is https://github.com/tseemann/prokka
-[07:38:44] Local time is Mon Jan 12 07:38:44 2026
-[07:38:44] You are pop
+[07:38:44] You are you
 [07:38:44] Operating system is linux
 [07:38:44] You have BioPerl 1.7.8
 [07:38:44] System has 4 cores.
@@ -533,7 +492,7 @@ Thank you for using QUAST!
 [07:38:44] Using filename prefix: PROKKA.XXX
 [07:38:44] Setting HMMER_NCPU=1
 [07:38:44] Writing log to: o_prokka/PROKKA.log
-[07:38:44] Command: /home/pop/miniconda3/envs/env_abricate/bin/prokka --outdir o_prokka --prefix PROKKA o_unicycler/assembly.fasta
+[07:38:44] Command: .../miniconda3/envs/env_abricate/bin/prokka --outdir o_prokka --prefix PROKKA o_unicycler/assembly.fasta
 [07:46:19] Output files:
 [07:46:19] o_prokka/PROKKA.tsv
 [07:46:19] o_prokka/PROKKA.fna
@@ -548,7 +507,6 @@ Thank you for using QUAST!
 [07:46:19] o_prokka/PROKKA.err
 [07:46:19] o_prokka/PROKKA.txt
 [07:46:19] Annotation finished successfully.
-[07:46:19] Walltime used: 7.58 minutes
 [07:46:19] If you use this result please cite the Prokka paper:
 [07:46:19] Seemann T (2014) Prokka: rapid prokaryotic genome annotation. Bioinformatics. 30(14):2068-9.
 [07:46:19] Type 'prokka --citation' for more details.
@@ -570,16 +528,7 @@ Thank you for using QUAST!
 				type: 'bar',
 				xLabel: 'Feature Type',
 				yLabel: 'Count'
-			},
-			files: [
-				{ name: 'PROKKA.gff', type: 'gff', size: '2.9 MB' },
-				{ name: 'PROKKA.gbk', type: 'gbk', size: '9.2 MB' },
-				{ name: 'PROKKA.faa', type: 'faa', size: '1.8 MB' },
-				{ name: 'PROKKA.fna', type: 'fna', size: '5.4 MB' },
-				{ name: 'PROKKA.ffn', type: 'ffn', size: '4.8 MB' },
-				{ name: 'PROKKA.tsv', type: 'tsv', size: '1.2 MB' },
-				{ name: 'PROKKA.txt', type: 'txt', size: '256 B' }
-			]
+			}
 		},
 		'abricate': {
 			output: `Using database ${stats.amrDatabase}:	5386 sequences -  2024-Jan-10
@@ -612,67 +561,10 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 				type: 'bar',
 				xLabel: 'Gene',
 				yLabel: 'Identity (%)'
-			},
-			files: [
-				{ name: 'amr_output.tab', type: 'tab', size: '1.5 KB' }
-			]
-		},
-		'checkm': {
-			output: `\x1b[36mCheckM v1.2.2\x1b[0m
-[2024-01-15 11:30:00] INFO: Running CheckM lineage workflow
-
-\x1b[36mPlacing bins in reference genome tree...\x1b[0m
-  Identifying marker genes: Done
-  Aligning marker genes: Done
-  Placing bins in tree: Done
-
-\x1b[36mAnalyzing bins...\x1b[0m
-  Bin: assembly
-  Lineage: Bacteria > Proteobacteria > Gammaproteobacteria > Enterobacterales
-  Marker lineage: f__Enterobacteriaceae
-
-\x1b[36mCalculating genome statistics...\x1b[0m
-  Genome size: ${stats.quast.totalLengthGe0.toLocaleString()} bp
-  # contigs: ${stats.bandage.nodes}
-  N50: ${stats.n50.toLocaleString()} bp
-  GC: ${stats.assemblyGC.toFixed(2)}%
-
-\x1b[1;32m═══════════════════════════════════════════════════════════\x1b[0m
-\x1b[1;32m  QUALITY ASSESSMENT RESULTS\x1b[0m
-\x1b[1;32m═══════════════════════════════════════════════════════════\x1b[0m
-
-  \x1b[32mCompleteness:    ${stats.checkm.completeness.toFixed(2)}%\x1b[0m  (Near complete)
-  \x1b[32mContamination:   ${stats.checkm.contamination.toFixed(2)}%\x1b[0m   (Low contamination)
-  \x1b[32mStrain heterog.: ${stats.checkm.strain_heterogeneity.toFixed(2)}%\x1b[0m
-
-  Quality tier: \x1b[1;32m${stats.checkm.quality.toUpperCase()}-QUALITY DRAFT\x1b[0m
-  MIMAG standard: \x1b[32mMeets ${stats.checkm.quality.toLowerCase()}-quality criteria\x1b[0m
-
-\x1b[33mTip: Completeness >90% and Contamination <5% indicates a high-quality genome\x1b[0m
-`,
-			summary: {
-				'Completeness': `${stats.checkm.completeness.toFixed(2)}%`,
-				'Contamination': `${stats.checkm.contamination.toFixed(2)}%`,
-				'Strain Heterogeneity': `${stats.checkm.strain_heterogeneity.toFixed(2)}%`,
-				'Lineage': stats.checkmLineage ?? 'Bacteria',
-				'Marker Genes': stats.checkmMarkerGenes ?? 'N/A',
-				'Quality': `${stats.checkm.quality.toUpperCase()}-QUALITY DRAFT`,
-				'MIMAG Standard': `${stats.checkm.quality}-quality`
-			},
-			chartData: {
-				title: 'Genome Quality Assessment',
-				x: ['Completeness', 'Contamination', 'Strain Heterog.'],
-				y: [stats.checkm.completeness, stats.checkm.contamination, stats.checkm.strain_heterogeneity],
-				type: 'bar',
-				xLabel: 'Metric',
-				yLabel: 'Percentage (%)'
-			},
-			files: [
-				{ name: 'checkm_report.tsv', type: 'tsv', size: '2.3 KB' }
-			]
+			}
 		},
 		'checkm2': {
-			output: `[01/12/2026 06:24:04 AM] INFO: Running CheckM2 version 1.1.0
+			output: ` INFO: Running CheckM2 version 1.1.0
 [01/12/2026 06:24:04 AM] INFO: Running quality prediction workflow with 4 threads.
 [01/12/2026 06:24:05 AM] INFO: Calling genes in 1 bins with 4 threads:
     Finished processing 1 of 1 (100.00%) bins.
@@ -699,49 +591,16 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 				type: 'bar',
 				xLabel: 'Metric',
 				yLabel: 'Percentage (%)'
-			},
-			files: [
-				{ name: 'quality_report.tsv', type: 'tsv', size: '1.8 KB' }
-			]
+			}
 		},
 		'confindr': {
 			output: `\x1b[36mConFindr v0.8.0\x1b[0m
 [2024-01-15 11:35:00] INFO: Starting contamination detection
 
-\x1b[36mAnalyzing sample: sample_01\x1b[0m
-  Database: Enterobacteriaceae rMLST
-  Method: rMLST gene analysis
-
-\x1b[36mExtracting rMLST genes...\x1b[0m
-  BACT000001: Found (1 copy)
-  BACT000002: Found (1 copy)
-  BACT000003: Found (1 copy)
-  ...
-  Total rMLST genes: ${stats.confindr?.rmlstGenesFound ?? 53}/${stats.confindr?.rmlstGenesTotal ?? 53}
-
-\x1b[36mChecking for multiple alleles...\x1b[0m
-  Genes with single allele: ${(stats.confindr?.rmlstGenesFound ?? 53) - (stats.confindr?.multiAllelicGenes ?? 0)}
-  Genes with multiple alleles: ${stats.confindr?.multiAllelicGenes ?? 0}
-
-\x1b[1;32m═══════════════════════════════════════════════════════════\x1b[0m
-\x1b[1;32m  CONTAMINATION DETECTION RESULTS\x1b[0m
-\x1b[1;32m═══════════════════════════════════════════════════════════\x1b[0m
-
-  Sample: sample_01
-  \x1b[32mContamination Status: ${stats.confindr?.status ?? 'CLEAN'}\x1b[0m
-
-  Evidence:
-    - ${(stats.confindr?.multiAllelicGenes ?? 0) === 0 ? 'No multi-allelic genes detected' : `${stats.confindr?.multiAllelicGenes} multi-allelic genes detected`}
-    - Single genus detected: ${stats.confindr?.genusDetected ?? 'Unknown'}
-    - All rMLST genes present with single copies
-
-  \x1b[32m✓ No intra-species contamination detected\x1b[0m
-  \x1b[32m✓ No inter-species contamination detected\x1b[0m
-
-\x1b[33mNote: Sample appears to be a pure isolate suitable for downstream analysis\x1b[0m
-`,
+\x1b[36mAnalyzing sample\x1b[0m
+...`,
 			summary: {
-				'Sample': 'sample_01',
+				'Sample': sampleName,
 				'Status': `${stats.confindr?.status ?? 'CLEAN'} (${(stats.confindr?.status ?? 'CLEAN') === 'CLEAN' ? 'No contamination' : 'Contamination detected'})`,
 				'Genus Detected': stats.confindr?.genusDetected ?? stats.organismShort.split('.')[0].replace(/^\w/, c => c),
 				'rMLST Genes': `${stats.confindr?.rmlstGenesFound ?? 53}/${stats.confindr?.rmlstGenesTotal ?? 53} found`,
@@ -756,11 +615,7 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Gene Count'
-			},
-			files: [
-				{ name: 'confindr_report.csv', type: 'csv', size: '1.1 KB' },
-				{ name: 'confindr_log.txt', type: 'txt', size: '4.5 KB' }
-			]
+			}
 		},
 		'bakta': {
 			output: `\x1b[36mBakta v1.8.2\x1b[0m
