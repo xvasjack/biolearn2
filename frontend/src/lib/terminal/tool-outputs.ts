@@ -680,7 +680,7 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 [07:16:00] Found 'blastn' => .../miniconda3/envs/env_abricate/bin/blastn
 [07:16:00] Found 'any2fasta' => .../miniconda3/envs/env_abricate/bin/any2fasta
 [07:16:01] Found blastn: 2.12.0+ (002012)
-[07:16:05] Found exact allele match ${stats.mlst.scheme}.${locus}-${num}`).join('\n')}
+${Object.entries(stats.mlst.alleles).map(([locus, num]) => `[07:16:05] Found exact allele match (${stats.mlst.scheme}.${locus}-${num})`).join('\n')}
 [07:16:05] Done.
 `,
 			summary: (() => {

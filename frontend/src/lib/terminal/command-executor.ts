@@ -1640,7 +1640,17 @@ export async function executeBioTool(tool: string, args: string[], fullCmd: stri
 	ctx.terminal.writeln('');
 
 	// Get dynamic tool output
-	const toolData = getToolOutput(tool, args, fullCmd, ctx);
+	let toolData: any;
+	try {
+		toolData = getToolOutput(tool, args, fullCmd, ctx);
+	} catch (e) {
+		console.error(`[executeBioTool] getToolOutput('${tool}') threw:`, e);
+		ctx.terminal.writeln(`\x1b[31mError generating output for ${tool}: ${e}\x1b[0m`);
+		ctx.setIsExecuting(false);
+		ctx.setTerminalState({ isRunning: false, currentCommand: '', progress: 100, estimatedTime: 0 });
+		writePrompt(ctx);
+		return;
+	}
 	const outputLines = toolData?.output?.split('\n') || [];
 	const interval = (execTime * 1000) / Math.max(outputLines.length, 10);
 
