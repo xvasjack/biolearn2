@@ -158,8 +158,27 @@
 			}
 		}
 
+		const executed = new Set(get(executedCommands));
+		// Only show the list of files after tool commands are executed
+		for (const [path, entries] of Object.entries(fs)) {
+			fs[path] = entries.filter(entry => {
+				const match = entry.match(/^o_([^/.]+)(?:[/.]|$)/);
+				const tool = match ? match[1] : null;
+				if (!tool) return true;
+				return executed.has(tool);
+			});
+		}
+
 		return fs;
 	}
+
+
+	// matches o_tool or o_toolname.ext or o_toolname/
+	function getToolFromOutputName(name: string): string | null {
+		const match = name.match(/^o_([^/.]+)(?:[/.]|$)/);
+		return match ? match[1] : null;
+	}
+
 
 	// Generate dynamic tool output based on input file
 	function getToolOutput(tool: string, args: string[], fullCmd: string): any {
@@ -3115,6 +3134,14 @@ Size: ${(Math.random() * 2 + 1).toFixed(1)} MB
 				}
 			}
 		}
+
+		const executed = new Set(execCmds);
+		const filtered = files.filter(file => {
+			const match = file.match(/^o_([^/.]+)(?:[/.]|$)/);
+			const tool = match ? match[1] : null;
+			if (!tool) return true;
+			return executed.has(tool);
+		});
 
 		return [...new Set(files)]; // Remove duplicates
 	}

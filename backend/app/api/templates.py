@@ -143,7 +143,9 @@ async def get_storyline_filesystem(category: str, storyline: str, data_dir: str 
         raise HTTPException(status_code=404, detail=f"Storyline '{storyline}' not found in category '{category}'")
 
     filesystem: dict[str, list[str]] = {}
-    root_data_dir = f"{data_dir}/{storyline}"
+    root_data_dir = data_dir
+    if root_data_dir.rstrip("/") == "/data":
+        root_data_dir = f"{data_dir}/{storyline}"
 
     def scan_directory(path: Path, virtual_path: str):
         """Recursively scan directory and build filesystem structure."""
@@ -157,8 +159,7 @@ async def get_storyline_filesystem(category: str, storyline: str, data_dir: str 
                 scan_directory(item, f"{virtual_path}/{item.name}")
             else:
                 entries.append(item.name)
-        if entries:
-            filesystem[virtual_path] = entries
+        filesystem[virtual_path] = entries
 
     scan_directory(storyline_path, root_data_dir)
 
