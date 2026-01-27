@@ -1,9 +1,0 @@
-{
-  "name": "biolearn",
-  "version": "0.1.0",
-  "private": true,
-  "description": "Biolearn monorepo",
-  "scripts": {
-    "test": "echo \"No tests specified\""
-  }
-}
