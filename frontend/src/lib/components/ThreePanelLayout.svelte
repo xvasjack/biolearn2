@@ -3,8 +3,8 @@
 	import Terminal from './Terminal.svelte';
 	import StoryPanel from './StoryPanel.svelte';
 	import OutputPanel from './OutputPanel.svelte';
-	import { executedCommands, storylineDataDir, currentDirectory } from '$lib/stores/terminal';
-	import { initializeStoryline, getToolFileUrl, getRootFileUrl } from '$lib/services/templateService';
+	import { executedCommands, storylineDataDir, currentDirectory, templateFiles } from '$lib/stores/terminal';
+	import { initializeStoryline, getToolFileUrl, getRootFileUrl, getFileType } from '$lib/services/templateService';
 	import type { Storyline } from '$lib/storylines/types';
 
 	let {
@@ -24,75 +24,16 @@
 	let filesDropdownOpen = $state(false);
 	let allGeneratedFiles = $state<{name: string, type: string, tool: string}[]>([]);
 
-	// Tool to files mapping
-	const toolFiles: Record<string, {name: string, type: string}[]> = {
-		'seqkit': [{ name: 'o_seqkit_stats.txt', type: 'txt' }],
-		'fastqc': [
-			{ name: 'SRR36708862_1_fastqc.html', type: 'html' },
-			{ name: 'SRR36708862_2_fastqc.html', type: 'html' },
-			{ name: 'SRR36708862_1_fastqc.zip', type: 'zip' },
-			{ name: 'SRR36708862_2_fastqc.zip', type: 'zip' }
-		],
-		'trimmomatic': [
-			{ name: 'sample_01_R1_paired.fq.gz', type: 'fastq' },
-			{ name: 'sample_01_R2_paired.fq.gz', type: 'fastq' },
-			{ name: 'sample_01_R1_unpaired.fq.gz', type: 'fastq' },
-			{ name: 'sample_01_R2_unpaired.fq.gz', type: 'fastq' }
-		],
-		'unicycler': [
-			{ name: 'assembly.fasta', type: 'fasta' },
-			{ name: 'assembly.gfa', type: 'gfa' },
-			{ name: 'unicycler.log', type: 'log' }
-		],
-		'bandage': [{ name: 'o_bandage.png', type: 'png' }],
-		'quast': [
-			{ name: 'quast_report.html', type: 'html' },
-			{ name: 'quast_report.tsv', type: 'tsv' }
-		],
-		'checkm': [{ name: 'checkm_report.tsv', type: 'tsv' }],
-		'confindr': [
-			{ name: 'confindr_report.csv', type: 'csv' },
-			{ name: 'confindr_log.txt', type: 'txt' }
-		],
-		'prokka': [
-			{ name: 'sample_01.gff', type: 'gff' },
-			{ name: 'sample_01.gbk', type: 'gbk' },
-			{ name: 'sample_01.txt', type: 'txt' }
-		],
-		'bakta': [
-			{ name: 'sample_01.gff3', type: 'gff' },
-			{ name: 'sample_01.gbff', type: 'gbk' },
-			{ name: 'sample_01.faa', type: 'faa' },
-			{ name: 'sample_01.tsv', type: 'tsv' },
-			{ name: 'sample_01.json', type: 'json' }
-		],
-		'abricate': [
-			{ name: 'amr_report.tsv', type: 'tsv' },
-			{ name: 'amr_summary.txt', type: 'txt' }
-		],
-		'mlst': [{ name: 'o_mlst.tab', type: 'tsv' }],
-		'mob_recon': [
-			{ name: 'plasmid_report.tsv', type: 'tsv' },
-			{ name: 'mobtyper_results.txt', type: 'txt' }
-		],
-		'platon': [{ name: 'plasmid_predictions.tsv', type: 'tsv' }],
-		'snippy': [
-			{ name: 'snps.vcf', type: 'vcf' },
-			{ name: 'snps.tab', type: 'tsv' }
-		],
-		'roary': [
-			{ name: 'gene_presence_absence.csv', type: 'csv' },
-			{ name: 'summary_statistics.txt', type: 'txt' }
-		],
-		'iqtree': [
-			{ name: 'core_alignment.treefile', type: 'nwk' },
-			{ name: 'core_alignment.iqtree', type: 'txt' }
-		],
-		'gubbins': [
-			{ name: 'recombination_predictions.gff', type: 'gff' },
-			{ name: 'clean.summary.txt', type: 'txt' }
-		]
-	};
+	// File modal state
+	let fileModalOpen = $state(false);
+	let fileModalContent = $state('');
+	let fileModalName = $state('');
+	let fileModalTool = $state('');
+	let fileModalType = $state('');
+
+	// Track store values for reactive building of file list
+	let currentExecutedCommands = $state<string[]>([]);
+	let currentTemplateFiles = $state<Record<string, string[]>>({});
 
 	onMount(() => {
 		const dataDir = storyline?.dataDir || '/data/outbreak_investigation';
@@ -104,20 +45,34 @@
 			initializeStoryline(storyline.category, templateId);
 		}
 
-		const unsubscribe = executedCommands.subscribe(cmds => {
-			const files: {name: string, type: string, tool: string}[] = [];
-			cmds.forEach(tool => {
-				const toolFileList = toolFiles[tool];
-				if (toolFileList) {
-					toolFileList.forEach(f => {
-						files.push({ ...f, tool });
-					});
-				}
-			});
-			allGeneratedFiles = files;
+		const unsub1 = executedCommands.subscribe(cmds => {
+			currentExecutedCommands = cmds;
+			rebuildFileList(cmds, currentTemplateFiles);
 		});
-		return unsubscribe;
+
+		const unsub2 = templateFiles.subscribe(tf => {
+			currentTemplateFiles = tf;
+			rebuildFileList(currentExecutedCommands, tf);
+		});
+
+		return () => {
+			unsub1();
+			unsub2();
+		};
 	});
+
+	function rebuildFileList(cmds: string[], tf: Record<string, string[]>) {
+		const files: {name: string, type: string, tool: string}[] = [];
+		cmds.forEach(tool => {
+			const toolFileNames = tf[tool];
+			if (toolFileNames) {
+				toolFileNames.forEach(filename => {
+					files.push({ name: filename, type: getFileType(filename), tool });
+				});
+			}
+		});
+		allGeneratedFiles = files;
+	}
 
 	async function viewFile(file: {name: string, type: string, tool?: string}) {
 		// Load from template API
@@ -153,7 +108,11 @@
 				const response = await fetch(url);
 				if (response.ok) {
 					const textContent = await response.text();
-					alert(`File: ${file.name}\n\n${textContent.substring(0, 2000)}${textContent.length > 2000 ? '\n...(truncated)' : ''}`);
+					fileModalName = file.name;
+					fileModalTool = file.tool;
+					fileModalType = file.type.toUpperCase();
+					fileModalContent = textContent;
+					fileModalOpen = true;
 					filesDropdownOpen = false;
 					return;
 				}
@@ -170,8 +129,43 @@
 			}
 		}
 
-		alert(`${file.name}\n\nFile should be served from the template API.`);
+		fileModalName = file.name;
+		fileModalTool = file.tool || '';
+		fileModalType = file.type.toUpperCase();
+		fileModalContent = 'File should be served from the template API.';
+		fileModalOpen = true;
 		filesDropdownOpen = false;
+	}
+
+	function closeModal() {
+		fileModalOpen = false;
+		fileModalContent = '';
+	}
+
+	function handleModalKeydown(e: KeyboardEvent) {
+		if (e.key === 'Escape') {
+			closeModal();
+		}
+	}
+
+	function handleModalBackdropClick(e: MouseEvent) {
+		if ((e.target as HTMLElement).classList.contains('file-modal-backdrop')) {
+			closeModal();
+		}
+	}
+
+	async function copyModalContent() {
+		try {
+			await navigator.clipboard.writeText(fileModalContent);
+		} catch {
+			// Fallback
+			const textarea = document.createElement('textarea');
+			textarea.value = fileModalContent;
+			document.body.appendChild(textarea);
+			textarea.select();
+			document.execCommand('copy');
+			document.body.removeChild(textarea);
+		}
 	}
 
 	function startResize(e: MouseEvent) {
@@ -203,9 +197,9 @@
 	}
 </script>
 
-<svelte:window onclick={closeDropdown} />
+<svelte:window onclick={closeDropdown} onkeydown={handleModalKeydown} />
 
-<div class="h-screen w-screen flex flex-col overflow-hidden" style="display: flex; flex-direction: column; height: 100vh; width: 100vw;">
+<div class="h-screen w-screen flex flex-col overflow-hidden" style="display: flex; flex-direction: column; height: 100%; width: 100%;">
 	<!-- Top Header Bar -->
 	<div class="h-10 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700" style="display: flex; align-items: center; justify-content: space-between; height: 40px; flex-shrink: 0;">
 		<div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
@@ -261,7 +255,7 @@
 									{:else if file.type === 'png'}🖼️
 									{:else if file.type === 'zip'}📦
 									{:else if file.type === 'fasta' || file.type === 'fastq'}🧬
-									{:else if file.type === 'tsv' || file.type === 'txt'}📋
+									{:else if file.type === 'tsv' || file.type === 'text' || file.type === 'csv'}📋
 									{:else if file.type === 'log'}📝
 									{:else if file.type === 'gfa'}🔗
 									{:else}📁{/if}
@@ -316,6 +310,48 @@
 		</div>
 	</div>
 </div>
+
+<!-- File Content Modal -->
+{#if fileModalOpen}
+	<div
+		class="file-modal-backdrop"
+		style="position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 2rem;"
+		onclick={handleModalBackdropClick}
+		role="dialog"
+		aria-modal="true"
+		aria-label="File content viewer"
+	>
+		<div style="background: white; border-radius: 0.5rem; width: 100%; max-width: 56rem; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden;">
+			<!-- Header -->
+			<div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: #1f2937; color: white; flex-shrink: 0;">
+				<div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+					<span style="font-weight: 600; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{fileModalName}</span>
+					<span style="font-size: 0.75rem; color: #9ca3af;">({fileModalTool} - {fileModalType})</span>
+				</div>
+				<button
+					onclick={closeModal}
+					style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.25rem; line-height: 1; padding: 0.25rem;"
+					aria-label="Close modal"
+				>&times;</button>
+			</div>
+			<!-- Content -->
+			<div style="flex: 1; overflow: auto; padding: 1rem; min-height: 0;">
+				<pre style="margin: 0; font-family: 'Courier New', Courier, monospace; font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; color: #1f2937;">{fileModalContent}</pre>
+			</div>
+			<!-- Footer -->
+			<div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding: 0.75rem 1rem; border-top: 1px solid #e5e7eb; flex-shrink: 0;">
+				<button
+					onclick={copyModalContent}
+					style="padding: 0.375rem 0.75rem; font-size: 0.8rem; background: #3b82f6; color: white; border: none; border-radius: 0.25rem; cursor: pointer;"
+				>Copy</button>
+				<button
+					onclick={closeModal}
+					style="padding: 0.375rem 0.75rem; font-size: 0.8rem; background: #6b7280; color: white; border: none; border-radius: 0.25rem; cursor: pointer;"
+				>Close</button>
+			</div>
+		</div>
+	</div>
+{/if}
 
 <style>
 	:global(body) {

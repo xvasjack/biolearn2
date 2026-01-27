@@ -51,25 +51,25 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 1: Check Sequencing Statistics',
 			text: `Let's start by examining basic statistics about our sequencing data and save the results to a file.`,
-			command: 'seqkit stats SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz > o_seqkit_stats.txt',
+			command: 'seqkit stats SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz > o_seqkit/o_seqkit_stats.txt',
 			explanation: 'SeqKit provides quick statistics including read count, total bases, and average read length. Output is saved to a file for reference.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: 'stats', desc: 'Generate sequence statistics' },
 				{ name: 'SRR36708862_*.fastq.gz', desc: 'Input paired-end FASTQ files' },
-				{ name: '> o_seqkit_stats.txt', desc: 'Redirect output to file' }
+				{ name: '> o_seqkit/o_seqkit_stats.txt', desc: 'Redirect output to file' }
 			]
 		},
 		{
 			type: 'task',
 			title: 'Step 2: View Statistics Results',
 			text: `Now let's view the sequencing statistics we just generated.`,
-			command: 'cat o_seqkit_stats.txt',
+			command: 'cat o_seqkit/o_seqkit_stats.txt',
 			explanation: 'This sample was sequenced as 2×150 bp paired-end on Illumina NextSeq 2000. You may notice a max read length of ~300 bp—this is because overlapping R1 and R2 reads were merged during pre-processing before we downloaded the data. For this tutorial, we are using these pre-processed FASTQ files.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: 'cat', desc: 'Concatenate and display file contents' },
-				{ name: 'o_seqkit_stats.txt', desc: 'The statistics output file' }
+				{ name: 'o_seqkit/o_seqkit_stats.txt', desc: 'The statistics output file' }
 			]
 		},
 		{

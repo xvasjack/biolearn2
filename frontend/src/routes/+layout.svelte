@@ -12,24 +12,40 @@
 	<meta name="description" content="Learn bioinformatics through narrative-driven, hands-on analysis" />
 </svelte:head>
 
-<nav class="top-bar">
-	<span class="brand">BioLearn</span>
-	<div class="auth-area">
-		{#if $isAuthenticated && $currentUser}
-			<span class="username">{$currentUser.username}</span>
-			<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
-		{:else}
-			<button class="nav-btn" onclick={() => (authOpen = true)}>Log in / Register</button>
-		{/if}
+<div class="app-shell">
+	<nav class="top-bar">
+		<span class="brand">BioLearn</span>
+		<div class="auth-area">
+			{#if $isAuthenticated && $currentUser}
+				<span class="username">{$currentUser.username}</span>
+				<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
+			{:else}
+				<button class="nav-btn" onclick={() => (authOpen = true)}>Log in / Register</button>
+			{/if}
+		</div>
+	</nav>
+
+	<AuthModal bind:open={authOpen} />
+
+	<div class="app-content">
+		{@render children()}
 	</div>
-</nav>
-
-<AuthModal bind:open={authOpen} />
-
-{@render children()}
+</div>
 
 <style>
+	.app-shell {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		overflow: hidden;
+	}
+	.app-content {
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+	}
 	.top-bar {
+		flex-shrink: 0;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

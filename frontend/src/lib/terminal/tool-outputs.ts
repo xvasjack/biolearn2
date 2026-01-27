@@ -623,8 +623,6 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 
 \x1b[36mInput:\x1b[0m
   Assembly: assembly/assembly.fasta
-  Contigs: 189
-  Total length: 5,566,069 bp
 
 \x1b[36mRunning annotation pipeline...\x1b[0m
   tRNA detection (tRNAscan-SE): ${stats.bakta?.trna ?? 86} tRNAs found
@@ -674,25 +672,16 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 				type: 'bar',
 				xLabel: 'Feature Type',
 				yLabel: 'Count'
-			},
-			files: [
-				{ name: `${sampleName}.gff3`, type: 'gff', size: '3.2 MB' },
-				{ name: `${sampleName}.gbff`, type: 'gbk', size: '9.5 MB' },
-				{ name: `${sampleName}.faa`, type: 'faa', size: '1.8 MB' },
-				{ name: `${sampleName}.tsv`, type: 'tsv', size: '980 KB' }
-			]
+			}
 		},
 		'mlst': {
 			output: `[07:16:00] This is mlst 2.23.0 running on linux with Perl 5.026002
 [07:16:00] Checking mlst dependencies:
-[07:16:00] Found 'blastn' => /home/pop/miniconda3/envs/env_abricate/bin/blastn
-[07:16:00] Found 'any2fasta' => /home/pop/miniconda3/envs/env_abricate/bin/any2fasta
+[07:16:00] Found 'blastn' => .../miniconda3/envs/env_abricate/bin/blastn
+[07:16:00] Found 'any2fasta' => .../miniconda3/envs/env_abricate/bin/any2fasta
 [07:16:01] Found blastn: 2.12.0+ (002012)
-[07:16:01] Excluding 3 schemes: ecoli vcholerae_2 abaumannii
-${Object.entries(stats.mlst.alleles).map(([locus, num]) => `[07:16:05] Found exact allele match ${stats.mlst.scheme}.${locus}-${num}`).join('\n')}
-[07:16:05] Use --quiet or -q to avoid all the message output, including these witticisms.
+[07:16:05] Found exact allele match ${stats.mlst.scheme}.${locus}-${num}`).join('\n')}
 [07:16:05] Done.
-${ctx.formatMlstRow(stats.mlst)}
 `,
 			summary: (() => {
 				const summaryObj: Record<string, string> = {
@@ -843,12 +832,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 					type: 'bar',
 					xLabel: 'Contig',
 					yLabel: 'Plasmid Score (%)'
-				},
-				files: [
-					{ name: 'plasmid_predictions.tsv', type: 'tsv', size: '1.2 KB' },
-					{ name: 'plasmid_sequences.fasta', type: 'fasta', size: `${Math.round(plasmidTotalSize / 1000)} KB` },
-					{ name: 'chromosome_sequences.fasta', type: 'fasta', size: `${(chromSize / 1000000).toFixed(1)} MB` }
-				]
+				}
 			};
 		})(),
 		// Phase 4: Phylogenetics
@@ -931,12 +915,6 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 			return {
 				output: `\x1b[36mRoary v3.13.0\x1b[0m
 [2024-01-15 12:30:00] INFO: Starting pan-genome analysis
-
-\x1b[36mInput GFF files:\x1b[0m
-  - sample_01.gff (${stats.numCDS.toLocaleString()} genes)
-  - sample_02.gff (${(stats.numCDS - 25).toLocaleString()} genes)
-  - sample_03.gff (${(stats.numCDS - 11).toLocaleString()} genes)
-  - reference.gff (${(stats.numCDS - 34).toLocaleString()} genes)
 
 \x1b[36mClustering genes...\x1b[0m
   Identity threshold: 95%
@@ -1115,13 +1093,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Base Pairs'
-			},
-			files: [
-				{ name: 'recombination_predictions.gff', type: 'gff', size: '8.5 KB' },
-				{ name: 'clean.core.aln', type: 'aln', size: '3.4 MB' },
-				{ name: 'clean.final_tree.tre', type: 'nwk', size: '312 B' },
-				{ name: 'clean.summary.txt', type: 'txt', size: '2.1 KB' }
-			]
+			}
 		},
 		// New tools
 		'busco': {
@@ -1177,82 +1149,8 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 			]
 		},
 		'plasmidfinder': {
-			output: `/home/pop/miniconda3/envs/env_plasmidfinder/bin/plasmidfinder.py:351: DeprecationWarning: Use shutil.which instead of find_executable
-  if find_executable(method_path) is None:
-{'plasmidfinder': {'results': {'Enterobacteriaceae': {'enterobacteriaceae': {'19 length=49609 depth=1.36x:47871..48018:IncFII(K)_1__CP000648:95.945946': {'HSP_length': 148,
-                                                                                                                                                          'accession': 'CP000648',
-                                                                                                                                                          'contig_name': '19 '
-                                                                                                                                                                         'length=49609 '
-                                                                                                                                                                         'depth=1.36x',
-                                                                                                                                                          'coverage': 100.0,
-                                                                                                                                                          'hit_id': '19 '
-                                                                                                                                                                    'length=49609 '
-                                                                                                                                                                    'depth=1.36x:47871..48018:IncFII(K)_1__CP000648:95.945946',
-                                                                                                                                                          'identity': 95.95,
-                                                                                                                                                          'note': '',
-                                                                                                                                                          'plasmid': 'IncFII(K)',
-                                                                                                                                                          'position_in_ref': '1..148',
-                                                                                                                                                          'positions_in_contig': '47871..48018',
-                                                                                                                                                          'template_length': 148},
-                                                                             '22 length=34124 depth=1.41x:4640..5013:IncX3_1__JN247852:100.000000': {'HSP_length': 374,
-                                                                                                                                                     'accession': 'JN247852',
-                                                                                                                                                     'contig_name': '22 '
-                                                                                                                                                                    'length=34124 '
-                                                                                                                                                                    'depth=1.41x',
-                                                                                                                                                     'coverage': 100.0,
-                                                                                                                                                     'hit_id': '22 '
-                                                                                                                                                               'length=34124 '
-                                                                                                                                                               'depth=1.41x:4640..5013:IncX3_1__JN247852:100.000000',
-                                                                                                                                                     'identity': 100.0,
-                                                                                                                                                     'note': '',
-                                                                                                                                                     'plasmid': 'IncX3',
-                                                                                                                                                     'position_in_ref': '1..374',
-                                                                                                                                                     'positions_in_contig': '4640..5013',
-                                                                                                                                                     'template_length': 374},
-                                                                             '23 length=26349 depth=1.32x:12470..13029:IncFIB(K)_1_Kpn3_JN233704:98.928571': {'HSP_length': 560,
-                                                                                                                                                              'accession': 'JN233704',
-                                                                                                                                                              'contig_name': '23 '
-                                                                                                                                                                             'length=26349 '
-                                                                                                                                                                             'depth=1.32x',
-                                                                                                                                                              'coverage': 100.0,
-                                                                                                                                                              'hit_id': '23 '
-                                                                                                                                                                        'length=26349 '
-                                                                                                                                                                        'depth=1.32x:12470..13029:IncFIB(K)_1_Kpn3_JN233704:98.928571',
-                                                                                                                                                              'identity': 98.93,
-                                                                                                                                                              'note': 'Kpn3',
-                                                                                                                                                              'plasmid': 'IncFIB(K)',
-                                                                                                                                                              'position_in_ref': '1..560',
-                                                                                                                                                              'positions_in_contig': '12470..13029',
-                                                                                                                                                              'template_length': 560},
-                                                                             '35 length=4315 depth=17.66x circular=true:3913..4026:Col440I_1__CP023920.1:97.368421': {'HSP_length': 114,
-                                                                                                                                                                      'accession': 'CP023920.1',
-                                                                                                                                                                      'contig_name': '35 '
-                                                                                                                                                                                     'length=4315 '
-                                                                                                                                                                                     'depth=17.66x '
-                                                                                                                                                                                     'circular=true',
-                                                                                                                                                                      'coverage': 100.0,
-                                                                                                                                                                      'hit_id': '35 '
-                                                                                                                                                                                'length=4315 '
-                                                                                                                                                                                'depth=17.66x '
-                                                                                                                                                                                'circular=true:3913..4026:Col440I_1__CP023920.1:97.368421',
-                                                                                                                                                                      'identity': 97.37,
-                                                                                                                                                                      'note': '',
-                                                                                                                                                                      'plasmid': 'Col440I',
-                                                                                                                                                                      'position_in_ref': '1..114',
-                                                                                                                                                                      'positions_in_contig': '3913..4026',
-                                                                                                                                                                      'template_length': 114}}},
-                               'Gram Positive': {'Inc18': 'No hit found',
-                                                 'NT_Rep': 'No hit found',
-                                                 'Rep1': 'No hit found',
-                                                 'Rep2': 'No hit found',
-                                                 'Rep3': 'No hit found',
-                                                 'RepA_N': 'No hit found',
-                                                 'RepL': 'No hit found',
-                                                 'Rep_trans': 'No hit found'}},
-                   'run_info': {'date': '19.01.2026', 'time': '06:51:42'},
-                   'user_input': {'file_format': 'fasta',
-                                  'filename(s)': ['o_unicycler/assembly.fasta'],
-                                  'method': 'blast'}}}
+			output: `.../miniconda3/envs/env_plasmidfinder/bin/plasmidfinder.py:351: DeprecationWarning: Use shutil.which instead of find_executable
+...
 `,
 			summary: (() => {
 				const summaryObj: Record<string, string> = {
@@ -1272,11 +1170,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 				type: 'bar',
 				xLabel: 'Replicon',
 				yLabel: 'Identity (%)'
-			},
-			files: [
-				{ name: 'results_tab.tsv', type: 'tsv', size: '1.5 KB' },
-				{ name: 'Hit_in_genome_seq.fsa', type: 'fasta', size: '2.3 KB' }
-			]
+			}
 		},
 		'resfinder': {
 			output: `\x1b[36mResFinder v4.3.2\x1b[0m
@@ -1332,12 +1226,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 				type: 'bar',
 				xLabel: 'Drug Class',
 				yLabel: 'Genes Found'
-			},
-			files: [
-				{ name: 'ResFinder_results_tab.txt', type: 'txt', size: '3.2 KB' },
-				{ name: 'ResFinder_results.txt', type: 'txt', size: '8.5 KB' },
-				{ name: 'pheno_table.txt', type: 'txt', size: '1.8 KB' }
-			]
+			}
 		},
 		'virulencefinder': {
 			output: `\x1b[36mVirulenceFinder v2.0.4\x1b[0m
@@ -1392,11 +1281,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Genes Found'
-			},
-			files: [
-				{ name: 'results_tab.tsv', type: 'tsv', size: '2.4 KB' },
-				{ name: 'Virulence_genes.fsa', type: 'fasta', size: '12 KB' }
-			]
+			}
 		},
 		'integron_finder': {
 			output: `\x1b[36mIntegronFinder v2.0.2\x1b[0m

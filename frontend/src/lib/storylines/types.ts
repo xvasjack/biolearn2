@@ -201,6 +201,79 @@ export interface StorylineStats {
 	};
 
 	// ============================================
+	// FASTQC - Quality summary
+	// ============================================
+	fastqc?: {
+		r1Quality: string;         // 'PASS' | 'WARN' | 'FAIL'
+		r2Quality: string;
+		adapterContent: string;    // 'Negligible', 'Low (<5%)', etc.
+	};
+
+	// ============================================
+	// MULTIQC - Aggregate stats
+	// ============================================
+	multiqc?: {
+		numSamples: number;
+		meanQualityScore: number;
+		meanGcContent: number;
+		samplesPassing: number;
+		adapterContent: string;
+		sampleNames: string[];
+		sampleQualityScores: number[];
+	};
+
+	// ============================================
+	// CHECKM (v1) - Lineage info
+	// ============================================
+	checkmLineage?: string;          // e.g., 'f__Enterobacteriaceae'
+	checkmMarkerGenes?: string;      // e.g., '104/104 found'
+
+	// ============================================
+	// CHECKM2 - Coding density
+	// ============================================
+	checkmCodingDensity?: number;    // e.g., 88.2
+
+	// ============================================
+	// CONFINDR - Contamination detection
+	// ============================================
+	confindr?: {
+		status: string;              // 'CLEAN' | 'CONTAMINATED'
+		genusDetected: string;       // e.g., 'Klebsiella'
+		rmlstGenesFound: number;     // e.g., 53
+		rmlstGenesTotal: number;     // e.g., 53
+		multiAllelicGenes: number;   // e.g., 0
+	};
+
+	// ============================================
+	// BAKTA - Annotation stats
+	// ============================================
+	bakta?: {
+		totalFeatures: number;
+		cds: number;
+		trna: number;
+		rrna: number;
+		tmrna: number;
+		ncrna: number;
+		crispr: number;
+		functionalPercent: number;   // e.g., 88.2
+		hypotheticalPercent: number; // e.g., 11.8
+	};
+
+	// ============================================
+	// BUSCO - Completeness
+	// ============================================
+	busco?: {
+		complete: number;            // e.g., 123
+		singleCopy: number;
+		duplicated: number;
+		fragmented: number;
+		missing: number;
+		total: number;               // e.g., 124
+		dataset: string;             // e.g., 'bacteria_odb10'
+		quality: string;             // 'EXCELLENT' | 'GOOD' | 'POOR'
+	};
+
+	// ============================================
 	// SNIPPY - Variant calling (for outbreak)
 	// ============================================
 	snippy?: {
