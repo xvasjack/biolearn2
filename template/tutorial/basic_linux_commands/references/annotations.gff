@@ -1,0 +1,10 @@
+##gff-version 3
+##sequence-region KP_reference_genome 1 5000000
+KP_reference_genome	RefSeq	gene	1	1500	.	+	.	ID=gene001;Name=blaKPC-2;locus_tag=KP001
+KP_reference_genome	RefSeq	CDS	1	1500	.	+	0	ID=cds001;Parent=gene001;product=carbapenem-hydrolyzing class A beta-lactamase KPC-2
+KP_reference_genome	RefSeq	gene	2000	3200	.	+	.	ID=gene002;Name=blaSHV-12;locus_tag=KP002
+KP_reference_genome	RefSeq	CDS	2000	3200	.	+	0	ID=cds002;Parent=gene002;product=extended-spectrum beta-lactamase SHV-12
+KP_reference_genome	RefSeq	gene	4000	5100	.	-	.	ID=gene003;Name=oqxA;locus_tag=KP003
+KP_reference_genome	RefSeq	CDS	4000	5100	.	-	0	ID=cds003;Parent=gene003;product=multidrug efflux pump OqxA
+KP_reference_genome	RefSeq	gene	6000	7500	.	+	.	ID=gene004;Name=fosA;locus_tag=KP004
+KP_reference_genome	RefSeq	CDS	6000	7500	.	+	0	ID=cds004;Parent=gene004;product=fosfomycin resistance protein FosA
