@@ -60,11 +60,24 @@ Interactive bioinformatics learning platform that teaches sequencing data analys
 
 | Component | Description |
 |-----------|-------------|
-| `Terminal.svelte` | Main terminal emulator (xterm.js); handles command input/output, bioinformatics tool help texts, file viewing, filesystem navigation |
+| `Terminal.svelte` | Terminal emulator shell (xterm.js); state, input handling, tab completion, prompt — delegates command execution and tool output to `src/lib/terminal/` modules |
 | `StoryPanel.svelte` | Left panel — narrative sections; tracks executed commands for step completion, manages decision branches, shows phase progress |
 | `OutputPanel.svelte` | Right panel — displays tool outputs; renders charts (Plotly), file tables, PDF reports, tab switching between chart/files/notes |
 | `ThreePanelLayout.svelte` | Main layout; arranges StoryPanel + Terminal + OutputPanel in three-column resizable layout |
 | `index.ts` | Component barrel exports |
+
+### Terminal Logic (`src/lib/terminal/`)
+
+Extracted from Terminal.svelte into pure TypeScript modules. All functions receive a `TerminalContext` object for accessing component state and stores.
+
+| File | Description |
+|------|-------------|
+| `types.ts` | `TerminalContext` interface (state getters/setters, store accessors, services) and `ToolOutput` interface |
+| `filesystem.ts` | Virtual filesystem: `baseFilesystem`, `normalizePath()`, `getFilesystem()`, `getFilesForDirectory()`, `expandGlobPattern()` |
+| `tool-validation.ts` | `validToolFiles` (expected files per tool), `toolRequirements` (input validation), `isValidFileForTool()` |
+| `tool-outputs.ts` | `getToolOutput()` — generates simulated terminal output for ~30 bioinformatics tools; `getToolFromOutputName()` |
+| `linux-commands.ts` | Handlers for shell builtins: `handleLs`, `handleCd`, `handleFileView` (cat/head/tail), `handleWc`, `handleMkdir`, `handleCp`, `handleGrep`, `handleBioToolHelp` |
+| `command-executor.ts` | `executeCommand()` — main command dispatcher; `executeBioTool()` — progress simulation and output rendering; `showHelp()` |
 
 ### Stores (`src/lib/stores/`)
 
