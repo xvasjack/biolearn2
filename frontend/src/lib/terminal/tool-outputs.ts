@@ -676,10 +676,10 @@ ${ctx.formatAmrGeneRows(stats.amrGenes, stats.amrDatabase)}
 				yLabel: 'Count'
 			},
 			files: [
-				{ name: 'sample_01.gff3', type: 'gff', size: '3.2 MB' },
-				{ name: 'sample_01.gbff', type: 'gbk', size: '9.5 MB' },
-				{ name: 'sample_01.faa', type: 'faa', size: '1.8 MB' },
-				{ name: 'sample_01.tsv', type: 'tsv', size: '980 KB' }
+				{ name: `${sampleName}.gff3`, type: 'gff', size: '3.2 MB' },
+				{ name: `${sampleName}.gbff`, type: 'gbk', size: '9.5 MB' },
+				{ name: `${sampleName}.faa`, type: 'faa', size: '1.8 MB' },
+				{ name: `${sampleName}.tsv`, type: 'tsv', size: '980 KB' }
 			]
 		},
 		'mlst': {
@@ -866,8 +866,8 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
   Size: ${stats.assemblySize.toLocaleString()} bp
 
 \x1b[36mReads:\x1b[0m
-  R1: sample_01_R1_paired.fq.gz
-  R2: sample_01_R2_paired.fq.gz
+  R1: ${sampleName}_R1_paired.fq.gz
+  R2: ${sampleName}_R2_paired.fq.gz
 
 \x1b[36mAlignment (BWA-MEM)...\x1b[0m
   Reads mapped: ${Math.floor(stats.totalReads * 0.998).toLocaleString()} (99.8%)
@@ -904,7 +904,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 					'Insertions': snippyStats.insertions.toString(),
 					'Deletions': snippyStats.deletions.toString(),
 					'Core SNPs': Math.floor(snippyStats.snps * 0.97).toLocaleString(),
-					'Ti/Tv Ratio': '2.34'
+					'Ti/Tv Ratio': (snippyStats.snps / Math.max(snippyStats.insertions + snippyStats.deletions, 1)).toFixed(2)
 				},
 				chartData: {
 					title: 'Variant Types Distribution',
@@ -1032,8 +1032,8 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mTip: Visualize tree with FigTree or iTOL\x1b[0m
 `,
 			summary: {
-				'Sequences': '4',
-				'Alignment Length': '3,456,789 bp',
+				'Sequences': (stats.roary?.numIsolates ?? 4).toString(),
+				'Alignment Length': `${stats.assemblySize.toLocaleString()} bp`,
 				'Best Model': 'GTR+F+I+G4',
 				'Log-likelihood': '-22345.678',
 				'Bootstrap Replicates': '1000',
@@ -1100,18 +1100,18 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mNote: Use clean.final_tree.tre for outbreak analysis\x1b[0m
 `,
 			summary: {
-				'Input Sequences': '4',
+				'Input Sequences': (stats.roary?.numIsolates ?? 4).toString(),
 				'Recombinant Regions': '21',
-				'Bases Affected': '43,234 (1.25%)',
-				'Clean Alignment': '3.41 Mb',
-				'SNPs (clean)': '10,234',
+				'Bases Affected': `${Math.round(stats.assemblySize * 0.0125).toLocaleString()} (1.25%)`,
+				'Clean Alignment': `${((stats.assemblySize * 0.9875) / 1e6).toFixed(2)} Mb`,
+				'SNPs (clean)': Math.round(stats.assemblySize * 0.003).toLocaleString(),
 				'Iterations': '3',
 				'Status': 'Converged'
 			},
 			chartData: {
 				title: 'Recombination Impact',
 				x: ['Original Sites', 'Recombinant Sites', 'Clean Sites'],
-				y: [3456789, 43234, 3413555],
+				y: [stats.assemblySize, Math.round(stats.assemblySize * 0.0125), Math.round(stats.assemblySize * 0.9875)],
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Base Pairs'
@@ -1314,17 +1314,21 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
   \x1b[33mNote: tet(A) and blaTEM-1B on plasmid contig\x1b[0m
 `,
 			summary: {
-				'Total Genes': '6',
-				'Beta-lactams': '3 genes',
-				'Aminoglycosides': '2 genes',
-				'Tetracyclines': '1 gene',
-				'ESBL Status': 'POSITIVE (CTX-M-15)',
-				'Risk': 'CRITICAL'
+				'Total Genes': stats.amrGenes.length.toString(),
+				'Beta-lactams': `${stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('beta-lactam')).length} genes`,
+				'Aminoglycosides': `${stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('aminoglycoside')).length} genes`,
+				'Tetracyclines': `${stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('tetracycline')).length} genes`,
+				'ESBL Status': stats.amrGenes.some(g => g.gene.includes('CTX-M')) ? `POSITIVE (${stats.amrGenes.find(g => g.gene.includes('CTX-M'))?.gene})` : 'NEGATIVE',
+				'Risk': stats.amrGenes.some(g => g.gene.includes('CTX-M')) ? 'CRITICAL' : 'MODERATE'
 			},
 			chartData: {
 				title: 'Resistance Gene Distribution',
 				x: ['Beta-lactams', 'Aminoglycosides', 'Tetracyclines'],
-				y: [3, 2, 1],
+				y: [
+					stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('beta-lactam')).length,
+					stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('aminoglycoside')).length,
+					stats.amrGenes.filter(g => g.resistance.toLowerCase().includes('tetracycline')).length
+				],
 				type: 'bar',
 				xLabel: 'Drug Class',
 				yLabel: 'Genes Found'
@@ -1534,17 +1538,17 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mTip: Use filtlong to remove low-quality outliers\x1b[0m
 `,
 			summary: {
-				'Total Reads': '245,678',
-				'Total Bases': '3.57 Gb',
-				'Mean Length': '14,523 bp',
-				'N50': '15,234 bp',
-				'Mean Quality': 'Q32.4',
-				'>Q20 Reads': '99.8%'
+				'Total Reads': totalReads.toLocaleString(),
+				'Total Bases': `${(totalReads * readLength / 1e9).toFixed(2)} Gb`,
+				'Mean Length': `${readLength.toLocaleString()} bp`,
+				'N50': `${Math.round(readLength * 1.05).toLocaleString()} bp`,
+				'Mean Quality': `Q${isHiFi ? '32.4' : '14.2'}`,
+				'>Q20 Reads': `${stats.q20Percent}%`
 			},
 			chartData: {
 				title: 'Read Length Distribution',
 				x: ['<5kb', '5-10kb', '10-15kb', '15-20kb', '>20kb'],
-				y: [12345, 45678, 89012, 67890, 30753],
+				y: [Math.round(totalReads * 0.05), Math.round(totalReads * 0.19), Math.round(totalReads * 0.36), Math.round(totalReads * 0.28), Math.round(totalReads * 0.12)],
 				type: 'bar',
 				xLabel: 'Read Length Range',
 				yLabel: 'Number of Reads'
@@ -1591,23 +1595,23 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[32m✓ Filtering complete - high-quality reads retained\x1b[0m
 `,
 			summary: {
-				'Input Reads': '245,678',
-				'Output Reads': '234,567 (95.5%)',
-				'Short Filtered': '8,234',
-				'Quality Filtered': '2,877',
-				'Output Bases': '3.41 Gb',
-				'Mean Quality': 'Q33.2'
+				'Input Reads': totalReads.toLocaleString(),
+				'Output Reads': `${Math.round(totalReads * 0.955).toLocaleString()} (95.5%)`,
+				'Short Filtered': Math.round(totalReads * 0.034).toLocaleString(),
+				'Quality Filtered': Math.round(totalReads * 0.012).toLocaleString(),
+				'Output Bases': `${(Math.round(totalReads * 0.955) * readLength / 1e9).toFixed(2)} Gb`,
+				'Mean Quality': `Q${(stats.q30Percent > 95 ? 33 + (stats.q30Percent - 95) * 0.5 : 28 + stats.q30Percent * 0.05).toFixed(1)}`
 			},
 			chartData: {
 				title: 'Filtering Results',
 				x: ['Retained', 'Too Short', 'Low Quality'],
-				y: [234567, 8234, 2877],
+				y: [Math.round(totalReads * 0.955), Math.round(totalReads * 0.034), Math.round(totalReads * 0.012)],
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Reads'
 			},
 			files: [
-				{ name: 'sample_01_filtered.fastq.gz', type: 'fastq', size: '3.2 GB' }
+				{ name: `${sampleName}_filtered.fastq.gz`, type: 'fastq', size: '3.2 GB' }
 			]
 		},
 		'flye': {
@@ -1615,7 +1619,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 [2024-01-15 14:10:00] INFO: Starting long-read assembly
 
 \x1b[36mInput:\x1b[0m
-  Reads: filtered/sample_01_filtered.fastq.gz
+  Reads: filtered/${sampleName}_filtered.fastq.gz
   Mode: {assemblyMode}
   Threads: 8
 
@@ -1648,17 +1652,17 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mTip: Use medaka to polish the assembly\x1b[0m
 `,
 			summary: {
-				'Total Length': '5.23 Mb',
-				'Contigs': '3',
-				'N50': '4.23 Mb',
-				'Largest': '4.82 Mb',
-				'GC Content': '51.2%',
-				'Circular': '3/3'
+				'Total Length': `${(stats.assemblySize / 1e6).toFixed(2)} Mb`,
+				'Contigs': stats.numContigs.toString(),
+				'N50': `${(stats.n50 / 1e6).toFixed(2)} Mb`,
+				'Largest': `${(stats.largestContig / 1e6).toFixed(2)} Mb`,
+				'GC Content': `${stats.assemblyGC}%`,
+				'Circular': `${stats.numCircular}/${stats.numContigs}`
 			},
 			chartData: {
 				title: 'Contig Size Distribution',
-				x: ['Chromosome', 'Plasmid 1', 'Plasmid 2'],
-				y: [4823456, 345678, 65433],
+				x: ['Chromosome', ...stats.plasmidContigs.map((_, i) => `Plasmid ${i + 1}`)],
+				y: [stats.largestContig, ...stats.plasmidContigs.map(p => p.size)],
 				type: 'bar',
 				xLabel: 'Contig',
 				yLabel: 'Length (bp)'
@@ -1675,7 +1679,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 [2024-01-15 14:30:00] INFO: Starting assembly polishing
 
 \x1b[36mInput:\x1b[0m
-  Reads: filtered/sample_01_filtered.fastq.gz
+  Reads: filtered/${sampleName}_filtered.fastq.gz
   Draft: assembly/assembly.fasta
   Model: {medakaModel}
 
@@ -1706,8 +1710,8 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mTip: Run BUSCO to verify assembly completeness\x1b[0m
 `,
 			summary: {
-				'Input Size': '5.23 Mb',
-				'Output Size': '5.23 Mb',
+				'Input Size': `${(stats.assemblySize / 1e6).toFixed(2)} Mb`,
+				'Output Size': `${(stats.assemblySize / 1e6).toFixed(2)} Mb`,
 				'SNPs Fixed': '1,234',
 				'Indels Fixed': '999',
 				'Est. Accuracy': '99.987%',
@@ -1732,7 +1736,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 [2024-01-15 14:00:00] INFO: Trimming adapters from Nanopore reads
 
 \x1b[36mInput:\x1b[0m
-  File: sample_01_nanopore.fastq.gz
+  File: ${sampleName}_nanopore.fastq.gz
   Reads: 156,789
 
 \x1b[36mAdapter detection:\x1b[0m
@@ -1761,23 +1765,23 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mTip: Use filtlong to filter by quality and length\x1b[0m
 `,
 			summary: {
-				'Input Reads': '156,789',
+				'Input Reads': totalReads.toLocaleString(),
 				'Reads w/Adapters': '92.6%',
-				'Start Trimmed': '134,567',
-				'End Trimmed': '128,901',
-				'Chimeras Split': '3,456',
-				'Output Reads': '160,245'
+				'Start Trimmed': Math.round(totalReads * 0.858).toLocaleString(),
+				'End Trimmed': Math.round(totalReads * 0.822).toLocaleString(),
+				'Chimeras Split': Math.round(totalReads * 0.022).toLocaleString(),
+				'Output Reads': Math.round(totalReads * 1.022).toLocaleString()
 			},
 			chartData: {
 				title: 'Adapter Locations',
 				x: ['Start Only', 'End Only', 'Both Ends', 'Middle (Chimera)'],
-				y: [45678, 32456, 63645, 3456],
+				y: [Math.round(totalReads * 0.291), Math.round(totalReads * 0.207), Math.round(totalReads * 0.406), Math.round(totalReads * 0.022)],
 				type: 'bar',
 				xLabel: 'Adapter Location',
 				yLabel: 'Read Count'
 			},
 			files: [
-				{ name: 'sample_01_trimmed.fastq.gz', type: 'fastq', size: '1.2 GB' }
+				{ name: `${sampleName}_trimmed.fastq.gz`, type: 'fastq', size: '1.2 GB' }
 			]
 		},
 		'kraken2': {
@@ -1785,7 +1789,7 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 [2024-01-15 14:15:00] INFO: Taxonomic classification
 
 \x1b[36mInput:\x1b[0m
-  File: filtered/sample_01_filtered.fastq.gz
+  File: filtered/${sampleName}_filtered.fastq.gz
   Database: standard
   Threads: 8
 
@@ -1817,17 +1821,17 @@ ${stats.plasmidContigs.map((p, i) => `  \x1b[33mPlasmid contig_${i + 2} (${p.typ
 \x1b[33mNote: Minor contamination detected (< 2%)\x1b[0m
 `,
 			summary: {
-				'Total Reads': '234,567',
+				'Total Reads': totalReads.toLocaleString(),
 				'Classified': '98.6%',
-				'Primary Species': 'E. coli',
+				'Primary Species': stats.organismShort,
 				'Confidence': '97.4%',
 				'Contamination': '< 2%',
 				'Unclassified': '1.4%'
 			},
 			chartData: {
 				title: 'Species Distribution',
-				x: ['E. coli', 'S. flexneri', 'K. pneumoniae', 'Other', 'Unclassified'],
-				y: [228456, 2123, 456, 199, 3333],
+				x: [stats.organismShort, 'Related species', 'Other species', 'Other', 'Unclassified'],
+				y: [Math.round(totalReads * 0.974), Math.round(totalReads * 0.009), Math.round(totalReads * 0.002), Math.round(totalReads * 0.001), Math.round(totalReads * 0.014)],
 				type: 'bar',
 				xLabel: 'Species',
 				yLabel: 'Read Count'
@@ -1860,17 +1864,17 @@ Reverse primer: GGACTACHVGGGTWTCTAAT (806R)
 \x1b[32m✓ Primer trimming complete\x1b[0m
 `,
 			summary: {
-				'Read Pairs': '245,678',
-				'Pairs Written': '241,234 (98.2%)',
-				'Pairs Too Short': '4,444 (1.8%)',
+				'Read Pairs': totalReads.toLocaleString(),
+				'Pairs Written': `${Math.round(totalReads * 0.982).toLocaleString()} (98.2%)`,
+				'Pairs Too Short': `${Math.round(totalReads * 0.018).toLocaleString()} (1.8%)`,
 				'Forward Primer': '515F (99.0% matched)',
 				'Reverse Primer': '806R (98.9% matched)',
-				'Quality': 'PASS'
+				'Quality': stats.q30Percent > 80 ? 'PASS' : 'WARN'
 			},
 			chartData: {
 				title: 'Primer Trimming Results',
 				x: ['Pairs Written', 'Too Short', 'No Adapter'],
-				y: [241234, 4444, 1000],
+				y: [Math.round(totalReads * 0.982), Math.round(totalReads * 0.018), Math.round(totalReads * 0.004)],
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Read Pairs'
@@ -2035,7 +2039,7 @@ Gibbs sampling for source tracking...
 [INFO] Processing HiFi reads for duplicate marking...
 
 \x1b[36mInput:\x1b[0m
-  File: sample_01_hifi.fastq.gz
+  File: ${sampleName}_hifi.fastq.gz
   Reads: 456,789
 
 \x1b[36mIdentifying PCR duplicates...\x1b[0m
@@ -2054,22 +2058,22 @@ Gibbs sampling for source tracking...
 \x1b[33mNote: Low duplication rate indicates high library complexity\x1b[0m
 `,
 			summary: {
-				'Total Reads': '456,789',
-				'Unique Reads': '451,234 (98.8%)',
-				'Duplicates': '5,555 (1.2%)',
-				'Library Complexity': 'HIGH',
-				'Status': 'PASS'
+				'Total Reads': totalReads.toLocaleString(),
+				'Unique Reads': `${Math.round(totalReads * 0.988).toLocaleString()} (98.8%)`,
+				'Duplicates': `${Math.round(totalReads * 0.012).toLocaleString()} (1.2%)`,
+				'Library Complexity': totalReads > 100000 ? 'HIGH' : 'MODERATE',
+				'Status': totalReads > 0 ? 'PASS' : 'FAIL'
 			},
 			chartData: {
 				title: 'Read Duplication',
 				x: ['Unique Reads', 'Duplicates'],
-				y: [451234, 5555],
+				y: [Math.round(totalReads * 0.988), Math.round(totalReads * 0.012)],
 				type: 'bar',
 				xLabel: 'Category',
 				yLabel: 'Read Count'
 			},
 			files: [
-				{ name: 'sample_01_dedup.fastq.gz', type: 'fastq', size: '2.8 GB' }
+				{ name: `${sampleName}_dedup.fastq.gz`, type: 'fastq', size: '2.8 GB' }
 			]
 		},
 		'ccs': {
@@ -2077,7 +2081,7 @@ Gibbs sampling for source tracking...
 [INFO] Generating CCS (Circular Consensus Sequences)...
 
 \x1b[36mInput:\x1b[0m
-  Subreads BAM: sample_01.subreads.bam
+  Subreads BAM: ${sampleName}.subreads.bam
   Min passes: 3
   Min accuracy: 0.99
 
@@ -2104,12 +2108,12 @@ Gibbs sampling for source tracking...
 \x1b[33mNote: Q42 indicates 99.994% accuracy per base\x1b[0m
 `,
 			summary: {
-				'HiFi Reads': '456,789',
-				'Mean Length': '12,456 bp',
+				'HiFi Reads': totalReads.toLocaleString(),
+				'Mean Length': `${readLength.toLocaleString()} bp`,
 				'Mean Quality': 'Q42 (99.994%)',
 				'Mean Passes': '8.3',
-				'Total Yield': '5.7 Gb',
-				'Status': 'EXCELLENT'
+				'Total Yield': `${(totalReads * readLength / 1e9).toFixed(1)} Gb`,
+				'Status': stats.q30Percent > 90 ? 'EXCELLENT' : (stats.q30Percent > 80 ? 'GOOD' : 'FAIR')
 			},
 			chartData: {
 				title: 'HiFi Read Quality Distribution',
@@ -2120,7 +2124,7 @@ Gibbs sampling for source tracking...
 				yLabel: 'Read Count'
 			},
 			files: [
-				{ name: 'sample_01_hifi.fastq.gz', type: 'fastq', size: '5.7 GB' }
+				{ name: `${sampleName}_hifi.fastq.gz`, type: 'fastq', size: '5.7 GB' }
 			]
 		},
 		'hifiasm': {
@@ -2158,17 +2162,17 @@ Gibbs sampling for source tracking...
 \x1b[33mNote: 4 contigs likely represent 1 chromosome + 3 plasmids\x1b[0m
 `,
 			summary: {
-				'Primary Contigs': '4',
-				'Total Length': '5,523,456 bp',
-				'N50': '4,892,156 bp',
-				'Largest Contig': '4,892,156 bp',
-				'Coverage': '45x',
-				'Quality': 'EXCELLENT'
+				'Primary Contigs': stats.numContigs.toString(),
+				'Total Length': `${stats.assemblySize.toLocaleString()} bp`,
+				'N50': `${stats.n50.toLocaleString()} bp`,
+				'Largest Contig': `${stats.largestContig.toLocaleString()} bp`,
+				'Coverage': `${Math.round(totalReads * readLength / stats.assemblySize)}x`,
+				'Quality': stats.checkm.quality === 'High' ? 'EXCELLENT' : (stats.checkm.quality === 'Medium' ? 'GOOD' : 'FAIR')
 			},
 			chartData: {
 				title: 'Contig Size Distribution',
-				x: ['Chromosome', 'Plasmid 1', 'Plasmid 2', 'Plasmid 3'],
-				y: [4892156, 312456, 198765, 120079],
+				x: ['Chromosome', ...stats.plasmidContigs.map((_, i) => `Plasmid ${i + 1}`)],
+				y: [stats.largestContig, ...stats.plasmidContigs.map(p => p.size)],
 				type: 'bar',
 				xLabel: 'Contig',
 				yLabel: 'Length (bp)'
@@ -2184,7 +2188,7 @@ Gibbs sampling for source tracking...
 [INFO] Analyzing methylation from Nanopore data...
 
 \x1b[36mInput:\x1b[0m
-  BAM file: sample_01_nanopore.bam
+  BAM file: ${sampleName}_nanopore.bam
   Reference: polished/consensus.fasta
   Mode: pileup
 
