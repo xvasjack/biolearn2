@@ -108,14 +108,10 @@
 		const fs: Record<string, string[]> = {};
 
 		// Start with base filesystem (fallback for paths not in template)
-		for (const [path, files] of Object.entries(baseFilesystem)) {
-			fs[path] = [...files];
-		}
+		for (const [path, files] of Object.entries(baseFilesystem)) {fs[path] = [...files];}
 
 		// Override with template filesystem (loaded from API)
-		for (const [path, files] of Object.entries(templateFilesystem)) {
-			fs[path] = [...files];
-		}
+		for (const [path, files] of Object.entries(templateFilesystem)) {fs[path] = [...files];}
 
 		// Add files from executed tools
 		for (const tool of executedToolsList) {
@@ -168,7 +164,6 @@
 				return executed.has(tool);
 			});
 		}
-
 		return fs;
 	}
 
