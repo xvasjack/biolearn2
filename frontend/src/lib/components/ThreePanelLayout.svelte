@@ -21,6 +21,8 @@
 
 	let terminalHeight = $state(70); // percentage
 	let isResizing = $state(false);
+	let leftPanelWidth = $state(50); // percentage (initial 50%)
+	let isResizingHorizontal = $state(false);
 	let filesDropdownOpen = $state(false);
 	let allGeneratedFiles = $state<{name: string, type: string, tool: string}[]>([]);
 
@@ -195,6 +197,27 @@
 			filesDropdownOpen = false;
 		}
 	}
+
+	function startHorizontalResize(e: MouseEvent) {
+		isResizingHorizontal = true;
+		document.addEventListener('mousemove', handleHorizontalResize);
+		document.addEventListener('mouseup', stopHorizontalResize);
+	}
+
+	function handleHorizontalResize(e: MouseEvent) {
+		if (!isResizingHorizontal) return;
+		const container = document.getElementById('main-content');
+		if (!container) return;
+		const rect = container.getBoundingClientRect();
+		const newWidth = ((e.clientX - rect.left) / rect.width) * 100;
+		leftPanelWidth = Math.max(25, Math.min(75, newWidth)); // constrain 25-75%
+	}
+
+	function stopHorizontalResize() {
+		isResizingHorizontal = false;
+		document.removeEventListener('mousemove', handleHorizontalResize);
+		document.removeEventListener('mouseup', stopHorizontalResize);
+	}
 </script>
 
 <svelte:window onclick={closeDropdown} onkeydown={handleModalKeydown} />
@@ -274,38 +297,48 @@
 	</div>
 
 	<!-- Main Content -->
-	<div class="flex-1 flex overflow-hidden" style="display: flex; flex: 1; overflow: hidden; height: calc(100% - 40px); min-height: 0;">
+	<div id="main-content" class="flex-1 flex overflow-hidden" style="display: flex; flex: 1; overflow: hidden; height: calc(100% - 40px); min-height: 0;">
 		<!-- Left Panel: Terminal + Output -->
-		<div id="left-panel" class="w-1/2 flex flex-col border-r border-gray-300" style="display: flex; flex-direction: column; width: 50%; height: 100%; min-height: 0;">
-		<!-- Terminal -->
-		<div
-			class="terminal-panel overflow-hidden"
-			style="height: {terminalHeight}%; min-height: 0; overflow: hidden; flex-shrink: 0;"
-		>
-			<Terminal initialDir={storyline?.dataDir || '/data/outbreak_investigation'} />
+		<div id="left-panel" class="flex flex-col" style="display: flex; flex-direction: column; width: {leftPanelWidth}%; height: 100%; min-height: 0;">
+			<!-- Terminal -->
+			<div
+				class="terminal-panel overflow-hidden"
+				style="height: {terminalHeight}%; min-height: 0; overflow: hidden; flex-shrink: 0;"
+			>
+				<Terminal initialDir={storyline?.dataDir || '/data/outbreak_investigation'} />
+			</div>
+
+			<!-- Resize Handle -->
+			<div
+				class="h-1 bg-gray-600 cursor-row-resize hover:bg-blue-500 transition-colors"
+				style="height: 4px; background: #4b5563; cursor: row-resize; flex-shrink: 0;"
+				onmousedown={startResize}
+				role="separator"
+				aria-orientation="horizontal"
+				tabindex="0"
+			></div>
+
+			<!-- Output Panel -->
+			<div
+				class="output-panel overflow-auto"
+				style="height: {100 - terminalHeight}%; min-height: 0; overflow: auto; flex: 1;"
+			>
+				<OutputPanel />
+			</div>
 		</div>
 
-		<!-- Resize Handle -->
+		<!-- Horizontal Resize Handle -->
 		<div
-			class="h-1 bg-gray-600 cursor-row-resize hover:bg-blue-500 transition-colors"
-			style="height: 4px; background: #4b5563; cursor: row-resize; flex-shrink: 0;"
-			onmousedown={startResize}
+			class="bg-gray-300 cursor-col-resize hover:bg-blue-500 transition-colors"
+			style="width: 4px; background: #d1d5db; cursor: col-resize; flex-shrink: 0;"
+			onmousedown={startHorizontalResize}
 			role="separator"
-			aria-orientation="horizontal"
+			aria-orientation="vertical"
 			tabindex="0"
 		></div>
 
-		<!-- Output Panel -->
-		<div
-			class="output-panel overflow-auto"
-			style="height: {100 - terminalHeight}%; min-height: 0; overflow: auto; flex: 1;"
-		>
-			<OutputPanel />
-		</div>
-	</div>
-
 		<!-- Right Panel: Story -->
-		<div class="w-1/2 story-panel overflow-auto" style="width: 50%; height: 100%; overflow: auto;">
+		<div class="story-panel overflow-auto" style="width: {100 - leftPanelWidth}%; height: 100%; overflow: auto;">
 			<StoryPanel {storyline} />
 		</div>
 	</div>
