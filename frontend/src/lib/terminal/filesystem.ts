@@ -4,14 +4,15 @@ import type { TerminalContext } from './types';
 export const baseFilesystem: Record<string, string[]> = {
 	// Linux Tutorial directory (results/ is NOT present initially - created by mkdir step)
 	'/data/linux_tutorial': [
-		'sample_info.txt', 'sequences/', 'references/'
+		'sample_info.txt', 'sequences/', 'references/', 'scripts/'
 	],
 	'/data/linux_tutorial/sequences': [
 		'sample_R1.fastq', 'sample_R2.fastq'
 	],
 	'/data/linux_tutorial/references': [
 		'genome.fasta', 'annotations.gff'
-	]
+	],
+	'/data/linux_tutorial/scripts': []
 };
 
 // Files created by each tool
@@ -56,8 +57,19 @@ export function getFilesystem(ctx: TerminalContext): Record<string, string[]> {
 	// Start with base filesystem (fallback for paths not in template)
 	for (const [path, files] of Object.entries(baseFilesystem)) {fs[path] = [...files];}
 
-	// Override with template filesystem (loaded from API)
-	for (const [path, files] of Object.entries(templateFilesystem)) {fs[path] = [...files];}
+	// Merge with template filesystem (loaded from API) - combine entries, don't overwrite
+	for (const [path, files] of Object.entries(templateFilesystem)) {
+		if (!fs[path]) {
+			fs[path] = [...files];
+		} else {
+			// Merge: add any files from template that aren't already in base
+			for (const file of files) {
+				if (!fs[path].includes(file)) {
+					fs[path].push(file);
+				}
+			}
+		}
+	}
 
 	// Add files from executed tools
 	for (const tool of executedToolsList) {
