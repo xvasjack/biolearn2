@@ -1,15 +1,56 @@
 """Template file serving endpoints."""
-from fastapi import APIRouter, HTTPException
+from typing import Annotated, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
+from fastapi.security import OAuth2PasswordBearer
 from pathlib import Path
-from typing import Optional
 from pydantic import BaseModel
 
+from app.auth import get_current_user
+from app.models import User
 from app.storage.files import template_storage
 
 router = APIRouter()
 
 TEMPLATE_DIR = template_storage.base_path
+
+# Categories that require a pro subscription
+PAID_CATEGORIES = {"wgs_bacteria", "amplicon_bacteria"}
+
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/users/login", auto_error=False)
+
+
+async def _check_category_access(category: str, request: Request):
+    """Raise 403 if the category requires pro and the user isn't subscribed."""
+    if category not in PAID_CATEGORIES:
+        return
+    # Try to get the current user from the Authorization header
+    from app.auth import decode_token
+    from app.database import get_db
+    from sqlalchemy import select
+
+    auth_header = request.headers.get("authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Authentication required for this content")
+
+    token = auth_header.split(" ", 1)[1]
+    try:
+        payload = decode_token(token)
+    except HTTPException:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    user_id = payload.get("sub")
+    if not user_id or payload.get("type") != "access":
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    async for db in get_db():
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        if not user.is_pro:
+            raise HTTPException(status_code=403, detail="Pro subscription required to access this content")
 
 
 class TemplateInfo(BaseModel):
@@ -47,8 +88,9 @@ async def list_categories() -> list[str]:
 
 
 @router.get("/{category}")
-async def list_storylines(category: str) -> list[str]:
+async def list_storylines(category: str, request: Request) -> list[str]:
     """List all storylines in a category."""
+    await _check_category_access(category, request)
     category_path = TEMPLATE_DIR / category
     if not category_path.exists():
         raise HTTPException(status_code=404, detail=f"Category '{category}' not found")
@@ -64,8 +106,9 @@ class StorylineFiles(BaseModel):
 
 
 @router.get("/{category}/{storyline}")
-async def get_storyline_info(category: str, storyline: str) -> TemplateInfo:
+async def get_storyline_info(category: str, storyline: str, request: Request) -> TemplateInfo:
     """Get information about a storyline's templates."""
+    await _check_category_access(category, request)
     storyline_path = get_template_path(category, storyline)
     if not storyline_path.exists():
         raise HTTPException(status_code=404, detail=f"Storyline '{storyline}' not found in category '{category}'")
@@ -89,13 +132,14 @@ async def get_storyline_info(category: str, storyline: str) -> TemplateInfo:
 
 
 @router.get("/{category}/{storyline}/files")
-async def get_storyline_files(category: str, storyline: str) -> StorylineFiles:
+async def get_storyline_files(category: str, storyline: str, request: Request) -> StorylineFiles:
     """Get all files in a storyline, organized by tool.
 
     This returns all files that can be used for output display:
     - Files in o_toolname/ directories
     - Files directly in the storyline folder (like o_bandage.png)
     """
+    await _check_category_access(category, request)
     storyline_path = get_template_path(category, storyline)
     if not storyline_path.exists():
         raise HTTPException(status_code=404, detail=f"Storyline '{storyline}' not found in category '{category}'")
@@ -132,12 +176,13 @@ class FilesystemStructure(BaseModel):
 
 
 @router.get("/{category}/{storyline}/filesystem")
-async def get_storyline_filesystem(category: str, storyline: str, data_dir: str = "/data") -> FilesystemStructure:
+async def get_storyline_filesystem(category: str, storyline: str, request: Request, data_dir: str = "/data") -> FilesystemStructure:
     """Get the filesystem structure for a storyline.
 
     Scans the template directory recursively and returns all files and directories
     that should appear in the terminal filesystem.
     """
+    await _check_category_access(category, request)
     storyline_path = get_template_path(category, storyline)
     if not storyline_path.exists():
         raise HTTPException(status_code=404, detail=f"Storyline '{storyline}' not found in category '{category}'")
@@ -170,11 +215,12 @@ async def get_storyline_filesystem(category: str, storyline: str, data_dir: str 
 
 
 @router.get("/{category}/{storyline}/root/{filename:path}")
-async def get_root_file(category: str, storyline: str, filename: str) -> FileResponse:
+async def get_root_file(category: str, storyline: str, filename: str, request: Request) -> FileResponse:
     """Serve a file directly from the storyline folder (not in an o_tool/ subdirectory).
 
     This handles files like o_bandage.png that are stored directly in the storyline folder.
     """
+    await _check_category_access(category, request)
     storyline_path = get_template_path(category, storyline)
     file_path = storyline_path / filename
 
@@ -216,8 +262,9 @@ async def get_root_file(category: str, storyline: str, filename: str) -> FileRes
 
 
 @router.get("/{category}/{storyline}/{tool}")
-async def list_tool_files(category: str, storyline: str, tool: str) -> list[TemplateFile]:
+async def list_tool_files(category: str, storyline: str, tool: str, request: Request) -> list[TemplateFile]:
     """List all files in a tool's output directory."""
+    await _check_category_access(category, request)
     tool_path = get_template_path(category, storyline, tool)
     if not tool_path.exists():
         raise HTTPException(status_code=404, detail=f"Tool output 'o_{tool}' not found")
@@ -237,8 +284,9 @@ async def list_tool_files(category: str, storyline: str, tool: str) -> list[Temp
 
 
 @router.get("/{category}/{storyline}/{tool}/{filename:path}")
-async def get_template_file(category: str, storyline: str, tool: str, filename: str) -> FileResponse:
+async def get_template_file(category: str, storyline: str, tool: str, filename: str, request: Request) -> FileResponse:
     """Serve a specific template file."""
+    await _check_category_access(category, request)
     file_path = get_template_path(category, storyline, tool, filename)
 
     if not file_path.exists():

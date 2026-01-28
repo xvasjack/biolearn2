@@ -24,3 +24,6 @@ python-dotenv>=1.0.0
 
 # For subprocess management
 aiofiles>=23.2.1
+
+# Payments
+stripe>=8.0.0

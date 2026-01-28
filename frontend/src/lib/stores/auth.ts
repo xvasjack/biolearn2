@@ -5,6 +5,10 @@ export interface AuthUser {
 	id: string;
 	email: string;
 	username: string;
+	subscription_tier: string;
+	subscription_plan: string | null;
+	subscription_expires_at: string | null;
+	is_pro: boolean;
 }
 
 interface AuthState {
@@ -119,6 +123,25 @@ function createAuthStore() {
 			});
 		},
 
+		/** Fetch fresh user data (including subscription status) from /me. */
+		async fetchMe() {
+			let current: AuthState = { user: null, accessToken: null, refreshToken: null };
+			const unsub = subscribe((s) => (current = s));
+			unsub();
+			if (!current.accessToken) return;
+
+			const res = await fetch(`${API_BASE_URL}/users/me`, {
+				headers: { Authorization: `Bearer ${current.accessToken}` },
+			});
+			if (!res.ok) return;
+			const user = await res.json();
+			update((s) => {
+				const next = { ...s, user };
+				persist(next);
+				return next;
+			});
+		},
+
 		/** Helper: get an Authorization header value for API calls. */
 		getAuthHeader(): string | null {
 			let token: string | null = null;
@@ -138,6 +161,10 @@ const ADMIN_USERNAMES = ['kreatbio'];
 export const isAdmin = derived(auth, ($a) =>
 	!!$a.user && ADMIN_USERNAMES.includes($a.user.username)
 );
+
+export const isPro = derived(auth, ($a) => !!$a.user?.is_pro);
+
+export const subscriptionTier = derived(auth, ($a) => $a.user?.subscription_tier ?? 'free');
 
 export function isTutorialRoute(path: string): boolean {
 	return path === '/tutorial' || path.startsWith('/tutorial/');

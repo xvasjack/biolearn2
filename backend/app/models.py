@@ -1,7 +1,8 @@
 """SQLAlchemy models."""
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, ForeignKey, JSON, DateTime
+from typing import Optional
+from sqlalchemy import Boolean, String, ForeignKey, JSON, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 
@@ -17,7 +18,24 @@ class User(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
+    # Subscription fields
+    subscription_tier: Mapped[str] = mapped_column(String, default="free", nullable=False)
+    stripe_customer_id: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    subscription_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    subscription_plan: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    group_owner_id: Mapped[Optional[str]] = mapped_column(String, ForeignKey("users.id"), nullable=True)
+    expiry_notified_7d: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    expiry_notified_1d: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
     progress: Mapped[list["UserProgress"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+
+    @property
+    def is_pro(self) -> bool:
+        if self.subscription_tier != "pro":
+            return False
+        if self.subscription_expires_at is None:
+            return False
+        return self.subscription_expires_at > datetime.now(timezone.utc)
 
 
 class UserProgress(Base):

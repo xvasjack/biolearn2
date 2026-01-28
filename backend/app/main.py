@@ -4,6 +4,7 @@ BioLearn - Bioinformatics Learning Platform API
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import asyncio
 import logging
 import os
 
@@ -27,7 +28,10 @@ async def lifespan(app: FastAPI):
     logger.info("Database tables created.")
     await seed_admin_account()
     logger.info("Admin account seeded.")
+    from app.scheduler import scheduler_loop
+    scheduler_task = asyncio.create_task(scheduler_loop())
     yield
+    scheduler_task.cancel()
     logger.info("Shutting down BioLearn API server...")
 
 

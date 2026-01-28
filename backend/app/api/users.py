@@ -48,6 +48,10 @@ class UserResponse(BaseModel):
     id: str
     email: str
     username: str
+    subscription_tier: str = "free"
+    subscription_plan: str | None = None
+    subscription_expires_at: str | None = None
+    is_pro: bool = False
 
 
 class AuthResponse(BaseModel):
@@ -87,7 +91,7 @@ async def register(body: UserCreate, db: Annotated[AsyncSession, Depends(get_db)
     await db.refresh(user)
 
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, username=user.username),
+        user=_user_response(user),
         tokens=TokenResponse(
             access_token=create_access_token(user.id),
             refresh_token=create_refresh_token(user.id),
@@ -105,7 +109,7 @@ async def login(body: LoginRequest, db: Annotated[AsyncSession, Depends(get_db)]
         raise HTTPException(status_code=401, detail="Invalid email/username or password")
 
     return AuthResponse(
-        user=UserResponse(id=user.id, email=user.email, username=user.username),
+        user=_user_response(user),
         tokens=TokenResponse(
             access_token=create_access_token(user.id),
             refresh_token=create_refresh_token(user.id),
@@ -130,9 +134,21 @@ async def refresh_token(body: RefreshRequest, db: Annotated[AsyncSession, Depend
     )
 
 
+def _user_response(user: User) -> UserResponse:
+    return UserResponse(
+        id=user.id,
+        email=user.email,
+        username=user.username,
+        subscription_tier=user.subscription_tier,
+        subscription_plan=user.subscription_plan,
+        subscription_expires_at=user.subscription_expires_at.isoformat() if user.subscription_expires_at else None,
+        is_pro=user.is_pro,
+    )
+
+
 @router.get("/me", response_model=UserResponse)
 async def get_me(user: Annotated[User, Depends(get_current_user)]):
-    return UserResponse(id=user.id, email=user.email, username=user.username)
+    return _user_response(user)
 
 
 @router.get("/me/progress", response_model=list[ProgressResponse])

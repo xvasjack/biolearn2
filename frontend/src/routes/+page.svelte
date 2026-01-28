@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { isAuthenticated } from '$lib/stores/auth';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { auth, isAuthenticated, isPro } from '$lib/stores/auth';
 	import { authModalOpen } from '$lib/stores/authModal';
+	import { API_BASE_URL } from '$lib/stores/terminal';
 
 	interface Mode {
 		id: string;
@@ -9,6 +12,7 @@
 		description: string;
 		icon: string;
 		comingSoon?: boolean;
+		paid?: boolean;
 	}
 
 	const modes: Mode[] = [
@@ -23,12 +27,14 @@
 			title: 'WGS Bacteria',
 			description: 'Whole Genome Sequencing analysis for bacterial pathogens',
 			icon: '🧬',
+			paid: true,
 		},
 		{
 			id: 'amplicon-bacteria',
 			title: 'Amplicon Bacteria',
 			description: '16S rRNA gene sequencing for microbiome analysis',
 			icon: '🦠',
+			paid: true,
 		},
 		{
 			id: 'rna-seq',
@@ -38,6 +44,27 @@
 			comingSoon: true
 		}
 	];
+
+	let showPricingModal = $state(false);
+	let selectedPlan = $state<string | null>(null);
+	let checkoutLoading = $state(false);
+	let groupEmails = $state('');
+
+	const plans = [
+		{ id: 'day', name: 'Day Pass', price: 'RM 20', duration: '24 hours', accounts: '1 user' },
+		{ id: 'monthly', name: 'Monthly', price: 'RM 80', duration: '30 days', accounts: '1 user' },
+		{ id: 'group_monthly', name: 'Group Monthly', price: 'RM 640', duration: '30 days', accounts: 'Up to 10 users' },
+	];
+
+	onMount(() => {
+		// Refresh subscription status after returning from Stripe
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('payment') === 'success') {
+			auth.fetchMe();
+			// Clean up URL
+			window.history.replaceState({}, '', '/');
+		}
+	});
 
 	function selectMode(mode: Mode) {
 		if (mode.comingSoon) return;
@@ -49,7 +76,44 @@
 			$authModalOpen = true;
 			return;
 		}
+		if (mode.paid && !$isPro) {
+			showPricingModal = true;
+			return;
+		}
 		goto(`/${mode.id}`);
+	}
+
+	async function startCheckout() {
+		if (!selectedPlan) return;
+		checkoutLoading = true;
+		try {
+			const authHeader = auth.getAuthHeader();
+			if (!authHeader) {
+				$authModalOpen = true;
+				return;
+			}
+			const body: Record<string, unknown> = { plan: selectedPlan };
+			if (selectedPlan === 'group_monthly' && groupEmails.trim()) {
+				body.group_emails = groupEmails.split(/[,\n]+/).map(e => e.trim()).filter(Boolean);
+			}
+			const res = await fetch(`${API_BASE_URL}/payments/create-checkout`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: authHeader,
+				},
+				body: JSON.stringify(body),
+			});
+			if (!res.ok) {
+				const err = await res.json();
+				alert(err.detail || 'Failed to start checkout');
+				return;
+			}
+			const data = await res.json();
+			window.location.href = data.checkout_url;
+		} finally {
+			checkoutLoading = false;
+		}
 	}
 
 </script>
@@ -104,9 +168,17 @@
 								<span class="rounded-full bg-green-500/20 px-3 py-1 text-xs font-medium text-green-300">
 									Free
 								</span>
-							{:else if !$isAuthenticated}
+							{:else if mode.paid && $isPro}
+								<span class="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-300">
+									Pro
+								</span>
+							{:else if mode.paid && !$isAuthenticated}
 								<span class="rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-300">
 									Login Required
+								</span>
+							{:else if mode.paid}
+								<span class="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-300">
+									Pro
 								</span>
 							{/if}
 						</div>
@@ -164,6 +236,57 @@
 		</div>
 	</footer>
 </div>
+
+<!-- Pricing Modal -->
+{#if showPricingModal}
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" role="dialog">
+		<div class="mx-4 w-full max-w-2xl rounded-2xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
+			<div class="mb-6 flex items-center justify-between">
+				<h2 class="text-2xl font-bold text-white">Upgrade to Pro</h2>
+				<button onclick={() => showPricingModal = false} class="text-slate-400 hover:text-white">
+					<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</div>
+			<p class="mb-6 text-slate-400">Get access to WGS Bacteria, Amplicon Bacteria, and all future modules.</p>
+			<div class="grid gap-4 md:grid-cols-3">
+				{#each plans as plan}
+					<button
+						onclick={() => selectedPlan = plan.id}
+						class="rounded-xl border p-4 text-left transition-all {selectedPlan === plan.id
+							? 'border-emerald-500 bg-emerald-500/10'
+							: 'border-slate-600 bg-slate-700/50 hover:border-slate-500'}"
+					>
+						<h3 class="text-lg font-semibold text-white">{plan.name}</h3>
+						<p class="text-2xl font-bold text-emerald-400">{plan.price}</p>
+						<p class="text-xs text-slate-400">{plan.duration}</p>
+						<p class="mt-2 text-xs text-slate-500">{plan.accounts}</p>
+					</button>
+				{/each}
+			</div>
+			{#if selectedPlan === 'group_monthly'}
+				<div class="mt-4">
+					<label for="group-emails" class="mb-1 block text-sm text-slate-300">Group member emails (up to 10, comma or newline separated)</label>
+					<textarea
+						id="group-emails"
+						bind:value={groupEmails}
+						rows="3"
+						class="w-full rounded-lg border border-slate-600 bg-slate-700 p-3 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+						placeholder="user1@example.com, user2@example.com"
+					></textarea>
+				</div>
+			{/if}
+			<button
+				onclick={startCheckout}
+				disabled={!selectedPlan || checkoutLoading}
+				class="mt-6 w-full rounded-lg bg-emerald-600 py-3 font-semibold text-white transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+			>
+				{checkoutLoading ? 'Redirecting to checkout...' : 'Continue to Payment'}
+			</button>
+		</div>
+	</div>
+{/if}
 
 <style>
 	/* Homepage scrollbar */

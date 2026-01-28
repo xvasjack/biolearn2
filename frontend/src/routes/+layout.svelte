@@ -1,10 +1,20 @@
 <script lang="ts">
 	import '../app.css';
 	import AuthModal from '$lib/components/AuthModal.svelte';
-	import { isAuthenticated, currentUser, auth } from '$lib/stores/auth';
+	import { isAuthenticated, currentUser, isPro, auth } from '$lib/stores/auth';
 	import { authModalOpen } from '$lib/stores/authModal';
 
 	let { children } = $props();
+
+	function daysRemaining(): number | null {
+		const user = $currentUser;
+		if (!user?.subscription_expires_at) return null;
+		const now = Date.now();
+		const expires = new Date(user.subscription_expires_at).getTime();
+		const diff = expires - now;
+		if (diff <= 0) return 0;
+		return Math.ceil(diff / (1000 * 60 * 60 * 24));
+	}
 </script>
 
 <svelte:head>
@@ -17,6 +27,16 @@
 		<span class="brand">BioLearn</span>
 		<div class="auth-area">
 			{#if $isAuthenticated && $currentUser}
+				{#if $isPro}
+					{@const days = daysRemaining()}
+					{#if days !== null}
+						<span class="sub-badge" class:expiring={days <= 3}>
+							Pro · {days === 0 ? 'Expires today' : days === 1 ? '1 day left' : `${days} days left`}
+						</span>
+					{/if}
+				{:else}
+					<span class="sub-badge free">Free</span>
+				{/if}
 				<span class="username">{$currentUser.username}</span>
 				<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
 			{:else}
@@ -79,5 +99,21 @@
 	.nav-btn:hover {
 		border-color: #89b4fa;
 		color: #89b4fa;
+	}
+	.sub-badge {
+		font-size: 0.75rem;
+		padding: 0.2rem 0.6rem;
+		border-radius: 9999px;
+		background: rgba(16, 185, 129, 0.15);
+		color: #6ee7b7;
+		font-weight: 600;
+	}
+	.sub-badge.expiring {
+		background: rgba(245, 158, 11, 0.15);
+		color: #fcd34d;
+	}
+	.sub-badge.free {
+		background: rgba(100, 116, 139, 0.15);
+		color: #94a3b8;
 	}
 </style>
