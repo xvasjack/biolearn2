@@ -12,10 +12,13 @@ from app.auth import (
     verify_password,
     create_access_token,
     create_refresh_token,
+    create_reset_token,
+    decode_reset_token,
     decode_token,
     get_current_user,
 )
 from app.database import get_db
+from app.email import FRONTEND_URL, send_password_reset
 from app.models import User, UserProgress
 
 router = APIRouter()
@@ -57,6 +60,15 @@ class UserResponse(BaseModel):
 class AuthResponse(BaseModel):
     user: UserResponse
     tokens: TokenResponse
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
 
 
 class ProgressResponse(BaseModel):
@@ -132,6 +144,29 @@ async def refresh_token(body: RefreshRequest, db: Annotated[AsyncSession, Depend
         access_token=create_access_token(user_id),
         refresh_token=create_refresh_token(user_id),
     )
+
+
+@router.post("/forgot-password")
+async def forgot_password(body: ForgotPasswordRequest, db: Annotated[AsyncSession, Depends(get_db)]):
+    result = await db.execute(select(User).where(User.email == body.email))
+    user = result.scalar_one_or_none()
+    if user:
+        token = create_reset_token(user.email)
+        reset_url = f"{FRONTEND_URL}/reset-password?token={token}"
+        send_password_reset(user.email, user.username, reset_url)
+    return {"message": "If that email is registered, a reset link has been sent."}
+
+
+@router.post("/reset-password")
+async def reset_password(body: ResetPasswordRequest, db: Annotated[AsyncSession, Depends(get_db)]):
+    email = decode_reset_token(body.token)
+    result = await db.execute(select(User).where(User.email == email))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    user.password_hash = hash_password(body.new_password)
+    await db.commit()
+    return {"message": "Password has been reset successfully."}
 
 
 def _user_response(user: User) -> UserResponse:

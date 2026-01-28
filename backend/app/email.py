@@ -39,6 +39,31 @@ def send_email(to_email: str, subject: str, html_body: str) -> bool:
         return False
 
 
+def send_password_reset(to_email: str, username: str, reset_url: str):
+    """Send a password reset email."""
+    subject = "Reset your BioLearn password"
+    html = f"""
+    <div style="font-family: -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 32px; color: #1e293b;">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #0f172a; font-size: 24px; margin: 0;">BioLearn</h1>
+        </div>
+        <p>Hi {username},</p>
+        <p>We received a request to reset your password. Click the button below to choose a new password:</p>
+        <div style="text-align: center; margin: 32px 0;">
+            <a href="{reset_url}"
+               style="background: #059669; color: white; padding: 12px 32px; border-radius: 8px;
+                      text-decoration: none; font-weight: 600; display: inline-block;">
+                Reset Password
+            </a>
+        </div>
+        <p style="color: #64748b; font-size: 13px;">
+            This link expires in 15 minutes. If you didn't request a password reset, you can safely ignore this email.
+        </p>
+    </div>
+    """
+    send_email(to_email, subject, html)
+
+
 def send_expiry_warning(to_email: str, username: str, days_remaining: int, expiry_date: str):
     """Send a subscription expiry warning email."""
     if days_remaining == 1:

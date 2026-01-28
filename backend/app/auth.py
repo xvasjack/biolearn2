@@ -30,6 +30,27 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 
+RESET_TOKEN_EXPIRE_MINUTES = 15
+
+
+def create_reset_token(email: str) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
+    return jwt.encode({"sub": email, "exp": expire, "type": "reset"}, SECRET_KEY, algorithm=ALGORITHM)
+
+
+def decode_reset_token(token: str) -> str:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    if payload.get("type") != "reset":
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    email = payload.get("sub")
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    return email
+
+
 def create_access_token(subject: str) -> str:
     expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return jwt.encode({"sub": subject, "exp": expire, "type": "access"}, SECRET_KEY, algorithm=ALGORITHM)
