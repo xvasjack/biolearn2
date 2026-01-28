@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { isAuthenticated } from '$lib/stores/auth';
-	import { getStorylinesList } from '$lib/storylines/amplicon-bacteria';
+	import { getStorylinesList } from '$lib/storylines/wgs-bacteria';
 
 	onMount(() => {
 		if (!$isAuthenticated) goto('/');
@@ -12,7 +12,7 @@
 	let hoveredStoryline: string | null = $state(null);
 
 	function startStoryline(id: string) {
-		goto(`/amplicon-bacteria/${id}`);
+		goto(`/wgs-bacteria/${id}`);
 	}
 </script>
 
@@ -27,8 +27,8 @@
 					</svg>
 				</a>
 				<div>
-					<h1 class="text-2xl font-bold text-white">Amplicon Bacteria</h1>
-					<p class="text-sm text-slate-400">16S rRNA gene sequencing for microbiome analysis</p>
+					<h1 class="text-2xl font-bold text-white">WGS Bacteria</h1>
+					<p class="text-sm text-slate-400">Whole Genome Sequencing analysis for bacterial pathogens</p>
 				</div>
 			</div>
 		</div>
@@ -39,7 +39,7 @@
 		<div class="mb-8">
 			<h2 class="mb-2 text-3xl font-bold text-white">Storylines</h2>
 			<p class="text-slate-400">
-				Explore microbiome diversity through 16S amplicon sequencing scenarios. Analyze community composition across different environments.
+				Each storyline follows a real-world bacterial outbreak scenario. Analyze whole genome sequencing data to identify pathogens, detect resistance genes, and trace transmission.
 			</p>
 		</div>
 
@@ -54,7 +54,7 @@
 					<div class="flex items-start justify-between">
 						<div class="flex-1">
 							<div class="flex items-center gap-3 mb-2">
-								<span class="text-2xl">🦠</span>
+								<span class="text-2xl">🧬</span>
 								<h3 class="text-xl font-semibold text-white">{storyline.title}</h3>
 								<span class="rounded-full bg-blue-500/20 px-3 py-1 text-xs font-medium text-blue-300">
 									{storyline.technologyLabel}

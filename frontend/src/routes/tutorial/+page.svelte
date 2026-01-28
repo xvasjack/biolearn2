@@ -12,7 +12,7 @@
 	}
 </script>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+<div class="page-scroll h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
 	<!-- Header -->
 	<header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
 		<div class="mx-auto max-w-7xl px-6 py-6">
@@ -31,7 +31,7 @@
 	</header>
 
 	<!-- Main Content -->
-	<main class="mx-auto max-w-4xl px-6 py-12">
+	<main class="mx-auto max-w-4xl px-6 py-12 pb-24">
 		<div class="mb-8">
 			<h2 class="mb-2 text-3xl font-bold text-white">Getting Started</h2>
 			<p class="text-slate-400">
@@ -142,3 +142,23 @@
 		</div>
 	</main>
 </div>
+
+<style>
+	.page-scroll::-webkit-scrollbar {
+		width: 10px;
+	}
+	.page-scroll::-webkit-scrollbar-track {
+		background: rgb(30 41 59);
+	}
+	.page-scroll::-webkit-scrollbar-thumb {
+		background: rgb(100 116 139);
+		border-radius: 5px;
+	}
+	.page-scroll::-webkit-scrollbar-thumb:hover {
+		background: rgb(148 163 184);
+	}
+	.page-scroll {
+		scrollbar-width: thin;
+		scrollbar-color: rgb(100 116 139) rgb(30 41 59);
+	}
+</style>
