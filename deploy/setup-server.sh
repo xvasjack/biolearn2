@@ -16,8 +16,11 @@ if ! command -v node &>/dev/null; then
 fi
 echo "Node $(node -v)"
 
-# Python 3.11
-apt-get install -y python3.11 python3.11-venv python3-pip
+# Python 3.11 via deadsnakes PPA
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:deadsnakes/ppa
+apt-get update
+apt-get install -y python3.11 python3.11-venv python3.11-dev
 
 # Nginx & Certbot
 apt-get install -y nginx certbot python3-certbot-nginx

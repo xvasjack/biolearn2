@@ -24,7 +24,13 @@
 
 <div class="app-shell">
 	<nav class="top-bar">
-		<span class="brand">BioLearn</span>
+		<div class="nav-left">
+			<span class="brand">BioLearn</span>
+			<span class="nav-sep">|</span>
+			<a href="/" class="nav-link">Mainpage</a>
+			<span class="nav-sep">|</span>
+			<a href="/pricing" class="nav-link">Pricing</a>
+		</div>
 		<div class="auth-area">
 			{#if $isAuthenticated && $currentUser}
 				{#if $isPro}
@@ -50,6 +56,16 @@
 	<div class="app-content">
 		{@render children()}
 	</div>
+
+	<footer class="site-footer">
+		<span class="footer-brand">Kreatbio Sdn. Bhd.</span>
+		<span class="footer-sep">·</span>
+		<span>40300 Shah Alam, Selangor, Malaysia</span>
+		<span class="footer-sep">·</span>
+		<a href="mailto:adriana.kreatbio@gmail.com">adriana.kreatbio@gmail.com</a>
+		<span class="footer-sep">·</span>
+		<a href="https://kreatbio.com" target="_blank" rel="noopener noreferrer">kreatbio.com</a>
+	</footer>
 </div>
 
 <style>
@@ -73,9 +89,28 @@
 		background: #181825;
 		border-bottom: 1px solid #313244;
 	}
+	.nav-left {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
 	.brand {
 		font-weight: 700;
 		font-size: 1.1rem;
+		color: #89b4fa;
+	}
+	.nav-link {
+		color: #a6adc8;
+		font-size: 0.85rem;
+		font-weight: 700;
+		text-decoration: none;
+	}
+	.nav-sep {
+		color: #45475a;
+		font-size: 0.85rem;
+		font-weight: 700;
+	}
+	.nav-link:hover {
 		color: #89b4fa;
 	}
 	.auth-area {
@@ -115,5 +150,32 @@
 	.sub-badge.free {
 		background: rgba(100, 116, 139, 0.15);
 		color: #94a3b8;
+	}
+	.site-footer {
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		padding: 0.8rem 1rem;
+		background: #181825;
+		border-top: 1px solid #313244;
+		font-size: 0.79rem;
+		color: #6c7086;
+	}
+	.footer-brand {
+		font-weight: 600;
+		color: #a6adc8;
+	}
+	.footer-sep {
+		color: #45475a;
+	}
+	.site-footer a {
+		color: #89b4fa;
+		text-decoration: none;
+	}
+	.site-footer a:hover {
+		text-decoration: underline;
 	}
 </style>
