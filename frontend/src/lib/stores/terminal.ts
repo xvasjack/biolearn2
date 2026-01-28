@@ -62,7 +62,7 @@ export interface StorylineContext {
 export const storylineContext = writable<StorylineContext | null>(null);
 
 // API base URL for template fetching
-export const API_BASE_URL = 'http://localhost:8000/api';
+export const API_BASE_URL = (import.meta.env.VITE_API_URL as string) || '/api';
 
 // Store for dynamically fetched template files
 // Structure: { toolName: [filenames] }

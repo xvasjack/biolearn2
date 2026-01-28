@@ -1,0 +1,15 @@
+[Unit]
+Description=BioLearn Backend (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/biolearn/backend
+EnvironmentFile=/opt/biolearn/backend/.env
+ExecStart=/opt/biolearn/backend/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

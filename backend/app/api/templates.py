@@ -4,12 +4,12 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import Optional
 from pydantic import BaseModel
-import os
+
+from app.storage.files import template_storage
 
 router = APIRouter()
 
-# Template directory relative to backend
-TEMPLATE_DIR = Path(__file__).parent.parent.parent.parent / "template"
+TEMPLATE_DIR = template_storage.base_path
 
 
 class TemplateInfo(BaseModel):

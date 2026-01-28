@@ -23,9 +23,10 @@ from pathlib import Path
 from typing import Optional
 from functools import lru_cache
 
+from app.storage.files import storyline_storage
 
 # Base path to template directory
-TEMPLATE_BASE_PATH = Path(__file__).parent.parent.parent.parent / "template" / "storylines"
+TEMPLATE_BASE_PATH = storyline_storage.base_path
 
 
 @lru_cache(maxsize=10)

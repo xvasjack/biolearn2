@@ -1,0 +1,16 @@
+[Unit]
+Description=BioLearn Frontend (SvelteKit)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/biolearn/frontend
+Environment=PORT=3000
+Environment=HOST=127.0.0.1
+ExecStart=/usr/bin/node build/index.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
