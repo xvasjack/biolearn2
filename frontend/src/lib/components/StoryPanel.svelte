@@ -171,7 +171,9 @@
 
 	function handleFinish() {
 		isFinished = true;
-		goto('/');
+		// Navigate back to the category page (e.g., /tutorial/) instead of home
+		const categoryPath = storyline?.category ? `/${storyline.category}/` : '/';
+		goto(categoryPath);
 	}
 
 	function handleDecision(optionId: string) {
@@ -264,7 +266,7 @@
 									class="px-8 py-3 bg-white text-green-600 font-bold rounded-lg hover:bg-green-50 transition-colors shadow-md"
 									style="padding: 0.75rem 2rem; background: white; color: #16a34a; font-weight: 700; border-radius: 0.5rem; border: none; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"
 								>
-									Finished - Return to Home
+									Finished - Back to Topics
 								</button>
 							</div>
 						</div>
