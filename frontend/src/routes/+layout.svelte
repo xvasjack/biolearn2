@@ -59,10 +59,6 @@
 	<footer class="site-footer">
 		<span class="footer-brand">Kreatbio Sdn. Bhd.</span>
 		<span class="footer-sep">·</span>
-		<span>40300 Shah Alam, Selangor, Malaysia</span>
-		<span class="footer-sep">·</span>
-		<a href="mailto:adriana.kreatbio@gmail.com">adriana.kreatbio@gmail.com</a>
-		<span class="footer-sep">·</span>
 		<a href="https://kreatbio.com" target="_blank" rel="noopener noreferrer">kreatbio.com</a>
 	</footer>
 	</div>

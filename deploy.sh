@@ -12,9 +12,10 @@ echo ">> Uploading backend files..."
 scp -r "$LOCAL_DIR/backend/app" "$VPS:$REMOTE_DIR/backend/"
 scp "$LOCAL_DIR/backend/requirements.txt" "$VPS:$REMOTE_DIR/backend/"
 
-# 2. Sync frontend src/
+# 2. Sync frontend src/ and static/
 echo ">> Uploading frontend files..."
 scp -r "$LOCAL_DIR/frontend/src" "$VPS:$REMOTE_DIR/frontend/"
+scp -r "$LOCAL_DIR/frontend/static" "$VPS:$REMOTE_DIR/frontend/"
 
 # 3. Install any new backend deps
 echo ">> Installing backend dependencies..."
