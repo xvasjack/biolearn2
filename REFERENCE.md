@@ -26,7 +26,8 @@ Interactive bioinformatics learning platform that teaches sequencing data analys
 | `app/api/templates.py` | Template file serving; lists categories/storylines, returns file structures from `/template/` |
 | `app/api/narratives.py` | Narrative content endpoints; defines NarrativeStep and Narrative models |
 | `app/api/analysis.py` | Analysis job endpoints; tool registry (fastqc, trimmomatic, etc.) |
-| `app/api/users.py` | User management; registration, profile, progress tracking (in-memory placeholder) |
+| `app/api/payments.py` | Stripe payment integration; checkout sessions, webhooks |
+| `app/api/users.py` | User management; registration, profile, progress tracking |
 | `app/websocket/__init__.py` | WebSocket connection manager; processes commands, plays back pre-computed results with typing simulation |
 | `app/services/template_loader.py` | Loads manifest.json, terminal outputs, and file contents from template directories |
 | `app/storage/__init__.py` | Storage layer for command outputs (placeholder for database) |
@@ -56,10 +57,18 @@ Interactive bioinformatics learning platform that teaches sequencing data analys
 | `app.css` | Global styles and Tailwind directives |
 | `app.d.ts` | TypeScript type augmentations for SvelteKit |
 
+### Assets (`src/lib/assets/`)
+
+| File | Description |
+|------|-------------|
+| `favicon.svg` | SVG favicon for the application |
+
 ### Components (`src/lib/components/`)
 
 | Component | Description |
 |-----------|-------------|
+| `AuthModal.svelte` | Authentication modal for login/registration |
+| `ChangePasswordModal.svelte` | Modal for changing user password |
 | `Terminal.svelte` | Terminal emulator shell (xterm.js); state, input handling, tab completion, prompt — delegates command execution and tool output to `src/lib/terminal/` modules |
 | `StoryPanel.svelte` | Left panel — narrative sections; tracks executed commands for step completion, manages decision branches, shows phase progress |
 | `OutputPanel.svelte` | Right panel — displays tool outputs; renders charts (Plotly), file tables, PDF reports, tab switching between chart/files/notes |
@@ -83,6 +92,8 @@ Extracted from Terminal.svelte into pure TypeScript modules. All functions recei
 
 | File | Description |
 |------|-------------|
+| `auth.ts` | Authentication state store (user session, login status) |
+| `authModal.ts` | Auth modal visibility state store |
 | `terminal.ts` | Svelte stores for global state: outputData, terminalState, stopSignal, executedCommands, currentDirectory, storylineContext, templateFiles, API_BASE_URL |
 
 ### Services (`src/lib/services/`)
@@ -118,7 +129,8 @@ Extracted from Terminal.svelte into pure TypeScript modules. All functions recei
 | `linux-basics.ts` | Linux command fundamentals tutorial (pwd, ls, cd, cat, head, tail, wc, mkdir, cp, grep) |
 | `kpneumoniae-demo.ts` | K. pneumoniae genome analysis demo workflow |
 | `terminal-outputs.ts` | Help text strings for tutorial tools with ANSI color codes |
-| `tool-outputs.ts` | Pre-computed terminal output data for each tool in tutorial workflow |
+| `tool-outputs.ts` | Pre-computed terminal output data for linux-basics tutorial |
+| `kpneumoniae-demo-tool-outputs.ts` | Pre-computed terminal output data for K. pneumoniae demo |
 
 **WGS Bacteria** (`storylines/wgs-bacteria/`):
 
@@ -133,7 +145,13 @@ Extracted from Terminal.svelte into pure TypeScript modules. All functions recei
 | `clinical.ts` | Clinical isolate analysis |
 | `sections.ts` | Shared section templates for Illumina analysis phases |
 | `terminal-outputs.ts` | Help texts for WGS bioinformatics tools |
-| `tool-outputs.ts` | Pre-computed realistic tool outputs for WGS analysis |
+| `tool-outputs.ts` | Shared tool output utilities for WGS analysis |
+| `hospital-tool-outputs.ts` | Pre-computed tool outputs for hospital scenario |
+| `clinical-tool-outputs.ts` | Pre-computed tool outputs for clinical scenario |
+| `plant-tool-outputs.ts` | Pre-computed tool outputs for plant scenario |
+| `fish-tool-outputs.ts` | Pre-computed tool outputs for fish scenario |
+| `foodborne-tool-outputs.ts` | Pre-computed tool outputs for foodborne scenario |
+| `wastewater-tool-outputs.ts` | Pre-computed tool outputs for wastewater scenario |
 
 **Amplicon Bacteria** (`storylines/amplicon-bacteria/`):
 
@@ -156,18 +174,28 @@ Extracted from Terminal.svelte into pure TypeScript modules. All functions recei
 
 ### Routes (`src/routes/`)
 
-Each route is a `+page.svelte` that imports ThreePanelLayout with the appropriate storyline:
+| File | Description |
+|------|-------------|
+| `+layout.svelte` | Root layout with navigation, footer, and auth modals |
+
+Each route has a `+page.svelte`:
 
 | Route | Description |
 |-------|-------------|
+| `/` | Landing page |
+| `/pricing/` | Pricing page with subscription options |
+| `/reset-password/` | Password reset page |
+| `/tutorial/` | Tutorial category landing page |
 | `/tutorial/linux-basics/` | Linux command tutorial |
 | `/tutorial/kpneumoniae-demo/` | K. pneumoniae genome analysis tutorial |
+| `/wgs-bacteria/` | WGS bacteria category landing page |
 | `/wgs-bacteria/hospital/` | Hospital outbreak investigation |
 | `/wgs-bacteria/clinical/` | Clinical isolate analysis |
 | `/wgs-bacteria/plant/` | Plant pathogen analysis |
 | `/wgs-bacteria/fish/` | Fish pathogen analysis |
 | `/wgs-bacteria/foodborne/` | Foodborne pathogen analysis |
 | `/wgs-bacteria/wastewater/` | Wastewater surveillance |
+| `/amplicon-bacteria/` | Amplicon bacteria category landing page |
 | `/amplicon-bacteria/gut/` | Gut microbiome analysis |
 | `/amplicon-bacteria/soil/` | Soil microbiome analysis |
 | `/amplicon-bacteria/water/` | Water microbiome analysis |
@@ -194,7 +222,10 @@ Holds pre-recorded tool outputs that the terminal plays back for each storyline.
 
 | Path | Description |
 |------|-------------|
-| `tutorial/basic_linux_commands/` | Sample files for Linux tutorial (sample_info.txt, sequences/) |
+| `tutorial/basic_linux_commands/` | Sample files for Linux tutorial |
+| `tutorial/basic_linux_commands/references/` | Reference files for Linux tutorial |
+| `tutorial/basic_linux_commands/scripts/` | Script files for Linux tutorial |
+| `tutorial/basic_linux_commands/sequences/` | Sequence files for Linux tutorial |
 | `tutorial/kpneumoniae_demo/` | K. pneumoniae demo data with all tool output directories |
 
 **K. pneumoniae demo tool output directories:**
@@ -207,7 +238,6 @@ Holds pre-recorded tool outputs that the terminal plays back for each storyline.
 | `o_trimmomatic/` | Trimmed read files (paired/unpaired FASTQ) |
 | `o_unicycler/` | Genome assembly (FASTA, GFA, log) |
 | `o_quast/` | Assembly quality metrics |
-| `o_bandage/` | Assembly graph visualization (PNG) |
 | `o_checkm2/` | Genome quality assessment |
 | `o_prokka/` | Genome annotation (GBK, GFF, TSV, TBL) |
 | `o_mlst/` | Multilocus sequence typing |
@@ -222,10 +252,10 @@ Each scenario contains:
 
 | Directory | Description |
 |-----------|-------------|
+| `input_data/` | Raw sequencing input files |
 | `o_fastqc/` | Quality control |
 | `o_trimmomatic/` | Read trimming |
 | `o_unicycler/` | Genome assembly |
-| `o_bandage.png` | Assembly graph visualization |
 | `o_quast/` | Assembly quality |
 | `o_checkm/` | Genome completeness |
 | `o_prokka/` | Genome annotation |
@@ -248,6 +278,7 @@ Each contains:
 
 | Directory | Description |
 |-----------|-------------|
+| `input_data/` | Raw sequencing input files |
 | `o_fastqc/` | Quality control |
 | `o_cutadapt/` | Adapter trimming |
 | `o_multiqc/` | QC aggregation |
@@ -255,9 +286,12 @@ Each contains:
 
 ---
 
-## `docker/` — Container Orchestration
+## `deploy/` — Deployment Configuration
 
 | File | Description |
 |------|-------------|
-| `docker-compose.yml` | Multi-service setup: frontend (3000), backend (8000), celery worker, PostgreSQL (5432), Redis (6379), biotools container |
-| `Dockerfile.biotools` | Bioinformatics tools container |
+| `biolearn-backend.service` | Systemd service file for backend |
+| `biolearn-frontend.service` | Systemd service file for frontend |
+| `biolearn.nginx` | Nginx configuration for reverse proxy |
+| `deploy.sh` | Deployment script |
+| `setup-server.sh` | Server setup script |
