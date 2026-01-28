@@ -52,8 +52,8 @@
 
 	const plans = [
 		{ id: 'day', name: 'Day Pass', price: 'RM 20', duration: '24 hours', accounts: '1 user' },
-		{ id: 'monthly', name: 'Monthly', price: 'RM 80', duration: '30 days', accounts: '1 user' },
-		{ id: 'group_monthly', name: 'Group Monthly', price: 'RM 640', duration: '30 days', accounts: 'Up to 10 users' },
+		{ id: 'monthly', name: '1-Month Pass', price: 'RM 80', duration: '30 days', accounts: '1 user' },
+		{ id: 'group_monthly', name: 'Group 1-Month Pass', price: 'RM 640', duration: '30 days', accounts: 'Up to 10 users' },
 	];
 
 	onMount(() => {
@@ -240,39 +240,39 @@
 <!-- Pricing Modal -->
 {#if showPricingModal}
 	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" role="dialog">
-		<div class="mx-4 w-full max-w-2xl rounded-2xl border border-slate-700 bg-slate-800 p-8 shadow-2xl">
+		<div class="mx-4 w-full max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 shadow-2xl">
 			<div class="mb-6 flex items-center justify-between">
-				<h2 class="text-2xl font-bold text-white">Upgrade to Pro</h2>
-				<button onclick={() => showPricingModal = false} class="text-slate-400 hover:text-white">
+				<h2 class="text-2xl font-bold text-black">Upgrade to Pro</h2>
+				<button onclick={() => showPricingModal = false} class="text-gray-400 hover:text-black">
 					<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
 					</svg>
 				</button>
 			</div>
-			<p class="mb-6 text-slate-400">Get access to WGS Bacteria, Amplicon Bacteria, and all future modules.</p>
+			<p class="mb-6 text-black">Get access to all modules.</p>
 			<div class="grid gap-4 md:grid-cols-3">
 				{#each plans as plan}
 					<button
 						onclick={() => selectedPlan = plan.id}
 						class="rounded-xl border p-4 text-left transition-all {selectedPlan === plan.id
-							? 'border-emerald-500 bg-emerald-500/10'
-							: 'border-slate-600 bg-slate-700/50 hover:border-slate-500'}"
+							? 'border-blue-500 bg-blue-50'
+							: 'border-gray-200 bg-gray-50 hover:border-gray-400'}"
 					>
-						<h3 class="text-lg font-semibold text-white">{plan.name}</h3>
-						<p class="text-2xl font-bold text-emerald-400">{plan.price}</p>
-						<p class="text-xs text-slate-400">{plan.duration}</p>
-						<p class="mt-2 text-xs text-slate-500">{plan.accounts}</p>
+						<h3 class="text-lg font-semibold text-black">{plan.name}</h3>
+						<p class="text-2xl font-bold text-blue-500">{plan.price}</p>
+						<p class="text-xs text-black">{plan.duration}</p>
+						<p class="mt-2 text-xs text-black">{plan.accounts}</p>
 					</button>
 				{/each}
 			</div>
 			{#if selectedPlan === 'group_monthly'}
 				<div class="mt-4">
-					<label for="group-emails" class="mb-1 block text-sm text-slate-300">Group member emails (up to 10, comma or newline separated)</label>
+					<label for="group-emails" class="mb-1 block text-sm text-black">Group member emails (up to 10, comma or newline separated)</label>
 					<textarea
 						id="group-emails"
 						bind:value={groupEmails}
 						rows="3"
-						class="w-full rounded-lg border border-slate-600 bg-slate-700 p-3 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+						class="w-full rounded-lg border border-gray-300 bg-white p-3 text-sm text-black placeholder-gray-400 focus:border-blue-500 focus:outline-none"
 						placeholder="user1@example.com, user2@example.com"
 					></textarea>
 				</div>
@@ -280,7 +280,7 @@
 			<button
 				onclick={startCheckout}
 				disabled={!selectedPlan || checkoutLoading}
-				class="mt-6 w-full rounded-lg bg-emerald-600 py-3 font-semibold text-white transition-colors hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+				class="mt-6 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
 			>
 				{checkoutLoading ? 'Redirecting to checkout...' : 'Continue to Payment'}
 			</button>
