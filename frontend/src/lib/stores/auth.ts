@@ -162,7 +162,11 @@ export const isAdmin = derived(auth, ($a) =>
 	!!$a.user && ADMIN_USERNAMES.includes($a.user.username)
 );
 
-export const isPro = derived(auth, ($a) => !!$a.user?.is_pro);
+const ADMIN_EMAILS = ['adriana.kreatbio@gmail.com'];
+
+export const isPro = derived(auth, ($a) =>
+	!!$a.user?.is_pro || (!!$a.user && ADMIN_EMAILS.includes($a.user.email))
+);
 
 export const subscriptionTier = derived(auth, ($a) => $a.user?.subscription_tier ?? 'free');
 

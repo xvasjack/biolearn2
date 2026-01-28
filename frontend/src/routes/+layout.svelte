@@ -55,7 +55,6 @@
 
 	<div class="app-content">
 		{@render children()}
-	</div>
 
 	<footer class="site-footer">
 		<span class="footer-brand">Kreatbio Sdn. Bhd.</span>
@@ -66,6 +65,7 @@
 		<span class="footer-sep">·</span>
 		<a href="https://kreatbio.com" target="_blank" rel="noopener noreferrer">kreatbio.com</a>
 	</footer>
+	</div>
 </div>
 
 <style>
@@ -78,7 +78,9 @@
 	.app-content {
 		flex: 1;
 		min-height: 0;
-		overflow: hidden;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
 	}
 	.top-bar {
 		flex-shrink: 0;

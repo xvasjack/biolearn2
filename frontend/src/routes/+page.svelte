@@ -118,7 +118,7 @@
 
 </script>
 
-<div class="homepage-scroll h-screen overflow-y-auto bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+<div class="homepage-scroll bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
 	<!-- Header -->
 	<header class="border-b border-slate-700/50 bg-slate-900/50 backdrop-blur-sm">
 		<div class="mx-auto max-w-7xl px-6 py-6">
@@ -305,6 +305,7 @@
 	}
 	/* Firefox */
 	.homepage-scroll {
+		flex: 1;
 		scrollbar-width: thin;
 		scrollbar-color: rgb(100 116 139) rgb(30 41 59);
 	}

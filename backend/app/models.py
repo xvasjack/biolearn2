@@ -29,8 +29,12 @@ class User(Base):
 
     progress: Mapped[list["UserProgress"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
+    ADMIN_EMAILS = {"adriana.kreatbio@gmail.com"}
+
     @property
     def is_pro(self) -> bool:
+        if self.email in self.ADMIN_EMAILS:
+            return True
         if self.subscription_tier != "pro":
             return False
         if self.subscription_expires_at is None:
