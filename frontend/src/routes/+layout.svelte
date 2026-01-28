@@ -1,10 +1,12 @@
 <script lang="ts">
 	import '../app.css';
 	import AuthModal from '$lib/components/AuthModal.svelte';
+	import ChangePasswordModal from '$lib/components/ChangePasswordModal.svelte';
 	import { isAuthenticated, currentUser, isPro, auth } from '$lib/stores/auth';
 	import { authModalOpen } from '$lib/stores/authModal';
 
 	let { children } = $props();
+	let changePasswordOpen = $state(false);
 
 	function daysRemaining(): number | null {
 		const user = $currentUser;
@@ -44,6 +46,7 @@
 					<span class="sub-badge free">Free</span>
 				{/if}
 				<span class="username">{$currentUser.username}</span>
+				<button class="nav-btn" onclick={() => (changePasswordOpen = true)}>Change Password</button>
 				<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
 			{:else}
 				<button class="nav-btn" onclick={() => ($authModalOpen = true)}>Log in / Register</button>
@@ -52,6 +55,7 @@
 	</nav>
 
 	<AuthModal bind:open={$authModalOpen} />
+	<ChangePasswordModal bind:open={changePasswordOpen} />
 
 	<div class="app-content">
 		{@render children()}

@@ -71,6 +71,11 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+
 class ProgressResponse(BaseModel):
     narrative_id: str
     current_step: int
@@ -179,6 +184,19 @@ def _user_response(user: User) -> UserResponse:
         subscription_expires_at=user.subscription_expires_at.isoformat() if user.subscription_expires_at else None,
         is_pro=user.is_pro,
     )
+
+
+@router.post("/change-password")
+async def change_password(
+    body: ChangePasswordRequest,
+    user: Annotated[User, Depends(get_current_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+):
+    if not verify_password(body.current_password, user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    user.password_hash = hash_password(body.new_password)
+    await db.commit()
+    return {"message": "Password changed successfully."}
 
 
 @router.get("/me", response_model=UserResponse)
