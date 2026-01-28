@@ -225,17 +225,15 @@
 <div class="h-screen w-screen flex flex-col overflow-hidden" style="display: flex; flex-direction: column; height: 100%; width: 100%;">
 	<!-- Top Header Bar -->
 	<div class="h-10 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700" style="display: flex; align-items: center; justify-content: space-between; height: 40px; flex-shrink: 0;">
-		<div class="flex items-center gap-2" style="display: flex; align-items: center; gap: 0.5rem;">
-			<a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-				<span class="text-blue-100 font-bold text-sm">BioLearn</span>
-			</a>
-			<span class="text-gray-400 text-xs">| Bioinformatics Training Platform</span>
-			{#if storyline}
-				<span class="text-blue-100 text-xs">|</span>
-				<span class="text-blue-400 text-xs">{storyline.title}</span>
-			{/if}
+		<!-- Commands List -->
+		<div class="flex items-center gap-2 text-sm" style="display: flex; align-items: center; gap: 0.5rem;">
+			<span class="text-gray-400" style="color: #9ca3af;">Commands:</span>
+			<div class="flex gap-1 flex-wrap" style="display: flex; gap: 4px; flex-wrap: wrap;">
+				{#each ['ls', 'cd', 'pwd', 'cat', 'head', 'tail', 'clear', 'help'] as cmd}
+					<span class="px-1.5 py-0.5 bg-gray-700 text-gray-300 rounded" style="padding: 2px 6px; background: #374151; color: #d1d5db; border-radius: 4px; font-size: 12px;">{cmd}</span>
+				{/each}
+			</div>
 		</div>
-
 		<!-- Files Dropdown -->
 		<div class="files-dropdown relative" style="position: relative;">
 			<button

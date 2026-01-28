@@ -423,15 +423,6 @@
 </script>
 
 <div class="flex flex-col h-full bg-gray-900 overflow-hidden" style="display: flex; flex-direction: column; height: 100%; background: #111827; overflow: hidden;">
-	<!-- Command bar -->
-	<div class="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 bg-gray-800 border-b border-gray-700 text-xs" style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; padding: 6px 12px; background: #1f2937; border-bottom: 1px solid #374151;">
-		<span class="text-gray-400" style="color: #9ca3af;">Commands:</span>
-		<div class="flex gap-1 flex-wrap" style="display: flex; gap: 4px; flex-wrap: wrap;">
-			{#each ['ls', 'cd', 'pwd', 'cat', 'head', 'tail', 'clear', 'help'] as cmd}
-				<span class="px-1.5 py-0.5 bg-gray-700 text-gray-300 rounded text-[10px]" style="padding: 2px 6px; background: #374151; color: #d1d5db; border-radius: 4px; font-size: 10px;">{cmd}</span>
-			{/each}
-		</div>
-	</div>
 	<!-- Terminal notice -->
 	<div class="flex-shrink-0 px-3 py-1 bg-gray-800/50 text-sm text-gray-500 italic" style="flex-shrink: 0; padding: 4px 12px; background: rgba(31, 41, 55, 0.5); font-size: 14px; color: #6b7280; font-style: italic;">
 		This terminal is optimized for commands referenced in the lesson panel. Other commands may have limited functionality.

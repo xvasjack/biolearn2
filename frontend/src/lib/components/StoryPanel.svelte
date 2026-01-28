@@ -200,9 +200,6 @@
 	<!-- Header -->
 	<div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6" style="background: linear-gradient(to right, #2563eb, #1d4ed8); color: white; padding: 1.5rem; flex-shrink: 0;">
 		<div class="flex items-center gap-3 mb-2 flex-wrap" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-			<span class="bg-white/20 px-3 py-1 rounded-full text-sm font-medium" style="background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500;">
-				WGS Analysis
-			</span>
 			{#if storyline.technologyLabel}
 				<span class="px-3 py-1 rounded-full text-sm font-medium" style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; background: {storyline.technologyLabel.includes('Long Read') ? 'rgba(168,85,247,0.9)' : 'rgba(59,130,246,0.9)'};">
 					{storyline.technologyLabel}

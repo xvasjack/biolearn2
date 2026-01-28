@@ -1,12 +1,10 @@
 <script lang="ts">
 	import '../app.css';
 	import AuthModal from '$lib/components/AuthModal.svelte';
-	import ChangePasswordModal from '$lib/components/ChangePasswordModal.svelte';
 	import { isAuthenticated, currentUser, isPro, auth } from '$lib/stores/auth';
 	import { authModalOpen } from '$lib/stores/authModal';
 
 	let { children } = $props();
-	let changePasswordOpen = $state(false);
 
 	function daysRemaining(): number | null {
 		const user = $currentUser;
@@ -27,11 +25,12 @@
 <div class="app-shell">
 	<nav class="top-bar">
 		<div class="nav-left">
-			<span class="brand">BioLearn</span>
-			<span class="nav-sep">|</span>
-			<a href="/" class="nav-link">Mainpage</a>
-			<span class="nav-sep">|</span>
-			<a href="/pricing" class="nav-link">Pricing</a>
+			<span class="brand">Biolearn</span>
+			<div class="nav-menus">
+				<a href="/" class="nav-link">Mainpage</a>
+				<span class="nav-sep">|</span>
+				<a href="/pricing" class="nav-link">Pricing</a>
+			</div>
 		</div>
 		<div class="auth-area">
 			{#if $isAuthenticated && $currentUser}
@@ -46,7 +45,6 @@
 					<span class="sub-badge free">Free</span>
 				{/if}
 				<span class="username">{$currentUser.username}</span>
-				<button class="nav-btn" onclick={() => (changePasswordOpen = true)}>Change Password</button>
 				<button class="nav-btn" onclick={() => auth.logout()}>Log out</button>
 			{:else}
 				<button class="nav-btn" onclick={() => ($authModalOpen = true)}>Log in / Register</button>
@@ -55,7 +53,6 @@
 	</nav>
 
 	<AuthModal bind:open={$authModalOpen} />
-	<ChangePasswordModal bind:open={changePasswordOpen} />
 
 	<div class="app-content">
 		{@render children()}
@@ -101,10 +98,15 @@
 		font-size: 1.1rem;
 		color: #89b4fa;
 	}
+	.nav-menus {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		margin-left: 2rem;
+	}
 	.nav-link {
 		color: #a6adc8;
-		font-size: 0.85rem;
-		font-weight: 700;
+		font-size: 1rem;
 		text-decoration: none;
 	}
 	.nav-sep {
