@@ -27,7 +27,7 @@
 			title: 'WGS Bacteria',
 			description: 'Whole Genome Sequencing analysis for bacterial pathogens',
 			icon: '🧬',
-			paid: true,
+			comingSoon: true,
 		},
 		{
 			id: 'amplicon-bacteria',
