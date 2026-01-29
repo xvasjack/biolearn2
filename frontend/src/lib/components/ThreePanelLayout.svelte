@@ -3,7 +3,7 @@
 	import Terminal from './Terminal.svelte';
 	import StoryPanel from './StoryPanel.svelte';
 	import OutputPanel from './OutputPanel.svelte';
-	import { executedCommands, storylineDataDir, currentDirectory, templateFiles } from '$lib/stores/terminal';
+	import { executedCommands, storylineDataDir, currentDirectory, templateFiles, templateRootFiles } from '$lib/stores/terminal';
 	import { initializeStoryline, getToolFileUrl, getRootFileUrl, getFileType } from '$lib/services/templateService';
 	import type { Storyline } from '$lib/storylines/types';
 
@@ -36,6 +36,7 @@
 	// Track store values for reactive building of file list
 	let currentExecutedCommands = $state<string[]>([]);
 	let currentTemplateFiles = $state<Record<string, string[]>>({});
+	let currentRootFiles = $state<string[]>([]);
 
 	onMount(() => {
 		const dataDir = storyline?.dataDir || '/data/outbreak_investigation';
@@ -49,29 +50,42 @@
 
 		const unsub1 = executedCommands.subscribe(cmds => {
 			currentExecutedCommands = cmds;
-			rebuildFileList(cmds, currentTemplateFiles);
+			rebuildFileList(cmds, currentTemplateFiles, currentRootFiles);
 		});
 
 		const unsub2 = templateFiles.subscribe(tf => {
 			currentTemplateFiles = tf;
-			rebuildFileList(currentExecutedCommands, tf);
+			rebuildFileList(currentExecutedCommands, tf, currentRootFiles);
+		});
+
+		const unsub3 = templateRootFiles.subscribe(rootFiles => {
+			currentRootFiles = rootFiles;
+			rebuildFileList(currentExecutedCommands, currentTemplateFiles, rootFiles);
 		});
 
 		return () => {
 			unsub1();
 			unsub2();
+			unsub3();
 		};
 	});
 
-	function rebuildFileList(cmds: string[], tf: Record<string, string[]>) {
+	function rebuildFileList(cmds: string[], tf: Record<string, string[]>, rootFiles: string[]) {
 		const files: {name: string, type: string, tool: string}[] = [];
 		cmds.forEach(tool => {
+			// Check tool output directories (o_toolname/)
 			const toolFileNames = tf[tool];
 			if (toolFileNames) {
 				toolFileNames.forEach(filename => {
 					files.push({ name: filename, type: getFileType(filename), tool });
 				});
 			}
+			// Check root-level files (o_toolname.ext pattern)
+			rootFiles.forEach(rootFile => {
+				if (rootFile.startsWith(`o_${tool}.`) || rootFile === `o_${tool}`) {
+					files.push({ name: rootFile, type: getFileType(rootFile), tool });
+				}
+			});
 		});
 		allGeneratedFiles = files;
 	}
