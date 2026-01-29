@@ -229,12 +229,6 @@
 		</div>
 	</main>
 
-	<!-- Footer -->
-	<footer class="border-t border-slate-700/50 bg-slate-900/50">
-		<div class="mx-auto max-w-7xl px-6 py-6 text-center text-sm text-slate-500">
-			BioLearn - Learn bioinformatics through hands-on experience
-		</div>
-	</footer>
 </div>
 
 <!-- Pricing Modal -->
