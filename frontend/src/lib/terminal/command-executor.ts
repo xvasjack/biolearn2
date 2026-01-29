@@ -332,10 +332,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 
 		// Check directory requirement
 		if (req && !req.dirs.includes(ctx.getCurrentDir())) {
-			const shortDirs = req.dirs.map(d => d.replace(dataDir, '~')).join(' or ');
-			ctx.terminal.writeln(`\x1b[31mError: ${command} must be run from ${shortDirs}\x1b[0m`);
-			ctx.terminal.writeln(`\x1b[90mCurrent directory: ${ctx.getCurrentDir().replace(dataDir, '~')}\x1b[0m`);
-			ctx.terminal.writeln(`\x1b[90mUse 'cd' to navigate to the correct directory first.\x1b[0m`);
+			ctx.terminal.writeln(`\x1b[31mError: Wrong command. Please follow the command on the right panel.\x1b[0m`);
 			writePrompt(ctx);
 			return;
 		}
