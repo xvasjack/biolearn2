@@ -292,6 +292,42 @@ export const fileNotes: Record<string, FileNote[]> = {
 			name: 'Replicons vs Plasmids',
 			description: 'The number of replicons detected may differ from the number of plasmids in the assembly. This occurs because: (1) Large conjugative plasmids (especially IncF types) are modular and can carry multiple replicon sequences on a single plasmid—e.g., IncFII(K) and IncFIB(K) often co-occur on the same ~50-200 kb IncF plasmid; (2) Some plasmids may lack known replicons in the database; (3) Fragmented assemblies may split a single plasmid across multiple contigs.',
 		}
+	],
+	'mlst': [
+		{
+			name: 'Sequence Type (ST)',
+			description: 'A unique numerical identifier assigned based on the allelic profile of 7 housekeeping genes. Isolates with the same ST share identical alleles at all 7 loci and are considered closely related.',
+		},
+		{
+			name: 'Allelic Profile',
+			description: 'The combination of allele numbers for each of the 7 housekeeping genes. Each unique sequence variant of a gene is assigned an allele number. e.g. ST307 in K. pneumoniae has profile 4-1-2-1-1-1-12.',
+		},
+		{
+			name: 'Scheme',
+			description: 'MLST uses organism-specific schemes with 7 conserved housekeeping genes. e.g. K. pneumoniae: gapA, infB, mdh, pgi, phoE, rpoB, tonB. Schemes are maintained in PubMLST database.',
+		},
+		{
+			name: 'Clinical Relevance',
+			description: 'Certain STs are associated with high-risk clones. e.g. K. pneumoniae: ST258, ST11, ST15, ST307 are globally disseminated MDR clones.',
+		}
+	],
+	'plasmidfinder.py': [
+		{
+			name: 'Replicon Type',
+			description: 'Plasmid replicons are classified by incompatibility (Inc) groups. Plasmids in the same Inc group cannot coexist stably in the same cell. Common types in Enterobacteriaceae: IncF, IncX, IncI, IncN, Col.',
+		},
+		{
+			name: 'Identity Percentage',
+			description: 'Sequence similarity to the reference replicon. >95% identity indicates a confident match. Lower identity may suggest novel variants or distant relatives of known replicons.',
+		},
+		{
+			name: 'Coverage',
+			description: 'Percentage of the reference replicon sequence covered by the query. 100% coverage means the entire replicon sequence was found in the assembly.',
+		},
+		{
+			name: 'Replicons vs Plasmids',
+			description: 'The number of replicons detected may differ from the number of plasmids in the assembly. This occurs because: (1) Large conjugative plasmids (especially IncF types) are modular and can carry multiple replicon sequences on a single plasmid—e.g., IncFII(K) and IncFIB(K) often co-occur on the same ~50-200 kb IncF plasmid; (2) Some plasmids may lack known replicons in the database; (3) Fragmented assemblies may split a single plasmid across multiple contigs.',
+		}
 	]
 };
 
