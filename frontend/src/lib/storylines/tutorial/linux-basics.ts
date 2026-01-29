@@ -84,7 +84,7 @@ Let's begin!`,
 				{ name: 'ls', desc: 'List directory contents (before copy)' },
 				{ name: '-r', desc: 'Recursive copy for directories' },
 				{ name: 'source', desc: 'Folder to copy from (file path: /data/linux_tutorial/scripts)' },
-				{ name: './my_scripts', desc: 'New directory name' },
+				{ name: './my_scripts', desc: 'Paste into current directory/folder (.) with new directory name' },
 				{ name: 'ls', desc: 'List directory contents (after copy)' }
 			]
 		},
