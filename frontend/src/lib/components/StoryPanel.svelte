@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { executedCommands, executedSteps, currentDirectory, storylineDataDir } from '$lib/stores/terminal';
+	import { executedCommands, executedSteps, currentDirectory, storylineDataDir, outputData, terminalState, templateFiles, templateRootFiles, currentStoryStep } from '$lib/stores/terminal';
 	import { get } from 'svelte/store';
 	import type { Storyline, StorylineSection } from '$lib/storylines/types';
 	import { onMount } from 'svelte';
@@ -13,10 +13,24 @@
 	let isFinished = $state(false);
 	let selectedDecision = $state<string | null>(null);
 
-	// Reset executed commands when tutorial opens (Issue 1 fix)
+	// Reset all storyline state when tutorial opens
 	onMount(() => {
-		// Clear executed commands to start fresh each time tutorial opens
+		// Reset output panel state
+		outputData.set(null);
+		terminalState.set({
+			isRunning: false,
+			currentCommand: '',
+			progress: 0,
+			estimatedTime: 0
+		});
+
+		// Reset template file cache
+		templateFiles.set({});
+		templateRootFiles.set([]);
+
+		// Reset step tracking
 		executedCommands.set([]);
+		currentStoryStep.set(0);
 		completedSteps = new Set();
 		currentStep = 0;
 	});
