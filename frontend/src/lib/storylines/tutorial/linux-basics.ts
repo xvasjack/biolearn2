@@ -70,7 +70,7 @@ Let's begin!`,
 			parameters: [
 				{ name: 'cp', desc: 'Copy command' },
 				{ name: 'source', desc: 'File to copy from (file path: /data/linux_tutorial/sample_info.txt)' },
-				{ name: './sample_info_copy.txt', desc: 'Paste in current folder (.) & change filename to sample_info_copy.txt' }
+				{ name: './sample_info_copy.txt', desc: 'Paste into the current folder (.) & change filename to sample_info_copy.txt' }
 			]
 		},
 		{
