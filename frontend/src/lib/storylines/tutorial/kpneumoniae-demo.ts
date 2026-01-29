@@ -175,6 +175,8 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: 'mkdir o_plasmidfinder', desc: 'Create output directory' },
+				{ name: '&&', desc: 'Run next command if previous succeeds' },
+				{ name: 'plasmidfinder.py', desc: 'PlasmidFinder tool' },
 				{ name: '-i', desc: 'Input assembly file' },
 				{ name: '-o', desc: 'Output directory' }
 			]
