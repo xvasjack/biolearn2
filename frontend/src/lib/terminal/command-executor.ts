@@ -15,6 +15,15 @@ function writePrompt(ctx: TerminalContext) {
 }
 
 export async function executeCommand(cmd: string, ctx: TerminalContext) {
+	// Handle compound commands with && (execute sequentially)
+	if (cmd.includes(' && ')) {
+		const subCommands = cmd.split(' && ').map(c => c.trim()).filter(c => c);
+		for (const subCmd of subCommands) {
+			await executeCommand(subCmd, ctx);
+		}
+		return;
+	}
+
 	const parts = cmd.trim().split(/\s+/);
 	const command = parts[0];
 	const args = parts.slice(1);
@@ -692,8 +701,8 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 		}
 
 		if (command === 'abricate') {
-			// abricate --db ncbi o_unicycler/assembly.fasta -o o_abricate/
-			const expectedCmd = 'abricate --db ncbi o_unicycler/assembly.fasta -o o_abricate/';
+			// abricate --db ncbi o_unicycler/assembly.fasta > o_abricate/o_abricate_ncbi.tab
+			const expectedCmd = 'abricate --db ncbi o_unicycler/assembly.fasta > o_abricate/o_abricate_ncbi.tab';
 			const inputFile = args.find(a => a.endsWith('.fasta'));
 			if (!inputFile) {
 				ctx.terminal.writeln(`\x1b[31mError: Missing input assembly file\x1b[0m`);
@@ -715,18 +724,18 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 				writePrompt(ctx);
 				return;
 			}
-			// Check output
-			if (!args.includes('-o')) {
-				ctx.terminal.writeln(`\x1b[31mError: Missing output directory (-o flag)\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[33mRequired: -o o_abricate/\x1b[0m`);
+			// Check output redirection - abricate outputs to stdout
+			const redirectIdx = args.indexOf('>');
+			if (redirectIdx === -1) {
+				ctx.terminal.writeln(`\x1b[31mError: Missing output redirect (>)\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[33mABRicate outputs to stdout. Use: > o_abricate/o_abricate_ncbi.tab\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
-			const oIdx = args.indexOf('-o');
-			const outDir = args[oIdx + 1]?.replace(/\/$/, '');
-			if (outDir !== 'o_abricate') {
-				ctx.terminal.writeln(`\x1b[31mError: Invalid output directory '${args[oIdx + 1] || 'missing'}'\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[33mFor this training, please use: o_abricate/\x1b[0m`);
+			const outPath = args[redirectIdx + 1];
+			if (!outPath || !outPath.startsWith('o_abricate/')) {
+				ctx.terminal.writeln(`\x1b[31mError: Invalid output path '${outPath || 'missing'}'\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[33mFor this training, please use: > o_abricate/o_abricate_ncbi.tab\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
@@ -781,8 +790,8 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 		}
 
 		if (command === 'checkm2') {
-			// checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ -x fasta
-			const expectedCmd = 'checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ -x fasta';
+			// checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ --threads 4 -x fasta
+			const expectedCmd = 'checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ --threads 4 -x fasta';
 			if (!args.includes('predict')) {
 				ctx.terminal.writeln(`\x1b[31mError: Missing 'predict' workflow command\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[31mUsage: ${expectedCmd}\x1b[0m`);
@@ -816,6 +825,21 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 			if (outDir !== 'o_checkm2') {
 				ctx.terminal.writeln(`\x1b[31mError: Invalid output directory '${args[outIdx + 1] || 'missing'}'\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[33mFor this training, please use: --output-directory o_checkm2/\x1b[0m`);
+				writePrompt(ctx);
+				return;
+			}
+			// Check --threads flag
+			if (!args.includes('--threads')) {
+				ctx.terminal.writeln(`\x1b[31mError: Missing threads flag (--threads)\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[33mRequired: --threads 4\x1b[0m`);
+				writePrompt(ctx);
+				return;
+			}
+			const threadsIdx = args.indexOf('--threads');
+			const threads = args[threadsIdx + 1];
+			if (threads !== '4') {
+				ctx.terminal.writeln(`\x1b[31mError: Invalid threads value '${threads || 'missing'}'\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[33mFor this training, please use: --threads 4\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
@@ -1204,8 +1228,8 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 		}
 
 		if (command === 'plasmidfinder' || command === 'plasmidfinder.py') {
-			// plasmidfinder.py -i o_unicycler/assembly.fasta -x -o o_plasmidfinder
-			const expectedCmd = `${command} -i o_unicycler/assembly.fasta -x -o o_plasmidfinder`;
+			// mkdir o_plasmidfinder && plasmidfinder.py -i o_unicycler/assembly.fasta -o o_plasmidfinder
+			const expectedCmd = `${command} -i o_unicycler/assembly.fasta -o o_plasmidfinder`;
 			if (!args.includes('-i')) {
 				ctx.terminal.writeln(`\x1b[31mError: Missing input file (-i flag)\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[31mUsage: ${expectedCmd}\x1b[0m`);

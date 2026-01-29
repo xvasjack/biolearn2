@@ -131,7 +131,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			explanation: 'Bandage visualizes the assembly graph showing how contigs connect.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
-				{ name: 'image', desc: 'Generate PNG image' },
+				{ name: 'Bandage image', desc: 'Generate PNG image' },
 				{ name: 'o_unicycler/assembly.gfa', desc: 'Input graph file' }
 			]
 		},
@@ -157,7 +157,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 8: Genome Completeness',
 			text: `Assess genome completeness and contamination using CheckM2.`,
-			command: 'checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ -x fasta',
+			command: 'checkm2 predict --input o_unicycler/ --output-directory o_checkm2/ --threads 4 -x fasta',
 			explanation: 'CheckM2 uses machine learning to estimate completeness and contamination.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
@@ -170,10 +170,11 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 9: Plasmid Identification',
 			text: `Identify plasmid replicons in the assembly to confirm which circular components are plasmids.`,
-			command: 'plasmidfinder.py -i o_unicycler/assembly.fasta -x -o o_plasmidfinder',
+			command: 'mkdir o_plasmidfinder && plasmidfinder.py -i o_unicycler/assembly.fasta -o o_plasmidfinder',
 			explanation: 'PlasmidFinder searches for known plasmid replicon sequences in the assembly to identify plasmid types.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
+				{ name: 'mkdir o_plasmidfinder', desc: 'Create output directory' },
 				{ name: '-i', desc: 'Input assembly file' },
 				{ name: '-o', desc: 'Output directory' }
 			]
@@ -188,12 +189,12 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 10: AMR Gene Detection',
 			text: `Screen the assembly for antimicrobial resistance genes using multiple databases.`,
-			command: 'abricate --db ncbi o_unicycler/assembly.fasta -o o_abricate/',
+			command: 'abricate --db ncbi o_unicycler/assembly.fasta > o_abricate/o_abricate_ncbi.tab',
 			explanation: 'ABRicate rapidly screens for resistance genes against curated databases.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: '--db ncbi', desc: 'Use NCBI AMRFinder database' },
-				{ name: '-o', desc: 'Output directory' }
+				{ name: '> o_abricate/o_abricate_ncbi.tab', desc: 'Redirect output to file' }
 			]
 		},
 		{
