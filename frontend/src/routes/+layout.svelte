@@ -96,7 +96,7 @@
 	.brand {
 		font-weight: 700;
 		font-size: 1.1rem;
-		color: #89b4fa;
+		color: #ffffff;
 	}
 	.nav-menus {
 		display: flex;

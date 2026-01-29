@@ -1,4 +1,5 @@
 """User authentication and management endpoints."""
+import os
 from datetime import datetime, timezone
 from typing import Annotated
 
@@ -22,6 +23,15 @@ from app.email import FRONTEND_URL, send_password_reset
 from app.models import User, UserProgress
 
 router = APIRouter()
+
+# Path to the registered users file
+USERS_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "registered_users.txt")
+
+
+def append_user_to_file(username: str, email: str, created_at: datetime):
+    """Append new user to the registered users file."""
+    with open(USERS_FILE, "a") as f:
+        f.write(f"{username}, {email}, {created_at.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
 
 # ---------- Schemas ----------
@@ -106,6 +116,9 @@ async def register(body: UserCreate, db: Annotated[AsyncSession, Depends(get_db)
     db.add(user)
     await db.commit()
     await db.refresh(user)
+
+    # Append new user to the registered users file
+    append_user_to_file(user.username, user.email, user.created_at)
 
     return AuthResponse(
         user=_user_response(user),

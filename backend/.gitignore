@@ -31,3 +31,6 @@ htmlcov/
 
 # Logs
 *.log
+
+# User data
+registered_users.txt
