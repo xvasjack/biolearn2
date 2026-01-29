@@ -68,8 +68,8 @@ Let's begin!`,
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
 				{ name: 'cp', desc: 'Copy command' },
-				{ name: 'source', desc: 'File to copy from' },
-				{ name: '.', desc: 'Current directory (destination)' }
+				{ name: 'source', desc: 'File to copy from (file path: /data/linux_tutorial/sample_info.txt)' },
+				{ name: './sample_info_copy.txt', desc: 'Paste in current folder (.) & change filename to sample_info_copy.txt' }
 			]
 		},
 		{
@@ -82,6 +82,7 @@ Let's begin!`,
 			parameters: [
 				{ name: 'ls', desc: 'List directory contents (before copy)' },
 				{ name: '-r', desc: 'Recursive copy for directories' },
+				{ name: 'source', desc: 'Folder to copy from (file path: /data/linux_tutorial/scripts)' },
 				{ name: './my_scripts', desc: 'New directory name' },
 				{ name: 'ls', desc: 'List directory contents (after copy)' }
 			]
