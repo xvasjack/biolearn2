@@ -365,9 +365,9 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 					ctx.terminal.writeln(`\x1b[90messential for documentation and downstream analysis.\x1b[0m`);
 					ctx.terminal.writeln(``);
 					ctx.terminal.writeln(`\x1b[36mPlease redirect output to the o_seqkit/ folder:\x1b[0m`);
-					ctx.terminal.writeln(`\x1b[32m  seqkit stats *.fastq.gz > o_seqkit/o_seqkit_stats.txt\x1b[0m`);
+					ctx.terminal.writeln(`\x1b[32m  seqkit stats input_data/*.fastq.gz > o_seqkit/o_seqkit_stats.txt\x1b[0m`);
 					ctx.terminal.writeln(`\x1b[90m  or\x1b[0m`);
-					ctx.terminal.writeln(`\x1b[32m  seqkit stats SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz > o_seqkit/o_seqkit_stats.txt\x1b[0m`);
+					ctx.terminal.writeln(`\x1b[32m  seqkit stats input_data/SRR36708862_1.fastq.gz input_data/SRR36708862_2.fastq.gz > o_seqkit/o_seqkit_stats.txt\x1b[0m`);
 					writePrompt(ctx);
 					return;
 				}
@@ -472,7 +472,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 		}
 
 		if (command === 'trimmomatic') {
-			const expectedCmd = 'trimmomatic PE -threads 2 -phred33 SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz o_trimmomatic/SRR36708862_R1_paired.fq.gz o_trimmomatic/SRR36708862_R1_unpaired.fq.gz o_trimmomatic/SRR36708862_R2_paired.fq.gz o_trimmomatic/SRR36708862_R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:15 MINLEN:36';
+			const expectedCmd = 'trimmomatic PE -threads 2 -phred33 input_data/SRR36708862_1.fastq.gz input_data/SRR36708862_2.fastq.gz o_trimmomatic/SRR36708862_R1_paired.fq.gz o_trimmomatic/SRR36708862_R1_unpaired.fq.gz o_trimmomatic/SRR36708862_R2_paired.fq.gz o_trimmomatic/SRR36708862_R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:15 MINLEN:36';
 			if (args.length < 5) {
 				ctx.terminal.writeln(`\x1b[31mError: Incomplete command\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[31mUsage: trimmomatic PE -phred33 <R1.fq.gz> <R2.fq.gz> <outputs...> ILLUMINACLIP:... SLIDINGWINDOW:... MINLEN:...\x1b[0m`);

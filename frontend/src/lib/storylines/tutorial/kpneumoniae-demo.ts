@@ -51,12 +51,12 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 1: Check Sequencing Statistics',
 			text: `Let's start by examining basic statistics about our sequencing data and save the results to a file.`,
-			command: 'seqkit stats SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz > o_seqkit/o_seqkit_stats.txt',
+			command: 'seqkit stats input_data/SRR36708862_1.fastq.gz input_data/SRR36708862_2.fastq.gz > o_seqkit/o_seqkit_stats.txt',
 			explanation: 'SeqKit provides quick statistics including read count, total bases, and average read length. Output is saved to a file for reference.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: 'stats', desc: 'Generate sequence statistics' },
-				{ name: 'SRR36708862_*.fastq.gz', desc: 'Input paired-end FASTQ files' },
+				{ name: 'input_data/SRR36708862_*.fastq.gz', desc: 'Input paired-end FASTQ files' },
 				{ name: '> o_seqkit/o_seqkit_stats.txt', desc: 'Redirect output to file' }
 			]
 		},
@@ -76,7 +76,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 3: Quality Control Report',
 			text: `Generate detailed quality reports to identify any issues with the sequencing data.`,
-			command: 'fastqc SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz -o o_fastqc/',
+			command: 'fastqc input_data/SRR36708862_1.fastq.gz input_data/SRR36708862_2.fastq.gz -o o_fastqc/',
 			explanation: 'FastQC analyzes per-base quality scores, GC content, adapter contamination, and other quality metrics.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
@@ -93,7 +93,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			type: 'task',
 			title: 'Step 4: Adapter Trimming',
 			text: `Remove Illumina adapters and trim low-quality bases from read ends.`,
-			command: 'trimmomatic PE -threads 2 -phred33 SRR36708862_1.fastq.gz SRR36708862_2.fastq.gz o_trimmomatic/SRR36708862_R1_paired.fq.gz o_trimmomatic/SRR36708862_R1_unpaired.fq.gz o_trimmomatic/SRR36708862_R2_paired.fq.gz o_trimmomatic/SRR36708862_R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:15 MINLEN:36',
+			command: 'trimmomatic PE -threads 2 -phred33 input_data/SRR36708862_1.fastq.gz input_data/SRR36708862_2.fastq.gz o_trimmomatic/SRR36708862_R1_paired.fq.gz o_trimmomatic/SRR36708862_R1_unpaired.fq.gz o_trimmomatic/SRR36708862_R2_paired.fq.gz o_trimmomatic/SRR36708862_R2_unpaired.fq.gz ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 SLIDINGWINDOW:4:15 MINLEN:36',
 			explanation: 'Trimmomatic removes adapter sequences and trims bases with quality below threshold.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [

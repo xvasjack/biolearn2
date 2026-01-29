@@ -2,7 +2,7 @@
 export const validToolFiles: Record<string, string[]> = {
 	'fastqc': [
 		// Trial/Demo scenario
-		'SRR36708862_1.fastq.gz', 'SRR36708862_2.fastq.gz',
+		'input_data/SRR36708862_1.fastq.gz', 'input_data/SRR36708862_2.fastq.gz',
 		// Hospital outbreak - patient files
 		'patient_01_R1.fastq.gz', 'patient_01_R2.fastq.gz',
 		'patient_02_R1.fastq.gz', 'patient_02_R2.fastq.gz',
@@ -17,7 +17,7 @@ export const validToolFiles: Record<string, string[]> = {
 	],
 	'seqkit': [
 		// Trial/Demo scenario
-		'SRR36708862_1.fastq.gz', 'SRR36708862_2.fastq.gz',
+		'input_data/SRR36708862_1.fastq.gz', 'input_data/SRR36708862_2.fastq.gz',
 		// Hospital outbreak - patient files
 		'patient_01_R1.fastq.gz', 'patient_01_R2.fastq.gz',
 		'patient_02_R1.fastq.gz', 'patient_02_R2.fastq.gz',
@@ -35,7 +35,7 @@ export const validToolFiles: Record<string, string[]> = {
 	],
 	'trimmomatic': [
 		// Trial/Demo scenario
-		'SRR36708862_1.fastq.gz', 'SRR36708862_2.fastq.gz',
+		'input_data/SRR36708862_1.fastq.gz', 'input_data/SRR36708862_2.fastq.gz',
 		// Hospital outbreak
 		'patient_01_R1.fastq.gz', 'patient_01_R2.fastq.gz',
 		'patient_02_R1.fastq.gz', 'patient_02_R2.fastq.gz',
