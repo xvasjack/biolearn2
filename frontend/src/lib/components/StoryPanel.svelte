@@ -102,6 +102,9 @@
 				if (section.command.includes('run_gubbins') && cmds.some(c => c.includes('gubbins'))) {
 					completedSteps.add(index);
 				}
+				if (section.command.includes('plasmidfinder.py') && cmds.some(c => c.includes('plasmidfinder'))) {
+					completedSteps.add(index);
+				}
 			}
 		});
 		completedSteps = new Set(completedSteps);

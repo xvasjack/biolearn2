@@ -80,6 +80,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			explanation: 'FastQC analyzes per-base quality scores, GC content, adapter contamination, and other quality metrics.',
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
+				{ name: 'input_data/SRR36708862_*.fastq.gz', desc: 'Input FASTQ files' },
 				{ name: '-o o_fastqc/', desc: 'Output directory for reports' }
 			]
 		},
@@ -132,7 +133,8 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: 'Bandage image', desc: 'Generate PNG image' },
-				{ name: 'o_unicycler/assembly.gfa', desc: 'Input graph file' }
+				{ name: 'o_unicycler/assembly.gfa', desc: 'Input graph file' },
+				{ name: 'o_bandage.png', desc: 'Output PNG image' }
 			]
 		},
 		{
@@ -177,8 +179,8 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 				{ name: 'mkdir o_plasmidfinder', desc: 'Create output directory' },
 				{ name: '&&', desc: 'Run next command if previous succeeds' },
 				{ name: 'plasmidfinder.py', desc: 'PlasmidFinder tool' },
-				{ name: '-i', desc: 'Input assembly file' },
-				{ name: '-o', desc: 'Output directory' }
+				{ name: '-i o_unicycler/assembly.fasta', desc: 'Input assembly file' },
+				{ name: '-o o_plasmidfinder', desc: 'Output directory' }
 			]
 		},
 		{
@@ -196,6 +198,7 @@ This dataset (SRR36708862) comes from a study investigating antibiotic resistanc
 			requiredDir: '/data/kpneumoniae_demo',
 			parameters: [
 				{ name: '--db ncbi', desc: 'Use NCBI AMRFinder database' },
+				{ name: 'o_unicycler/assembly.fasta', desc: 'Input assembly file' },
 				{ name: '> o_abricate/o_abricate_ncbi.tab', desc: 'Redirect output to file' }
 			]
 		},
