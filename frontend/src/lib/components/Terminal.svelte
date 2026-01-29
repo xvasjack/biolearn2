@@ -433,11 +433,12 @@
 
 <style>
 	:global(.xterm) {
-		padding: 8px 8px 8px 16px; /* top right bottom left */
+		padding: 8px;
 		height: 100%;
 	}
 
 	:global(.xterm-screen) {
+		margin-left: 8px;
 		height: 100% !important;
 	}
 
