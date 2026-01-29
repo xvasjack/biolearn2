@@ -163,7 +163,7 @@ export const fileNotes: Record<string, FileNote[]> = {
 			description: 'N50 is the length such that 50% of the assembly is in contigs of this length or longer. Higher N50 = better assembly continuity.',
 		}
 	],
-	'bandage': [
+	'Bandage': [
 		{
 			name: 'Assembly Graph Visualization',
 			description: 'Visual representation of the assembly graph showing how contigs connect. Circular paths indicate complete chromosomes/plasmids.',
@@ -303,7 +303,7 @@ export const toolExecutionTimes: Record<string, { min: number; max: number }> = 
 	'trimmomatic': { min: 20, max: 40 },
 	'fastp': { min: 15, max: 30 },
 	'unicycler': { min: 120, max: 180 },  // 2-3 mins
-	'bandage': { min: 2, max: 5 },  // Graph visualization
+	'Bandage': { min: 2, max: 5 },  // Graph visualization
 	'quast': { min: 15, max: 30 },
 	'checkm2': { min: 120, max: 180 },
 	'confindr': { min: 30, max: 60 },
@@ -363,7 +363,7 @@ export const blockedCommands = new Set([
 // Bioinformatics tools
 export const bioTools = new Set([
 	'seqkit', 'fastqc', 'multiqc', 'trimmomatic', 'fastp',
-	'unicycler', 'bandage', 'quast', 'checkm2', 'busco', 'confindr',
+	'unicycler', 'Bandage', 'quast', 'checkm2', 'busco', 'confindr',
 	'prokka', 'bakta', 'abricate', 'resfinder', 'virulencefinder', 'mlst',
 	'mob_recon', 'platon', 'plasmidfinder', 'plasmidfinder.py', 'integron_finder', 'isescan',
 	'snippy', 'snippy-core', 'roary', 'iqtree', 'gubbins',

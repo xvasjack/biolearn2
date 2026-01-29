@@ -49,7 +49,7 @@ export const validToolFiles: Record<string, string[]> = {
 		'trimmed/patient_02_R1_paired.fq.gz', 'trimmed/patient_02_R2_paired.fq.gz',
 		'trimmed/patient_03_R1_paired.fq.gz', 'trimmed/patient_03_R2_paired.fq.gz'
 	],
-	'bandage': [
+	'Bandage': [
 		'o_unicycler/assembly.gfa', 'assembly/assembly.gfa',
 		'assembly/patient_01/assembly.gfa', 'assembly/patient_02/assembly.gfa', 'assembly/patient_03/assembly.gfa'
 	],
@@ -158,7 +158,7 @@ export const toolRequirements: Record<string, { dirs: string[] }> = {
 	'multiqc': { dirs: ['/data/outbreak_investigation', '/data/gut_microbiome', '/data/soil_microbiome', '/data/water_samples'] },
 	'trimmomatic': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation'] },
 	'unicycler': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation'] },
-	'bandage': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation', '/data/wastewater_surveillance', '/data/clinical_samples'] },
+	'Bandage': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation', '/data/wastewater_surveillance', '/data/clinical_samples'] },
 	'prokka': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation', '/data/wastewater_surveillance', '/data/clinical_samples'] },
 	'abricate': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation', '/data/wastewater_surveillance', '/data/clinical_samples'] },
 	'quast': { dirs: ['/data/kpneumoniae_demo', '/data/outbreak_investigation', '/data/wastewater_surveillance', '/data/clinical_samples'] },

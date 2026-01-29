@@ -125,7 +125,7 @@ export function createIlluminaPhase1Sections(): StorylineSection[] {
 			type: 'task',
 			title: 'Step 10: Visualize Assemblies',
 			text: `Create visual representations of all assembly graphs.`,
-			command: 'bandage image assembly/patient_01/assembly.gfa assembly/patient_01_graph.png',
+			command: 'Bandage image assembly/patient_01/assembly.gfa assembly/patient_01_graph.png',
 			explanation: 'Bandage visualizes assembly graphs to identify structure. Repeat for each patient.',
 			requiredDir: '/data/outbreak_investigation',
 			parameters: [
@@ -539,7 +539,7 @@ export function createPacBioHybridSections(): StorylineSection[] {
 			type: 'task',
 			title: 'Step H4: Visualize Hybrid Assembly',
 			text: `Visualize the improved assembly graph.`,
-			command: 'bandage image hybrid_assembly/assembly.gfa hybrid_assembly/o_bandage.png',
+			command: 'Bandage image hybrid_assembly/assembly.gfa hybrid_assembly/o_bandage.png',
 			explanation: 'Check if hybrid assembly resolved circular chromosomes.',
 			requiredDir: '/data/outbreak_investigation',
 			parameters: [
@@ -629,7 +629,7 @@ export function createPacBioPhase1Sections(dataDir: string = '/data/outbreak_inv
 			type: 'task',
 			title: 'Step 5: Visualize Assembly Graph',
 			text: `Examine the assembly graph for circular chromosomes.`,
-			command: 'bandage image assembly/assembly.gfa assembly/o_bandage.png --lengths',
+			command: 'Bandage image assembly/assembly.gfa assembly/o_bandage.png --lengths',
 			explanation: 'Bandage visualizes assembly graphs; circular contigs indicate complete chromosomes.',
 			requiredDir: dataDir,
 			parameters: [
@@ -958,7 +958,7 @@ export function createNanoporePhase1Sections(dataDir: string = '/data/outbreak_i
 			type: 'task',
 			title: 'Step 8: Visualize Assembly',
 			text: `Examine the assembly graph structure.`,
-			command: 'bandage image assembly/assembly.gfa assembly/o_bandage.png --lengths',
+			command: 'Bandage image assembly/assembly.gfa assembly/o_bandage.png --lengths',
 			explanation: 'Bandage visualizes assembly completeness and structure.',
 			requiredDir: dataDir,
 			parameters: [

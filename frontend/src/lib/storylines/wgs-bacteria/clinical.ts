@@ -22,7 +22,7 @@ export const clinical: Storyline = {
 		'kraken2',
 		'flye',
 		'medaka_consensus',
-		'bandage',
+		'Bandage',
 		'quast',
 		'abricate',
 		'mlst',

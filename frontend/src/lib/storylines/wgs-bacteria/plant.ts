@@ -16,7 +16,7 @@ export const plant: Storyline = {
 	technology: 'illumina',
 	technologyLabel: 'Short Read (Illumina)',
 	dataDir: '/data/outbreak_investigation',
-	toolsUsed: ['seqkit', 'fastqc', 'trimmomatic', 'unicycler', 'bandage', 'quast', 'checkm', 'busco', 'abricate', 'mlst', 'prokka', 'bakta', 'mob_recon', 'plasmidfinder', 'platon', 'snippy', 'roary', 'iqtree', 'gubbins', 'virulencefinder'],
+	toolsUsed: ['seqkit', 'fastqc', 'trimmomatic', 'unicycler', 'Bandage', 'quast', 'checkm', 'busco', 'abricate', 'mlst', 'prokka', 'bakta', 'mob_recon', 'plasmidfinder', 'platon', 'snippy', 'roary', 'iqtree', 'gubbins', 'virulencefinder'],
 	sections: [
 		{
 			type: 'intro',

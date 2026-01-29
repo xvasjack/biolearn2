@@ -22,7 +22,7 @@ export const hospital: Storyline = {
 		'multiqc',
 		'trimmomatic',
 		'unicycler',
-		'bandage',
+		'Bandage',
 		'quast',
 		'checkm',
 		'abricate',

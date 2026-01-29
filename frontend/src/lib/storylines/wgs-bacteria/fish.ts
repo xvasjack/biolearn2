@@ -9,7 +9,7 @@ export const fish: Storyline = {
 	technology: 'hybrid',
 	technologyLabel: 'Hybrid (Illumina + ONT)',
 	dataDir: '/data/outbreak_investigation',
-	toolsUsed: ['seqkit', 'fastqc', 'trimmomatic', 'NanoPlot', 'filtlong', 'unicycler', 'bandage', 'quast', 'checkm', 'busco', 'abricate', 'mlst', 'prokka', 'bakta', 'mob_recon', 'plasmidfinder', 'platon', 'snippy', 'roary', 'iqtree', 'gubbins', 'virulencefinder'],
+	toolsUsed: ['seqkit', 'fastqc', 'trimmomatic', 'NanoPlot', 'filtlong', 'unicycler', 'Bandage', 'quast', 'checkm', 'busco', 'abricate', 'mlst', 'prokka', 'bakta', 'mob_recon', 'plasmidfinder', 'platon', 'snippy', 'roary', 'iqtree', 'gubbins', 'virulencefinder'],
 	sections: [
 		{
 			type: 'intro',
@@ -90,7 +90,7 @@ export const fish: Storyline = {
 			type: 'task',
 			title: 'Step 5: Visualize Assembly',
 			text: `Create a visual representation of the assembly graph.`,
-			command: 'bandage image assembly/assembly.gfa assembly/o_bandage.png',
+			command: 'Bandage image assembly/assembly.gfa assembly/o_bandage.png',
 			explanation: 'Bandage visualizes assembly graphs to identify structure.',
 			requiredDir: '/data/outbreak_investigation',
 			parameters: [

@@ -588,10 +588,10 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 			}
 		}
 
-		if (command === 'bandage') {
+		if (command === 'Bandage') {
 			if (!args.includes('image')) {
-				ctx.terminal.writeln(`\x1b[31mUsage: bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[90mExample: bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[31mUsage: Bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[90mExample: Bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
@@ -599,12 +599,12 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 			const gfaFile = args.find(a => a.endsWith('.gfa'));
 			if (!gfaFile) {
 				ctx.terminal.writeln(`\x1b[31mError: Missing .gfa file\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[31mUsage: bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[31mUsage: Bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
-			if (!isValidFileForTool('bandage', gfaFile)) {
-				ctx.terminal.writeln(`\x1b[31mError: '${gfaFile}' is not a valid input for bandage\x1b[0m`);
+			if (!isValidFileForTool('Bandage', gfaFile)) {
+				ctx.terminal.writeln(`\x1b[31mError: '${gfaFile}' is not a valid input for Bandage\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[90mBandage requires: o_unicycler/assembly.gfa (from unicycler output)\x1b[0m`);
 				writePrompt(ctx);
 				return;
@@ -613,7 +613,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 			const pngFile = args.find(a => a.endsWith('.png'));
 			if (!pngFile) {
 				ctx.terminal.writeln(`\x1b[31mError: Missing output .png file\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[31mUsage: bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[31mUsage: Bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
@@ -621,7 +621,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 			if (pngFile !== 'o_bandage.png') {
 				ctx.terminal.writeln(`\x1b[31mError: Invalid output file name '${pngFile}'\x1b[0m`);
 				ctx.terminal.writeln(`\x1b[33mFor this training, please use: o_bandage.png\x1b[0m`);
-				ctx.terminal.writeln(`\x1b[90mExample: bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
+				ctx.terminal.writeln(`\x1b[90mExample: Bandage image o_unicycler/assembly.gfa o_bandage.png\x1b[0m`);
 				writePrompt(ctx);
 				return;
 			}
@@ -1584,7 +1584,7 @@ export function showHelp(ctx: TerminalContext) {
 	ctx.terminal.writeln('  \x1b[32mfastqc\x1b[0m          Quality control (~10s)');
 	ctx.terminal.writeln('  \x1b[32mtrimmomatic\x1b[0m     Read trimming (~45s)');
 	ctx.terminal.writeln('  \x1b[32municycler\x1b[0m       Genome assembly (~3-5min)');
-	ctx.terminal.writeln('  \x1b[32mbandage\x1b[0m         Visualize assembly graph (~5s)');
+	ctx.terminal.writeln('  \x1b[32mBandage\x1b[0m         Visualize assembly graph (~5s)');
 	ctx.terminal.writeln('');
 	ctx.terminal.writeln('  \x1b[1;33mPhase 2 - QC & Analysis:\x1b[0m');
 	ctx.terminal.writeln('  \x1b[32mquast\x1b[0m           Assembly QC (~20s)');
@@ -1770,9 +1770,9 @@ export async function executeBioTool(tool: string, args: string[], fullCmd: stri
 						 fullCmd.includes('wgs_report') ? 'WGS Bacteria Analysis Report' :
 						 fullCmd.includes('rnaseq_report') ? 'RNA-Seq Analysis Report' : 'Analysis Report';
 
-		// For bandage, dynamically set the image path from template API
+		// For Bandage, dynamically set the image path from template API
 		let chartData = toolData.chartData;
-		if (tool === 'bandage' && chartData?.type === 'image') {
+		if (tool === 'Bandage' && chartData?.type === 'image') {
 			const templateUrl = ctx.getRootFileUrl('o_bandage.png');
 			if (templateUrl) {
 				chartData = { ...chartData, imagePath: templateUrl };

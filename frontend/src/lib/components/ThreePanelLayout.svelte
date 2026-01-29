@@ -80,9 +80,10 @@
 					files.push({ name: filename, type: getFileType(filename), tool });
 				});
 			}
-			// Check root-level files (o_toolname.ext pattern)
+			// Check root-level files (o_toolname.ext pattern, case-insensitive)
 			rootFiles.forEach(rootFile => {
-				if (rootFile.startsWith(`o_${tool}.`) || rootFile === `o_${tool}`) {
+				const toolLower = tool.toLowerCase();
+				if (rootFile.startsWith(`o_${toolLower}.`) || rootFile === `o_${toolLower}`) {
 					files.push({ name: rootFile, type: getFileType(rootFile), tool });
 				}
 			});

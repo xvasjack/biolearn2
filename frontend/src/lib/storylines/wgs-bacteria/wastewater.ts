@@ -21,7 +21,7 @@ export const wastewater: Storyline = {
 		'ccs',
 		'hifiasm',
 		'flye',
-		'bandage',
+		'Bandage',
 		'quast',
 		'checkm',
 		'busco',

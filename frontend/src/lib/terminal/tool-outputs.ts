@@ -332,7 +332,7 @@ ${stats.plasmidContigs.map((p, i) => `     ${30 + i * 2}    ${p.size.toLocaleStr
 				yLabel: 'Length (bp)'
 			}
 		},
-		'bandage': {
+		'Bandage': {
 			output: `\x1b[36mBandage v0.8.1\x1b[0m
 Loading assembly graph: assembly.gfa
   Nodes loaded: ${stats.bandage.nodes}
