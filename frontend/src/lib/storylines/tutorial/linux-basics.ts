@@ -44,6 +44,7 @@ Let's begin!`,
 			explanation: 'The --help flag displays usage information, available subcommands, and options for any tool.',
 			requiredDir: null,
 			parameters: [
+				{ name: 'seqkit', desc: 'Bioinformatics tool for FASTA/Q file manipulation' },
 				{ name: '--help', desc: 'Display help information' }
 			]
 		},
@@ -135,6 +136,7 @@ Let's begin!`,
 			explanation: 'The .. notation refers to the parent directory, allowing you to move up in the hierarchy.',
 			requiredDir: '/data/linux_tutorial/sequences',
 			parameters: [
+				{ name: 'cd', desc: 'Change directory' },
 				{ name: '..', desc: 'Parent directory' }
 			]
 		},
@@ -146,6 +148,7 @@ Let's begin!`,
 			explanation: 'The tilde (~) is a shortcut for your home directory. In this tutorial, it returns you to /data/linux_tutorial.',
 			requiredDir: null,
 			parameters: [
+				{ name: 'cd', desc: 'Change directory' },
 				{ name: '~', desc: 'Home directory shortcut' }
 			]
 		},
@@ -163,7 +166,8 @@ Let's begin!`,
 			explanation: 'cat (concatenate) outputs the file contents. Note: Use only for small files.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'cat', desc: 'Display file contents' }
+				{ name: 'cat', desc: 'Display file contents' },
+				{ name: 'sample_info.txt', desc: 'Target file to display' }
 			]
 		},
 		{
@@ -174,7 +178,8 @@ Let's begin!`,
 			explanation: 'head shows the first 10 lines by default. FASTQ files have 4 lines per read.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'head', desc: 'Show first lines' }
+				{ name: 'head', desc: 'Show first lines' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file (inside sequences folder)' }
 			]
 		},
 		{
@@ -185,7 +190,9 @@ Let's begin!`,
 			explanation: 'The -n option lets you specify the exact number of lines to show.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: '-n 8', desc: 'Show exactly 8 lines' }
+				{ name: 'head', desc: 'Show first lines' },
+				{ name: '-n 8', desc: 'Show exactly 8 lines' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file (inside sequences folder)' }
 			]
 		},
 		{
@@ -196,7 +203,8 @@ Let's begin!`,
 			explanation: 'tail shows the last 10 lines. Use -n to change the number, just like head.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'tail', desc: 'Show last lines' }
+				{ name: 'tail', desc: 'Show last lines' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file (inside sequences folder)' }
 			]
 		},
 		{
@@ -208,7 +216,8 @@ Let's begin!`,
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
 				{ name: 'wc', desc: 'Word/line/byte count' },
-				{ name: '-l', desc: 'Count lines only' }
+				{ name: '-l', desc: 'Count lines only' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file (inside sequences folder)' }
 			]
 		},
 		{
@@ -219,7 +228,8 @@ Let's begin!`,
 			explanation: 'wc outputs three numbers: lines, words, and bytes (characters).',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'wc', desc: 'Show lines, words, bytes' }
+				{ name: 'wc', desc: 'Show lines, words, bytes' },
+				{ name: 'sample_info.txt', desc: 'Target file' }
 			]
 		},
 		{
@@ -248,6 +258,7 @@ Let's begin!`,
 			explanation: 'The -p flag creates parent directories as needed. Without it, mkdir fails if parents don\'t exist.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
+				{ name: 'mkdir', desc: 'Make directory' },
 				{ name: '-p', desc: 'Create parent directories' },
 				{ name: 'results/qc/fastqc', desc: 'Nested path to create' }
 			]
@@ -267,7 +278,8 @@ Let's begin!`,
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
 				{ name: 'grep', desc: 'Search for patterns' },
-				{ name: '"FFFFF"', desc: 'Pattern to search for' }
+				{ name: '"FFFFF"', desc: 'Pattern to search for' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file' }
 			]
 		},
 		{
@@ -278,7 +290,9 @@ Let's begin!`,
 			explanation: 'The -i flag makes the search case-insensitive (matches SAMPLE, Sample, sample, etc.).',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: '-i', desc: 'Ignore case' }
+				{ name: '-i', desc: 'Ignore case' },
+				{ name: '"sample"', desc: 'Pattern to search for' },
+				{ name: 'sample_info.txt', desc: 'Target file' }
 			]
 		},
 		{
@@ -289,7 +303,9 @@ Let's begin!`,
 			explanation: 'The -c flag counts matching lines. In FASTQ, @ starts each read header, so this counts reads.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: '-c', desc: 'Count matching lines' }
+				{ name: '-c', desc: 'Count matching lines' },
+				{ name: '"@"', desc: 'Pattern to search for' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Target file (file is inside folder/directory named sequences)' }
 			]
 		},
 		{
@@ -306,7 +322,11 @@ Let's begin!`,
 			explanation: 'The > operator redirects output to a file, creating it if needed or overwriting if it exists.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: '>', desc: 'Redirect output (overwrite)' }
+				{ name: 'head', desc: 'Show first lines of file' },
+				{ name: '-n 8', desc: 'Show exactly 8 lines' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Source file to read from' },
+				{ name: '>', desc: 'Redirect output (overwrite)' },
+				{ name: 'results/first_reads.txt', desc: 'Destination file to write to' }
 			]
 		},
 		{
@@ -317,7 +337,11 @@ Let's begin!`,
 			explanation: 'The >> operator appends to a file, preserving existing content.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: '>>', desc: 'Redirect output (append)' }
+				{ name: 'head', desc: 'Show first lines of file' },
+				{ name: '-n 8', desc: 'Show exactly 8 lines' },
+				{ name: 'sequences/sample_R2.fastq', desc: 'Source file to read from' },
+				{ name: '>>', desc: 'Redirect output (append)' },
+				{ name: 'results/first_reads.txt', desc: 'Destination file to append to' }
 			]
 		},
 		{
@@ -328,6 +352,8 @@ Let's begin!`,
 			explanation: 'The asterisk (*) matches zero or more characters. *.fastq matches all files ending in .fastq.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
+				{ name: 'ls', desc: 'List directory contents' },
+				{ name: 'sequences/', desc: 'Directory to list from' },
 				{ name: '*', desc: 'Wildcard matching any characters' },
 				{ name: '*.fastq', desc: 'All files ending in .fastq' }
 			]
@@ -340,6 +366,8 @@ Let's begin!`,
 			explanation: 'Wildcards expand to all matching files, allowing batch operations.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
+				{ name: 'wc', desc: 'Word/line/byte count' },
+				{ name: '-l', desc: 'Count lines only' },
 				{ name: 'sequences/*.fastq', desc: 'All FASTQ files in sequences/' }
 			]
 		},
@@ -351,8 +379,11 @@ Let's begin!`,
 			explanation: 'This saves all read headers to a file for later analysis or record-keeping.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'grep "@"', desc: 'Find header lines' },
-				{ name: '> results/', desc: 'Save to results directory' }
+				{ name: 'grep', desc: 'Search for patterns' },
+				{ name: '"@"', desc: 'Pattern to search for (header lines)' },
+				{ name: 'sequences/sample_R1.fastq', desc: 'Source file to search' },
+				{ name: '>', desc: 'Redirect output (overwrite)' },
+				{ name: 'results/read_headers.txt', desc: 'Destination file to save results' }
 			]
 		},
 		{
