@@ -24,7 +24,7 @@
 	let leftPanelWidth = $state(50); // percentage (initial 50%)
 	let isResizingHorizontal = $state(false);
 	let filesDropdownOpen = $state(false);
-	let allGeneratedFiles = $state<{name: string, type: string, tool: string}[]>([]);
+	let allGeneratedFiles = $state<{name: string, type: string, tool: string, isRootFile?: boolean}[]>([]);
 
 	// File modal state
 	let fileModalOpen = $state(false);
@@ -71,7 +71,7 @@
 	});
 
 	function rebuildFileList(cmds: string[], tf: Record<string, string[]>, rootFiles: string[]) {
-		const files: {name: string, type: string, tool: string}[] = [];
+		const files: {name: string, type: string, tool: string, isRootFile?: boolean}[] = [];
 		cmds.forEach(tool => {
 			// Check tool output directories (o_toolname/)
 			const toolFileNames = tf[tool];
@@ -84,17 +84,18 @@
 			rootFiles.forEach(rootFile => {
 				const toolLower = tool.toLowerCase();
 				if (rootFile.startsWith(`o_${toolLower}.`) || rootFile === `o_${toolLower}`) {
-					files.push({ name: rootFile, type: getFileType(rootFile), tool });
+					files.push({ name: rootFile, type: getFileType(rootFile), tool, isRootFile: true });
 				}
 			});
 		});
 		allGeneratedFiles = files;
 	}
 
-	async function viewFile(file: {name: string, type: string, tool?: string}) {
+	async function viewFile(file: {name: string, type: string, tool?: string, isRootFile?: boolean}) {
 		// Load from template API
 		if (file.tool) {
-			const url = getToolFileUrl(file.tool, file.name);
+			// Use getRootFileUrl for root-level files, getToolFileUrl for tool directory files
+			const url = file.isRootFile ? getRootFileUrl(file.name) : getToolFileUrl(file.tool, file.name);
 
 			if (file.type === 'html') {
 				const response = await fetch(url);

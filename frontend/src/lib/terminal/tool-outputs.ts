@@ -312,7 +312,7 @@ ${stats.plasmidContigs.map((p, i) => `     ${30 + i * 2}    ${p.size.toLocaleStr
 
 \x1b[1;32mAssembly complete!\x1b[0m
 
-\x1b[33mTip: Use 'bandage image o_unicycler/assembly.gfa o_bandage.png' to visualize the assembly graph\x1b[0m
+\x1b[33mTip: Use 'Bandage image o_unicycler/assembly.gfa o_bandage.png' to visualize the assembly graph\x1b[0m
 `,
 			summary: {
 				'Total Segments': stats.bandage.nodes.toString(),
