@@ -34,7 +34,7 @@
 			title: 'Amplicon Bacteria',
 			description: '16S rRNA gene sequencing for microbiome analysis',
 			icon: '🦠',
-			paid: true,
+			comingSoon: true,
 		},
 		{
 			id: 'rna-seq',
