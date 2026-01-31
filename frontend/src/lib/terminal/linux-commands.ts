@@ -239,11 +239,6 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 		ctx.terminal.writeln(`\x1b[90m[Compressed archive - download via Output Files panel]\x1b[0m`);
 		return;
 	}
-	if (baseName.endsWith('.gz')) {
-		ctx.terminal.writeln(`\x1b[90m[Compressed file - cannot display directly]\x1b[0m`);
-		return;
-	}
-
 	// Fetch file content from template API
 	const dataDir = ctx.getStorylineDataDir();
 	let content: string | null = null;
@@ -280,6 +275,11 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 
 		for (const line of outputLines) {
 			ctx.terminal.writeln(line);
+		}
+		if (baseName.endsWith('.gz')) {
+			ctx.terminal.writeln('');
+			ctx.terminal.writeln(`\x1b[90mNote: In real bioinformatics, .gz files are compressed and cannot be viewed directly with ${cmd}.`);
+			ctx.terminal.writeln(`Use zcat, zless, or gunzip first to decompress them.\x1b[0m`);
 		}
 	} else {
 		ctx.terminal.writeln(`\x1b[31m${cmd}: ${filename}: Unable to read file\x1b[0m`);
