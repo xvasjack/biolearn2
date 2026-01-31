@@ -1,5 +1,5 @@
 import type { TerminalContext } from './types';
-import { getFilesystem, getFilesForDirectory, expandGlobPattern, normalizePath } from './filesystem';
+import { getFilesystem, getFilesForDirectory, expandGlobPattern, normalizePath, embeddedFileContents } from './filesystem';
 import { helpTexts as tutorialHelpTexts } from '$lib/storylines/tutorial/terminal-outputs';
 import { helpTexts as wgsBacteriaHelpTexts } from '$lib/storylines/wgs-bacteria/terminal-outputs';
 
@@ -175,8 +175,13 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 		// Check if this is a copied file reference (format: "cp:filename")
 		if (storedValue.startsWith('cp:')) {
 			const copiedFileName = storedValue.substring(3);
-			// Fetch from template API
-			const content = await ctx.fetchRootFileContent(copiedFileName);
+			// Fetch from template API, fallback to embedded content
+			const dataDir = ctx.getStorylineDataDir();
+			let content = await ctx.fetchRootFileContent(copiedFileName);
+			if (!content) {
+				const embeddedPath = `${dataDir}/${copiedFileName}`.replace(/\/+/g, '/');
+				content = embeddedFileContents[embeddedPath] || null;
+			}
 
 			if (content) {
 				const lines = content.split('\n');
@@ -254,6 +259,11 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 	} else {
 		// Try fetching as root file with full relative path
 		content = await ctx.fetchRootFileContent(relativePath);
+	}
+
+	// Fallback to embedded file contents if API fetch failed
+	if (!content) {
+		content = embeddedFileContents[fullPath] || null;
 	}
 
 	if (content) {
@@ -504,42 +514,30 @@ export function handleGrep(args: string[], fullCmd: string, ctx: TerminalContext
 	const hasOverwriteRedirect = !hasAppendRedirect && fullCmd.includes('>');
 	const hasRedirect = hasAppendRedirect || hasOverwriteRedirect;
 
-	// Simulate grep results based on pattern and file type
+	// Grep file contents - use embedded content as source of truth
 	let matchCount = 0;
 	let matches: string[] = [];
 
-	if (baseName.endsWith('.fastq') || baseName.endsWith('.fastq.gz')) {
-		if (pattern === '@' || pattern.includes('@')) {
-			matchCount = 10;
-			matches = [
-				'@M00123:45:000000000-ABC12:1:1101:15234:1000 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15235:1001 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15236:1002 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15237:1003 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15238:1004 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15239:1005 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15240:1006 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15241:1007 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15242:1008 1:N:0:1',
-				'@M00123:45:000000000-ABC12:1:1101:15243:1009 1:N:0:1'
-			];
-		} else if (pattern.includes('F')) {
-			matchCount = 10;
-			matches = [
-				'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
-				'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',
-				'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'
-			];
+	const fullPath = filename.includes('/')
+		? (filename.startsWith('/') ? filename : `${ctx.getCurrentDir()}/${filename}`.replace(/\/+/g, '/'))
+		: `${dirPath}/${baseName}`;
+	const fileContent = embeddedFileContents[fullPath];
+
+	if (fileContent) {
+		const lines = fileContent.split('\n');
+		const flags = hasCaseInsensitive ? 'i' : '';
+		let regex: RegExp;
+		try {
+			regex = new RegExp(pattern, flags);
+		} catch {
+			regex = new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags);
 		}
-	} else if (baseName.endsWith('.txt')) {
-		if (pattern.toLowerCase() === 'sample' || hasCaseInsensitive) {
-			matchCount = 3;
-			matches = [
-				'Sample ID: sample_01',
-				'Sample type: Bacterial isolate',
-				'Sample collection: 2024-01-15'
-			];
+		for (const line of lines) {
+			if (regex.test(line)) {
+				matches.push(line);
+			}
 		}
+		matchCount = matches.length;
 	}
 
 	if (hasRedirect) {

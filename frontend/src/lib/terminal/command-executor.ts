@@ -1,5 +1,5 @@
 import type { TerminalContext } from './types';
-import { getFilesystem, getFilesForDirectory, expandGlobPattern } from './filesystem';
+import { getFilesystem, getFilesForDirectory, expandGlobPattern, embeddedFileContents } from './filesystem';
 import { isValidFileForTool, toolRequirements } from './tool-validation';
 import { getToolOutput, getToolFromOutputName } from './tool-outputs';
 import { handleLs, handleCd, handleFileView, handleWc, handleMkdir, handleCp, handleGrep, handleBioToolHelp } from './linux-commands';
@@ -209,7 +209,8 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 						fetchPromise = ctx.fetchRootFileContent(relativePath);
 					}
 
-					fetchPromise.then(sourceContent => {
+					fetchPromise.then(fetchedContent => {
+						const sourceContent = fetchedContent || embeddedFileContents[inputFullPath] || null;
 						if (sourceContent) {
 							// Apply head/tail logic
 							const lines = sourceContent.split('\n');
