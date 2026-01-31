@@ -126,7 +126,6 @@
 			fill="rgba(0,0,0,0.65)"
 			mask="url(#spotlight-mask)"
 			style="pointer-events: all;"
-			onclick={skip}
 			role="presentation"
 		/>
 	</svg>
