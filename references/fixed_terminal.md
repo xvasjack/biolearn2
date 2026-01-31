@@ -1,0 +1,46 @@
+## Show Initial Folders/Files
+
+frontend/src/lib/terminal/filesystem.ts
+Line 4: baseFilesystem is an empty object `{}`. The filesystem is now loaded dynamically from the `/filesystem` API endpoint, which scans `template/{category}/{storyline}/` on disk.
+
+frontend/src/routes/api/templates/[...path]/+server.ts
+The `/filesystem` endpoint recursively scans `TEMPLATE_DIR/{category}/{storyline}/`, skips `.gitkeep`, appends `/` to subdirectory names, and returns `{ data_dir, filesystem }` JSON. Accepts optional `data_dir` query param (default `/data`, which gets the storyline name appended).
+
+frontend/src/lib/services/templateService.ts
+Lines 32-74: fallbackTemplateFiles — defines which tool output files exist when API is unavailable. Initial non-tool files come from the `/filesystem` API, not here.
+
+
+## Show Tool-Specific Files Only After Tool Execution
+
+Rule: Tool-specific files/dirs (`o_*`) only appear after the tool is executed. This is enforced in `getFilesystem()` lines 167-180 of filesystem.ts. The `/filesystem` API returns all entries including `o_*`, but they are filtered client-side.
+
+frontend/src/lib/terminal/filesystem.ts
+Lines 167-180: getFilesystem() filters entries starting with 'o_' — only shown if tool name exists in executedCommands. Pattern: o_${cmd}/, o_${cmd}., o_${cmd}_ must match.
+
+frontend/src/lib/stores/terminal.ts
+Line 47: executedCommands store — tracks which tools have been run. o_* directories only appear after their tool is added here.
+
+frontend/src/lib/terminal/command-executor.ts
+Per-tool blocks (lines 352-1200+): after successful tool execution, tool name is added to executedCommands via ctx.updateExecutedCommands(). This triggers o_* visibility.
+
+
+
+## cd, cat, head, tail, pwd, clear Should Work on All Files
+
+frontend/src/lib/terminal/linux-commands.ts
+Line 79-125: handleCd — validates directory exists in getFilesystem(). To allow cd into any directory, amend the filesystem check at line 120.
+
+frontend/src/lib/terminal/linux-commands.ts
+Lines 127-278: handleFileView (cat/head/tail) — resolves path, checks filesystem, fetches content from API. Files must exist in getFilesystem() AND have content available from the API (SvelteKit fallback locally, Python backend on VPS).
+
+frontend/src/lib/terminal/command-executor.ts
+Lines 57-60: pwd — prints getCurrentDir(), no file restriction.
+
+frontend/src/lib/terminal/command-executor.ts
+Lines 51-53: clear — clears terminal, no file restriction.
+
+frontend/src/lib/terminal/filesystem.ts
+Lines 100-182: getFilesystem() — the single source of truth for what files/dirs exist. cd/cat/head/tail all call this. To make commands work on all files, ensure files are present in baseFilesystem (line 4) or templateFilesystem (loaded from API).
+
+frontend/src/lib/terminal/filesystem.ts
+Lines 167-180: o_* filter — blocks cat/head/tail on tool output files before tool execution because files are filtered out of the filesystem. To allow reading tool output files before execution, amend this filter.
