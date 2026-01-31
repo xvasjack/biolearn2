@@ -408,11 +408,30 @@
 		terminal.writeln('\x1b[1;36m╔═══════════════════════════════════════════════════════════╗\x1b[0m');
 		terminal.writeln('\x1b[1;36m║\x1b[0m   \x1b[1;32mBioLearn\x1b[0m - Bioinformatics Learning Terminal             \x1b[1;36m║\x1b[0m');
 		terminal.writeln('\x1b[1;36m║\x1b[0m   Type \x1b[33mhelp\x1b[0m for available commands                         \x1b[1;36m║\x1b[0m');
-		terminal.writeln('\x1b[1;36m║\x1b[0m   Use ↑/↓ for history, Tab for autocomplete               \x1b[1;36m║\x1b[0m');
+		terminal.writeln('\x1b[1;36m║\x1b[0m   ↑/↓ history | Tab autocomplete | Ctrl+Shift+V paste     \x1b[1;36m║\x1b[0m');
 		terminal.writeln('\x1b[1;36m╚═══════════════════════════════════════════════════════════╝\x1b[0m');
 		writePrompt();
 
 		terminal.onData(handleInput);
+
+		// Handle Ctrl+Shift+V paste from clipboard
+		terminalContainer.addEventListener('keydown', async (e: KeyboardEvent) => {
+			if (e.ctrlKey && e.shiftKey && e.key === 'V') {
+				e.preventDefault();
+				try {
+					const text = await navigator.clipboard.readText();
+					if (text) {
+						// Clean pasted text: collapse to single line, strip control chars
+						const clean = text.replace(/[\r\n]+/g, ' ').trim().split('').filter(c => c >= ' ').join('');
+						if (clean) {
+							handleInput(clean);
+						}
+					}
+				} catch {
+					// Clipboard access denied - silently ignore
+				}
+			}
+		});
 	});
 
 	onDestroy(() => {

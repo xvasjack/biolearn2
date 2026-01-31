@@ -1,5 +1,5 @@
 import type { TerminalContext } from './types';
-import { getFilesystem, getFilesForDirectory, expandGlobPattern, embeddedFileContents } from './filesystem';
+import { getFilesystem, getFilesForDirectory, expandGlobPattern } from './filesystem';
 import { isValidFileForTool, toolRequirements } from './tool-validation';
 import { getToolOutput, getToolFromOutputName } from './tool-outputs';
 import { handleLs, handleCd, handleFileView, handleWc, handleMkdir, handleCp, handleGrep, handleBioToolHelp } from './linux-commands';
@@ -210,7 +210,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 					}
 
 					fetchPromise.then(fetchedContent => {
-						const sourceContent = fetchedContent || embeddedFileContents[inputFullPath] || null;
+						const sourceContent = fetchedContent || null;
 						if (sourceContent) {
 							// Apply head/tail logic
 							const lines = sourceContent.split('\n');
@@ -316,7 +316,7 @@ export async function executeCommand(cmd: string, ctx: TerminalContext) {
 
 	// Handle grep command
 	if (command === 'grep') {
-		handleGrep(args, cmd, ctx);
+		await handleGrep(args, cmd, ctx);
 		// Track the full command (e.g., 'grep "FFFFF" file.txt', 'grep -c "@" file.txt')
 		// to ensure each grep step in tutorials is tracked separately
 		const fullCmd = cmd.trim();

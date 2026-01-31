@@ -12,6 +12,25 @@
 	let userCurrentDir = $state('/data/outbreak_investigation');
 	let isFinished = $state(false);
 	let selectedDecision = $state<string | null>(null);
+	let copiedIndex = $state<number | null>(null);
+
+	async function copyCommand(command: string, index: number) {
+		try {
+			await navigator.clipboard.writeText(command);
+			copiedIndex = index;
+			setTimeout(() => { copiedIndex = null; }, 2000);
+		} catch {
+			// Fallback
+			const textarea = document.createElement('textarea');
+			textarea.value = command;
+			document.body.appendChild(textarea);
+			textarea.select();
+			document.execCommand('copy');
+			document.body.removeChild(textarea);
+			copiedIndex = index;
+			setTimeout(() => { copiedIndex = null; }, 2000);
+		}
+	}
 
 	// Reset all storyline state when tutorial opens
 	onMount(() => {
@@ -380,12 +399,20 @@
 								{#if !completedSteps.has(i)}
 									<div class="bg-blue-50 border border-blue-200 rounded p-2 mb-3 flex items-center gap-2" style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 0.25rem; padding: 0.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
 										<span style="font-size: 1rem;">→</span>
-										<span class="text-blue-700 text-sm" style="color: #1d4ed8; font-size: 0.875rem;">Type the command below into the terminal on the left screen</span>
+										<span class="text-blue-700 text-sm" style="color: #1d4ed8; font-size: 0.875rem;">Type or copy the command below and paste into the terminal (Ctrl+Shift+V)</span>
 									</div>
 								{/if}
 
-								<div class="bg-gray-900 rounded p-3 font-mono text-sm overflow-x-auto mb-3" style="background: #111827; border-radius: 0.25rem; padding: 0.75rem; font-family: monospace; font-size: 0.875rem; overflow-x: auto; margin-bottom: 0.75rem;">
-									<div class="text-gray-400 text-xs mb-1" style="color: #9ca3af; font-size: 0.75rem; margin-bottom: 0.25rem;">Command:</div>
+								<div class="bg-gray-900 rounded p-3 font-mono text-sm overflow-x-auto mb-3" style="background: #111827; border-radius: 0.25rem; padding: 0.75rem; font-family: monospace; font-size: 0.875rem; overflow-x: auto; margin-bottom: 0.75rem; position: relative;">
+									<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+										<div class="text-gray-400 text-xs" style="color: #9ca3af; font-size: 0.75rem;">Command:</div>
+										<button
+											onclick={() => copyCommand(section.command, i)}
+											style="padding: 2px 8px; font-size: 0.7rem; background: {copiedIndex === i ? '#16a34a' : '#374151'}; color: {copiedIndex === i ? 'white' : '#d1d5db'}; border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s;"
+										>
+											{copiedIndex === i ? 'Copied!' : 'Copy'}
+										</button>
+									</div>
 									<code class="text-green-400 whitespace-pre-wrap break-all" style="color: #4ade80; white-space: pre-wrap; word-break: break-all;">{section.command}</code>
 								</div>
 

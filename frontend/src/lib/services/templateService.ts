@@ -28,6 +28,51 @@ export interface TemplateFile {
 let filesCache: StorylineFiles | null = null;
 let cacheKey: string | null = null;
 
+// Fallback template file data when backend API is unavailable
+const fallbackTemplateFiles: Record<string, StorylineFiles> = {
+	'tutorial/kpneumoniae_demo': {
+		category: 'tutorial',
+		storyline: 'kpneumoniae_demo',
+		tools: {
+			seqkit: ['o_seqkit_stats.txt'],
+			fastqc: ['SRR36708862_1_fastqc.html', 'SRR36708862_2_fastqc.html'],
+			trimmomatic: ['SRR36708862_R1_paired.fq.gz', 'SRR36708862_R1_unpaired.fq.gz', 'SRR36708862_R2_paired.fq.gz', 'SRR36708862_R2_unpaired.fq.gz'],
+			unicycler: ['assembly.fasta', 'assembly.gfa', 'unicycler.log'],
+			quast: ['report.txt'],
+			checkm2: ['quality_report.tsv'],
+			plasmidfinder: ['results_tab.tsv'],
+			abricate: ['o_abricate_ncbi.tab'],
+			mlst: ['o_mlst.tab'],
+			prokka: ['PROKKA_01122026.gbk', 'PROKKA_01122026.gff', 'PROKKA_01122026.tbl', 'PROKKA_01122026.tsv', 'PROKKA_01122026.txt']
+		},
+		root_files: ['o_bandage.png']
+	},
+	'wgs_bacteria/hospital': {
+		category: 'wgs_bacteria',
+		storyline: 'hospital',
+		tools: {
+			seqkit: ['o_seqkit_stats.txt'],
+			fastqc: ['SRR36708862_1_fastqc.html', 'SRR36708862_2_fastqc.html'],
+			trimmomatic: ['SRR36708862_R1_paired.fq.gz', 'SRR36708862_R1_unpaired.fq.gz', 'SRR36708862_R2_paired.fq.gz', 'SRR36708862_R2_unpaired.fq.gz'],
+			unicycler: ['assembly.fasta', 'assembly.gfa', 'unicycler.log'],
+			quast: ['quast_report.html', 'quast_report.tsv'],
+			checkm2: ['quality_report.tsv'],
+			plasmidfinder: ['results_tab.tsv'],
+			abricate: ['o_abricate_ncbi.tab'],
+			mlst: ['o_mlst.tab'],
+			prokka: ['PROKKA_01122026.gbk', 'PROKKA_01122026.gff', 'PROKKA_01122026.tbl', 'PROKKA_01122026.tsv', 'PROKKA_01122026.txt'],
+			snippy: [],
+			roary: [],
+			iqtree: [],
+			mob_recon: [],
+			isescan: [],
+			integron_finder: [],
+			resfinder: []
+		},
+		root_files: ['o_bandage.png']
+	}
+};
+
 /**
  * Get all files available in the current storyline
  */
@@ -155,15 +200,27 @@ export function clearCache(): void {
  */
 export async function loadTemplateFiles(): Promise<boolean> {
 	const files = await getStorylineFiles();
-	if (!files) {
-		templateFiles.set({});
-		templateRootFiles.set([]);
-		return false;
+	if (files) {
+		templateFiles.set(files.tools);
+		templateRootFiles.set(files.root_files);
+		return true;
 	}
 
-	templateFiles.set(files.tools);
-	templateRootFiles.set(files.root_files);
-	return true;
+	// Fallback to embedded template file data when API is unavailable
+	const context = get(storylineContext);
+	if (context) {
+		const key = `${context.category}/${context.storyline}`;
+		const fallback = fallbackTemplateFiles[key];
+		if (fallback) {
+			templateFiles.set(fallback.tools);
+			templateRootFiles.set(fallback.root_files);
+			return true;
+		}
+	}
+
+	templateFiles.set({});
+	templateRootFiles.set([]);
+	return false;
 }
 
 /**

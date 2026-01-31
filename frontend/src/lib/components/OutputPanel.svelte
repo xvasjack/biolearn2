@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { outputData, terminalState, fileNotes, stopSignal, storylineContext, API_BASE_URL, templateFiles, templateRootFiles } from '$lib/stores/terminal';
-	import { getToolFileUrl, getRootFileUrl, getFileType } from '$lib/services/templateService';
+	import { getToolFileUrl, getRootFileUrl, getFileType, fetchFileContent, fetchRootFileContent } from '$lib/services/templateService';
 	import { get } from 'svelte/store';
 
 	let activeTab = $state('output');
@@ -13,6 +13,12 @@
 	let currentToolFiles = $state<{name: string, type: string, tool: string, isRootFile?: boolean}[]>([]);
 	let currentTemplateFilesValue = $state<Record<string, string[]>>({});
 	let currentRootFilesValue = $state<string[]>([]);
+	let fileModalOpen = $state(false);
+	let fileModalName = $state('');
+	let fileModalTool = $state('');
+	let fileModalType = $state('');
+	let fileModalContent = $state('');
+	let fileModalCopied = $state(false);
 
 	function handleStop() {
 		// Increment stop signal to trigger cancellation
@@ -85,53 +91,44 @@
 
 
 	async function viewFile(file: any) {
-		// Check if this is a template file (from API)
-		if (file.isTemplate && file.tool) {
-			const context = get(storylineContext);
-			if (context) {
-				const url = `${API_BASE_URL}/templates/${context.category}/${context.storyline}/${file.tool}/${file.name}`;
+		const context = get(storylineContext);
 
-				// Handle different file types
-				if (file.type === 'html' || file.type === 'png' || file.type === 'svg' || file.type === 'pdf') {
-					// Open binary/rich content in new window
-					const newWindow = window.open(url, '_blank');
-					if (!newWindow) {
-						alert(`Could not open ${file.name}`);
+		if (file.tool) {
+			const url = file.isRootFile
+				? getRootFileUrl(file.name)
+				: (context
+					? `${API_BASE_URL}/templates/${context.category}/${context.storyline}/${file.tool}/${file.name}`
+					: getToolFileUrl(file.tool, file.name));
+
+			// HTML content - try API, fallback to fetch and blob
+			if (file.type === 'html') {
+				try {
+					const resp = await fetch(url);
+					if (resp.ok) {
+						const blob = await resp.blob();
+						const blobUrl = URL.createObjectURL(blob);
+						window.open(blobUrl, '_blank');
+						return;
 					}
-				} else if (file.type === 'zip') {
-					// Trigger download for zip files
-					const a = document.createElement('a');
-					a.href = url;
-					a.download = file.name;
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
-				} else {
-					// Fetch and display text content
-					try {
-						const response = await fetch(url);
-						if (response.ok) {
-							const content = await response.text();
-							alert(`File: ${file.name}\n\n${content.substring(0, 2000)}${content.length > 2000 ? '\n...(truncated)' : ''}`);
-						} else {
-							alert(`Failed to fetch ${file.name}: ${response.statusText}`);
-						}
-					} catch (error) {
-						alert(`Error fetching ${file.name}: ${error}`);
-					}
-				}
+				} catch {}
+				// Show message in modal if fetch fails
+				fileModalName = file.name;
+				fileModalTool = file.tool;
+				fileModalType = file.type;
+				fileModalContent = 'HTML report could not be loaded.\n\nBackend server may not be running.\nStart the backend with: python app.py';
+				fileModalCopied = false;
+				fileModalOpen = true;
 				return;
 			}
-		}
 
-		// For tool files displayed in the Output tab, use the template service URLs
-		if (file.tool) {
-			const url = file.isRootFile ? getRootFileUrl(file.name) : getToolFileUrl(file.tool, file.name);
-
-			if (file.type === 'html' || file.type === 'png' || file.type === 'svg' || file.type === 'pdf') {
+			// Images/PDF - open in new window
+			if (file.type === 'png' || file.type === 'svg' || file.type === 'pdf') {
 				window.open(url, '_blank');
 				return;
-			} else if (file.type === 'zip') {
+			}
+
+			// Zip - trigger download
+			if (file.type === 'zip') {
 				const a = document.createElement('a');
 				a.href = url;
 				a.download = file.name;
@@ -139,36 +136,55 @@
 				a.click();
 				document.body.removeChild(a);
 				return;
+			}
+
+			// Text content - try API first, then embedded fallback
+			let content = file.isRootFile
+				? await fetchRootFileContent(file.name)
+				: await fetchFileContent(file.tool, file.name);
+
+			if (content) {
+				fileModalName = file.name;
+				fileModalTool = file.tool;
+				fileModalType = file.type;
+				fileModalContent = content;
+				fileModalCopied = false;
+				fileModalOpen = true;
 			} else {
-				try {
-					const response = await fetch(url);
-					if (response.ok) {
-						const content = await response.text();
-						alert(`File: ${file.name}\n\n${content.substring(0, 2000)}${content.length > 2000 ? '\n...(truncated)' : ''}`);
-					} else {
-						alert(`Failed to fetch ${file.name}: ${response.statusText}`);
-					}
-				} catch (error) {
-					alert(`Error fetching ${file.name}: ${error}`);
-				}
-				return;
+				fileModalName = file.name;
+				fileModalTool = file.tool || '';
+				fileModalType = file.type || '';
+				fileModalContent = 'Preview not available.\n\nBackend server may not be running.';
+				fileModalCopied = false;
+				fileModalOpen = true;
 			}
+			return;
 		}
 
-		// Handle root-level template files (like o_bandage.png)
-		if (file.name.startsWith('o_') && (file.type === 'png' || file.type === 'svg')) {
-			const url = getRootFileUrl(file.name);
-			if (url) {
-				const newWindow = window.open(url, '_blank');
-				if (!newWindow) {
-					alert(`Could not open ${file.name}`);
-				}
-				return;
-			}
-		}
+		fileModalName = file.name;
+		fileModalTool = '';
+		fileModalType = '';
+		fileModalContent = 'Preview not available for this file.';
+		fileModalCopied = false;
+		fileModalOpen = true;
+	}
 
-		// No local fallback - files should come from template API
-		alert(`Preview not available for ${file.name}\n\nThis file should be served from the template API.`);
+	function closeModal() {
+		fileModalOpen = false;
+	}
+
+	function handleModalBackdropClick(e: MouseEvent) {
+		if (e.target === e.currentTarget) {
+			closeModal();
+		}
+	}
+
+	async function copyModalContent() {
+		try {
+			await navigator.clipboard.writeText(fileModalContent);
+			fileModalCopied = true;
+			setTimeout(() => { fileModalCopied = false; }, 2000);
+		} catch {}
 	}
 
 	function downloadFile(file: any) {
@@ -365,3 +381,49 @@
 	</div>
 
 </div>
+
+{#if fileModalOpen}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="file-modal-backdrop"
+		style="position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 2rem;"
+		onclick={handleModalBackdropClick}
+	>
+		<div style="background: white; border-radius: 0.5rem; width: 100%; max-width: 56rem; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+			<!-- Header -->
+			<div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+				<div>
+					<h3 style="margin: 0; font-size: 1rem; font-weight: 600; color: #1f2937;">{fileModalName}</h3>
+					<p style="margin: 0.25rem 0 0; font-size: 0.75rem; color: #6b7280;">
+						{#if fileModalTool}{fileModalTool} &middot; {/if}{fileModalType ? fileModalType.toUpperCase() : 'File'}
+					</p>
+				</div>
+				<button
+					onclick={closeModal}
+					style="background: none; border: none; cursor: pointer; padding: 0.25rem; color: #9ca3af; font-size: 1.25rem; line-height: 1;"
+					aria-label="Close"
+				>&times;</button>
+			</div>
+			<!-- Content -->
+			<div style="flex: 1; overflow: auto; padding: 1rem 1.5rem;">
+				<pre style="margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 0.8rem; font-family: 'Fira Code', 'Consolas', monospace; line-height: 1.5; color: #374151; background: #f9fafb; padding: 1rem; border-radius: 0.375rem; border: 1px solid #e5e7eb;">{fileModalContent}</pre>
+			</div>
+			<!-- Footer -->
+			<div style="padding: 0.75rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 0.5rem; flex-shrink: 0;">
+				<button
+					onclick={copyModalContent}
+					style="padding: 0.375rem 0.75rem; font-size: 0.8rem; font-weight: 500; border: 1px solid #d1d5db; border-radius: 0.375rem; background: white; color: #374151; cursor: pointer;"
+				>
+					{fileModalCopied ? 'Copied!' : 'Copy'}
+				</button>
+				<button
+					onclick={closeModal}
+					style="padding: 0.375rem 0.75rem; font-size: 0.8rem; font-weight: 500; border: none; border-radius: 0.375rem; background: #2563eb; color: white; cursor: pointer;"
+				>
+					Close
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}

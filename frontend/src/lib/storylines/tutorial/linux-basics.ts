@@ -75,16 +75,36 @@ Let's begin!`,
 		},
 		{
 			type: 'task',
-			title: 'Step 0d: Copy a Directory',
-			text: `To copy directories with their contents, use the -r (recursive) flag. Type 1 line at a time.`,
-			command: 'ls\ncp -r /data/linux_tutorial/scripts ./my_scripts\nls',
-			explanation: 'The -r flag tells cp to copy directories recursively, including all subdirectories and files. The ls commands show the directory contents before and after the copy.',
+			title: 'Step 0d: List Before Copy',
+			text: `First, let's see what's currently in the directory before we copy anything.`,
+			command: 'ls',
+			explanation: 'ls lists the current directory contents so you can see what exists before copying.',
 			requiredDir: '/data/linux_tutorial',
 			parameters: [
-				{ name: 'ls', desc: 'List directory contents (before copy)' },
+				{ name: 'ls', desc: 'List directory contents (before copy)' }
+			]
+		},
+		{
+			type: 'task',
+			title: 'Step 0e: Copy a Directory',
+			text: `To copy directories with their contents, use the -r (recursive) flag.`,
+			command: 'cp -r /data/linux_tutorial/scripts ./my_scripts',
+			explanation: 'The -r flag tells cp to copy directories recursively, including all subdirectories and files.',
+			requiredDir: '/data/linux_tutorial',
+			parameters: [
 				{ name: '-r', desc: 'Recursive copy for directories' },
 				{ name: 'source', desc: 'Folder to copy from (file path: /data/linux_tutorial/scripts)' },
-				{ name: './my_scripts', desc: 'Paste into current directory/folder (.) with new directory name' },
+				{ name: './my_scripts', desc: 'Paste into current directory/folder (.) with new directory name' }
+			]
+		},
+		{
+			type: 'task',
+			title: 'Step 0f: Verify the Copy',
+			text: `Now list the directory again to confirm the copied directory appears.`,
+			command: 'ls',
+			explanation: 'Running ls again shows the new my_scripts directory has been created.',
+			requiredDir: '/data/linux_tutorial',
+			parameters: [
 				{ name: 'ls', desc: 'List directory contents (after copy)' }
 			]
 		},

@@ -6,7 +6,7 @@
 	import OutputPanel from './OutputPanel.svelte';
 	import SpotlightOverlay from './SpotlightOverlay.svelte';
 	import { executedCommands, storylineDataDir, currentDirectory, templateFiles, templateRootFiles } from '$lib/stores/terminal';
-	import { initializeStoryline, getToolFileUrl, getRootFileUrl, getFileType } from '$lib/services/templateService';
+	import { initializeStoryline, getToolFileUrl, getRootFileUrl, getFileType, fetchFileContent, fetchRootFileContent } from '$lib/services/templateService';
 	import type { Storyline } from '$lib/storylines/types';
 
 	let {
@@ -29,7 +29,7 @@
 		{
 			selector: '[data-tour="terminal"]',
 			title: 'Terminal',
-			description: 'This is your terminal. Type bioinformatics commands here just like you would on a real Linux system. Commands run in a simulated environment.',
+			description: 'This is your terminal. Type bioinformatics commands here just like you would on a real Linux system. For long commands, copy them from the lesson panel and paste with Ctrl+Shift+V.',
 			position: 'right' as const
 		},
 		{
@@ -140,28 +140,40 @@
 	}
 
 	async function viewFile(file: {name: string, type: string, tool?: string, isRootFile?: boolean}) {
-		// Load from template API
 		if (file.tool) {
-			// Use getRootFileUrl for root-level files, getToolFileUrl for tool directory files
 			const url = file.isRootFile ? getRootFileUrl(file.name) : getToolFileUrl(file.tool, file.name);
 
+			// HTML content - try API, fallback to fetch and blob
 			if (file.type === 'html') {
-				const response = await fetch(url);
-				if (response.ok) {
-					const htmlContent = await response.text();
-					const newWindow = window.open('', '_blank');
-					if (newWindow) {
-						newWindow.document.write(htmlContent);
-						newWindow.document.close();
+				try {
+					const resp = await fetch(url);
+					if (resp.ok) {
+						const blob = await resp.blob();
+						const blobUrl = URL.createObjectURL(blob);
+						window.open(blobUrl, '_blank');
+						filesDropdownOpen = false;
+						return;
 					}
-					filesDropdownOpen = false;
-					return;
-				}
-			} else if (file.type === 'png' || file.type === 'svg' || file.type === 'pdf') {
+				} catch {}
+				// Show message in modal if fetch fails
+				fileModalName = file.name;
+				fileModalTool = file.tool || '';
+				fileModalType = 'HTML';
+				fileModalContent = 'HTML report could not be loaded.\n\nBackend server may not be running.\nStart the backend with: python app.py';
+				fileModalOpen = true;
+				filesDropdownOpen = false;
+				return;
+			}
+
+			// Images/PDF - open in new window
+			if (file.type === 'png' || file.type === 'svg' || file.type === 'pdf') {
 				window.open(url, '_blank');
 				filesDropdownOpen = false;
 				return;
-			} else if (file.type === 'zip') {
+			}
+
+			// Zip - trigger download
+			if (file.type === 'zip') {
 				const a = document.createElement('a');
 				a.href = url;
 				a.download = file.name;
@@ -170,35 +182,35 @@
 				document.body.removeChild(a);
 				filesDropdownOpen = false;
 				return;
-			} else {
-				const response = await fetch(url);
-				if (response.ok) {
-					const textContent = await response.text();
-					fileModalName = file.name;
-					fileModalTool = file.tool;
-					fileModalType = file.type.toUpperCase();
-					fileModalContent = textContent;
-					fileModalOpen = true;
-					filesDropdownOpen = false;
-					return;
-				}
 			}
-		}
 
-		// Handle root-level template files
-		if (file.name.startsWith('o_') && file.type === 'png') {
-			const url = getRootFileUrl(file.name);
-			if (url) {
-				window.open(url, '_blank');
+			// Text content - try API first, then embedded fallback
+			let content = file.isRootFile
+				? await fetchRootFileContent(file.name)
+				: await fetchFileContent(file.tool, file.name);
+
+			if (content) {
+				fileModalName = file.name;
+				fileModalTool = file.tool;
+				fileModalType = file.type.toUpperCase();
+				fileModalContent = content;
+				fileModalOpen = true;
 				filesDropdownOpen = false;
-				return;
+			} else {
+				fileModalName = file.name;
+				fileModalTool = file.tool || '';
+				fileModalType = file.type.toUpperCase();
+				fileModalContent = 'Preview not available.\n\nBackend server may not be running.';
+				fileModalOpen = true;
+				filesDropdownOpen = false;
 			}
+			return;
 		}
 
 		fileModalName = file.name;
 		fileModalTool = file.tool || '';
 		fileModalType = file.type.toUpperCase();
-		fileModalContent = 'File should be served from the template API.';
+		fileModalContent = 'Preview not available for this file.';
 		fileModalOpen = true;
 		filesDropdownOpen = false;
 	}

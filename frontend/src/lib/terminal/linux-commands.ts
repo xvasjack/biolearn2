@@ -1,5 +1,5 @@
 import type { TerminalContext } from './types';
-import { getFilesystem, getFilesForDirectory, expandGlobPattern, normalizePath, embeddedFileContents } from './filesystem';
+import { getFilesystem, getFilesForDirectory, expandGlobPattern, normalizePath } from './filesystem';
 import { helpTexts as tutorialHelpTexts } from '$lib/storylines/tutorial/terminal-outputs';
 import { helpTexts as wgsBacteriaHelpTexts } from '$lib/storylines/wgs-bacteria/terminal-outputs';
 
@@ -178,10 +178,6 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 			// Fetch from template API, fallback to embedded content
 			const dataDir = ctx.getStorylineDataDir();
 			let content = await ctx.fetchRootFileContent(copiedFileName);
-			if (!content) {
-				const embeddedPath = `${dataDir}/${copiedFileName}`.replace(/\/+/g, '/');
-				content = embeddedFileContents[embeddedPath] || null;
-			}
 
 			if (content) {
 				const lines = content.split('\n');
@@ -254,11 +250,6 @@ export async function handleFileView(cmd: string, args: string[], ctx: TerminalC
 	} else {
 		// Try fetching as root file with full relative path
 		content = await ctx.fetchRootFileContent(relativePath);
-	}
-
-	// Fallback to embedded file contents if API fetch failed
-	if (!content) {
-		content = embeddedFileContents[fullPath] || null;
 	}
 
 	if (content) {
@@ -470,7 +461,7 @@ export function handleCp(args: string[], ctx: TerminalContext) {
 	}
 }
 
-export function handleGrep(args: string[], fullCmd: string, ctx: TerminalContext) {
+export async function handleGrep(args: string[], fullCmd: string, ctx: TerminalContext) {
 	const hasCaseInsensitive = args.includes('-i');
 	const hasCount = args.includes('-c');
 	const filteredArgs = args.filter(a => !a.startsWith('-'));
@@ -514,14 +505,27 @@ export function handleGrep(args: string[], fullCmd: string, ctx: TerminalContext
 	const hasOverwriteRedirect = !hasAppendRedirect && fullCmd.includes('>');
 	const hasRedirect = hasAppendRedirect || hasOverwriteRedirect;
 
-	// Grep file contents - use embedded content as source of truth
+	// Grep file contents - fetch from API
 	let matchCount = 0;
 	let matches: string[] = [];
 
 	const fullPath = filename.includes('/')
 		? (filename.startsWith('/') ? filename : `${ctx.getCurrentDir()}/${filename}`.replace(/\/+/g, '/'))
 		: `${dirPath}/${baseName}`;
-	const fileContent = embeddedFileContents[fullPath];
+
+	// Fetch file content from template API
+	const dataDir = ctx.getStorylineDataDir();
+	let fileContent: string | null = null;
+
+	const pathParts = fullPath.replace(dataDir, '').split('/').filter(p => p);
+	const relativePath = pathParts.join('/');
+
+	if (pathParts.length >= 2 && pathParts[0].startsWith('o_')) {
+		const tool = pathParts[0].slice(2);
+		fileContent = await ctx.fetchFileContent(tool, baseName);
+	} else {
+		fileContent = await ctx.fetchRootFileContent(relativePath);
+	}
 
 	if (fileContent) {
 		const lines = fileContent.split('\n');
