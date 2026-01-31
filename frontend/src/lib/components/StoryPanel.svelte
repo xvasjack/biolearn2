@@ -3,7 +3,7 @@
 	import { executedCommands, executedSteps, currentDirectory, storylineDataDir, outputData, terminalState, templateFiles, templateRootFiles, currentStoryStep } from '$lib/stores/terminal';
 	import { get } from 'svelte/store';
 	import type { Storyline, StorylineSection } from '$lib/storylines/types';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	let { storyline = null }: { storyline?: Storyline | null } = $props();
 
@@ -166,11 +166,16 @@
 		return true;
 	}
 
-	function nextStep() {
+	async function nextStep() {
 		if (!storyline) return;
 		const nextIdx = currentStep + 1;
 		if (nextIdx < storyline.sections.length && canProceed(nextIdx)) {
 			currentStep = nextIdx;
+			await tick();
+			const el = document.getElementById(`story-section-${nextIdx}`);
+			if (el) {
+				el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
 		}
 	}
 
@@ -253,7 +258,7 @@
 	<div class="flex-1 overflow-auto p-6" style="flex: 1; overflow: auto; padding: 1.5rem; min-height: 0;">
 		{#each storyline.sections as section, i}
 			{#if i <= currentStep}
-				<div class="mb-6 animate-fade-in" style="margin-bottom: 1.5rem; opacity: {i < currentStep && section.type !== 'phase' ? '0.5' : '1'};">
+				<div id="story-section-{i}" class="mb-6 animate-fade-in" style="margin-bottom: 1.5rem; opacity: {i < currentStep && section.type !== 'phase' ? '0.5' : '1'};">
 					{#if section.type === 'intro'}
 						<div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r" style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 1.25rem; border-radius: 0 0.25rem 0.25rem 0;">
 							<div class="text-gray-700 leading-relaxed story-content" style="color: #374151; line-height: 1.625;">{@html section.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/\n/g, '<br/>')}</div>

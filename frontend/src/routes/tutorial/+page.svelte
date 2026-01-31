@@ -40,6 +40,39 @@
 		</div>
 
 		<div class="space-y-4">
+			<!-- Interface Guide - For new users -->
+			<button
+				onclick={() => startTutorial('interface-guide')}
+				onmouseenter={() => hoveredTutorial = 'interface-guide'}
+				onmouseleave={() => hoveredTutorial = null}
+				class="w-full rounded-xl border border-slate-700 bg-slate-800/50 p-6 text-left transition-all hover:border-purple-500/50 hover:bg-slate-800"
+			>
+				<div class="flex items-start justify-between">
+					<div class="flex-1">
+						<div class="flex items-center gap-3 mb-2">
+							<span class="text-2xl">
+								<svg class="inline h-7 w-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<circle cx="12" cy="12" r="10" stroke-width="2" />
+									<circle cx="12" cy="12" r="4" stroke-width="2" />
+									<line x1="12" y1="2" x2="12" y2="6" stroke-width="2" />
+									<line x1="12" y1="18" x2="12" y2="22" stroke-width="2" />
+									<line x1="2" y1="12" x2="6" y2="12" stroke-width="2" />
+									<line x1="18" y1="12" x2="22" y2="12" stroke-width="2" />
+								</svg>
+							</span>
+							<h3 class="text-xl font-semibold text-white">Biolearn Interface Guide</h3>
+							<span class="rounded-full bg-purple-500/20 px-3 py-1 text-xs font-medium text-purple-300">
+								New User
+							</span>
+						</div>
+						<p class="text-slate-400 ml-11">Take a quick guided tour of the Biolearn interface</p>
+					</div>
+					<svg class="h-6 w-6 text-slate-500 transition-transform flex-shrink-0 {hoveredTutorial === 'interface-guide' ? 'translate-x-1 text-purple-400' : ''}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+					</svg>
+				</div>
+			</button>
+
 			<!-- Linux Basics - First tutorial for beginners -->
 			<button
 				onclick={() => startTutorial('linux-basics')}
